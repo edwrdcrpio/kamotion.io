@@ -1,11 +1,11 @@
-# React + TypeScript + Vite
+# kamotion.io
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Kamotion.io is a React application built with Vite.  It is a productivity tool that helps you manage your communications and tasks.  This project uses Tailwind CSS for styling.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1.  Clone the repository:
+   
 
 ## Expanding the ESLint configuration
 
