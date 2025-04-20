@@ -4,7 +4,7 @@ Kamotion.io is a React application built with Vite.  It is a productivity tool t
 
 ## Installation
 
-1.  Clone the repository:
+1.  Clone the repository: git clone https://github.com/edwrdcrpio/kamotion.io.git
    
 
 ## Expanding the ESLint configuration
