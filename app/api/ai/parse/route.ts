@@ -42,13 +42,33 @@ export async function POST(request: NextRequest) {
           "n8n processing path is selected but n8nWebhookUrl is blank. Set it in Settings.",
         );
       }
-      const cards = await parseViaN8n({
-        webhookUrl,
-        text: input.text,
-        mode: input.mode,
-        teamMembers: input.teamMembers,
-      });
-      return NextResponse.json({ cards });
+      // Optional Basic Auth — configured via env so credentials never touch the DB.
+      // Both vars must be present for auth to be applied; otherwise request is unauthenticated.
+      const authUser = process.env.N8N_WEBHOOK_AUTH_USER;
+      const authPass = process.env.N8N_WEBHOOK_AUTH_PASSWORD;
+      const auth =
+        authUser && authPass ? { user: authUser, password: authPass } : undefined;
+
+      try {
+        const cards = await parseViaN8n({
+          webhookUrl,
+          text: input.text,
+          mode: input.mode,
+          teamMembers: input.teamMembers,
+          auth,
+        });
+        return NextResponse.json({ cards });
+      } catch (e) {
+        // Surface upstream webhook failures as 502 with the original message so
+        // the UI can display "n8n webhook failed: 404 Not Found" instead of a
+        // generic "Internal server error".
+        const message =
+          e instanceof Error ? e.message : "n8n webhook call failed";
+        if (message.startsWith("n8n webhook failed:")) {
+          throw new HttpError(502, message);
+        }
+        throw e;
+      }
     }
 
     // in-app path (default)

@@ -20,6 +20,7 @@
       "parameters": {
         "promptType": "define",
         "text": "={{ $json.body.text }}",
+        "hasOutputParser": true,
         "options": {
           "systemMessage": "You are Kamotion's task extractor. Read the input text and emit actionable cards that match the schema attached to this agent.\n\nMode and team members are passed in from the webhook body:\n- mode: {{ $json.body.mode }}\n- team_members: {{ JSON.stringify($json.body.teamMembers || []) }}\n- today: {{ $now.toFormat('yyyy-MM-dd') }}\n\nRules:\n- If mode is \"solo\": set every card's assignee to \"me\".\n- If mode is \"team\": distribute assignee among the listed team members based on context; if unclear, pick a reasonable default from the list.\n- requester: default to \"me\" unless the text clearly names someone else making the request.\n- request_date: set to today unless the text clearly states another date. Resolve relative dates (\"Friday\", \"next week\") against today.\n- priority: infer from tone — deadlines/urgency → \"High\"; nice-to-haves/backlog → \"Low\"; otherwise \"Normal\".\n- status: always \"Not Started\" unless the text clearly says otherwise.\n- For any field without a clear value in the text, return null (dates, duration, notes). Never invent due dates or durations.\n- Return 0 to 50 cards. If the text contains no actionable tasks, return { \"cards\": [] }.\n- Return only JSON that matches the schema — no prose, no markdown fences."
         }

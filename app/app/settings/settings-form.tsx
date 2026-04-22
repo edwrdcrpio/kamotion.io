@@ -165,8 +165,7 @@ const PATH_OPTIONS: { value: ProcessingPathT; label: string; hint: string }[] =
     },
   ];
 
-const TEST_TEXT_PLACEHOLDER = `Try something like:
-"I need to finish the onboarding doc by Friday and send it to Maya. Also, remind me to renew the SSL cert next week."`;
+const TEST_TEXT_DEFAULT = `I need to finish the onboarding doc by Friday and send it to Maya. Also, remind me to renew the SSL cert next week.`;
 
 export function SettingsForm({ initial }: { initial: SettingsValues }) {
   const [saveStatus, setSaveStatus] = useState<
@@ -212,7 +211,7 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
     onError: (e: Error) => setSaveStatus({ kind: "err", message: e.message }),
   });
 
-  const [testText, setTestText] = useState("");
+  const [testText, setTestText] = useState(TEST_TEXT_DEFAULT);
   const [testResult, setTestResult] = useState<
     | { kind: "ok"; count: number; first: string | null }
     | { kind: "err"; message: string }
@@ -498,7 +497,7 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
             value={testText}
             onChange={(e) => setTestText(e.target.value)}
             rows={4}
-            placeholder={TEST_TEXT_PLACEHOLDER}
+            placeholder="Paste emails, transcripts, Slack dumps, or notes…"
             className="font-mono text-sm"
           />
           <div className="flex items-center justify-between">
