@@ -1,9 +1,9 @@
 export const brand = {
-  name: "Kamotion",
+  name: "kamotion",
   domain: "kamotion.io",
-  tagline: "Turn the commotion into clarity.",
+  tagline: "From scattered messages to organized work.",
   description:
-    "Paste in the chaos — emails, messages, meeting notes — and get back a kanban board you can actually ship from.",
+    "kamotion turns Slack threads, email chains, Zoom transcripts, and meeting notes into structured kanban cards. Paste the noise. AI does the parsing. You do the work.",
   palette: {
     primary: "#6366F1",
     primaryDeep: "#4338CA",
