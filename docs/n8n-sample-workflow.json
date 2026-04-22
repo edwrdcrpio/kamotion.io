@@ -1,0 +1,104 @@
+{
+  "name": "Kamotion — Task Parser",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "kamotion-parse",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "b7b7b7b7-0000-0000-0000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "kamotion-parse"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.text }}",
+        "options": {
+          "systemMessage": "You are Kamotion's task extractor. Read the input text and emit actionable cards that match the schema attached to this agent.\n\nMode and team members are passed in from the webhook body:\n- mode: {{ $json.body.mode }}\n- team_members: {{ JSON.stringify($json.body.teamMembers || []) }}\n- today: {{ $now.toFormat('yyyy-MM-dd') }}\n\nRules:\n- If mode is \"solo\": set every card's assignee to \"me\".\n- If mode is \"team\": distribute assignee among the listed team members based on context; if unclear, pick a reasonable default from the list.\n- requester: default to \"me\" unless the text clearly names someone else making the request.\n- request_date: set to today unless the text clearly states another date. Resolve relative dates (\"Friday\", \"next week\") against today.\n- priority: infer from tone — deadlines/urgency → \"High\"; nice-to-haves/backlog → \"Low\"; otherwise \"Normal\".\n- status: always \"Not Started\" unless the text clearly says otherwise.\n- For any field without a clear value in the text, return null (dates, duration, notes). Never invent due dates or durations.\n- Return 0 to 50 cards. If the text contains no actionable tasks, return { \"cards\": [] }.\n- Return only JSON that matches the schema — no prose, no markdown fences."
+        }
+      },
+      "id": "b7b7b7b7-0000-0000-0000-000000000002",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"required\": [\"cards\"],\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"cards\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"required\": [\"task\", \"assignee\", \"requester\", \"request_date\", \"due_date\", \"estimated_duration\", \"notes\", \"priority\", \"status\"],\n        \"additionalProperties\": false,\n        \"properties\": {\n          \"task\": { \"type\": \"string\", \"minLength\": 1, \"maxLength\": 500 },\n          \"assignee\": { \"type\": \"string\", \"minLength\": 1, \"maxLength\": 120 },\n          \"requester\": { \"type\": \"string\", \"minLength\": 1, \"maxLength\": 120 },\n          \"request_date\": { \"type\": [\"string\", \"null\"], \"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\" },\n          \"due_date\": { \"type\": [\"string\", \"null\"], \"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\" },\n          \"estimated_duration\": { \"type\": [\"string\", \"null\"] },\n          \"notes\": { \"type\": [\"string\", \"null\"] },\n          \"priority\": { \"type\": \"string\", \"enum\": [\"Low\", \"Normal\", \"High\"] },\n          \"status\": { \"type\": \"string\", \"enum\": [\"Not Started\", \"Ready\", \"In Progress\", \"Blocked\", \"Review\", \"Approved\"] }\n        }\n      }\n    }\n  }\n}"
+      },
+      "id": "b7b7b7b7-0000-0000-0000-000000000003",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [520, 500]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.output ?? $json }}",
+        "options": {}
+      },
+      "id": "b7b7b7b7-0000-0000-0000-000000000004",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [820, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "kamotion"
+    }
+  ]
+}
