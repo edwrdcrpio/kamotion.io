@@ -84,6 +84,12 @@ Open the **AI Agent** node in n8n → **Options → System Message**. The import
 - **Kamotion shows `Validation failed` / `issues: [...]`** — the workflow responded but the JSON didn't match the card schema. Check the Structured Output Parser is wired to the Agent's `ai_outputParser` input and that its JSON Schema matches the one shipped in the sample. Weaker models occasionally drop required fields; try a stronger model or tighten the system prompt.
 - **Dates look wrong** — the Agent receives `today` via `{{ $now.toFormat('yyyy-MM-dd') }}`. If your n8n instance runs in a timezone different from your users, dates may skew by a day. Pin n8n's timezone or adjust the expression.
 
+## About `onError` on the Webhook nodes
+
+Both `Webhook` and `Respond to Webhook` have `onError: "continueRegularOutput"` at the node level (not inside `parameters`) so the workflow still responds to the caller even when a downstream step fails. This is the placement n8n expects.
+
+If you run `n8n-mcp`'s `validate_workflow` on this file, you may see a false-positive error claiming the Webhook is missing `onError` despite it being present. That's a known validator quirk — check with `validate_workflow_connections` (passes cleanly) or just import into n8n (accepts without complaint).
+
 ## Schema reference
 
 The card schema Kamotion expects is defined in `lib/ai/schema.ts` (`ParsedCard`). If you ever change that file, update the JSON Schema inside the **Structured Output Parser** node in your n8n workflow to match.
