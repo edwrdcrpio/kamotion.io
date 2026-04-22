@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export type SettingsValues = {
   aiProvider: AiProviderT;
@@ -313,6 +314,20 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
             )}
           </section>
 
+          <fieldset
+            disabled={processingPath === "n8n"}
+            className={cn(
+              "flex flex-col gap-8 border-0 p-0 m-0 min-w-0",
+              processingPath === "n8n" && "opacity-50",
+            )}
+          >
+            {processingPath === "n8n" && (
+              <p className="rounded-md border border-dashed border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+                Disabled while the <strong>n8n</strong> processing path is
+                active — prompt and model are owned by your n8n workflow.
+                These apply only to the in-app path.
+              </p>
+            )}
           <section className="flex flex-col gap-4">
             <div>
               <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -442,6 +457,7 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
               </p>
             )}
           </section>
+          </fieldset>
 
           <div className="flex items-center justify-between border-t border-border pt-4">
             <div className="text-xs text-muted-foreground">
