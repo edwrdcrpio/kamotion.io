@@ -84,6 +84,23 @@ Open the **AI Agent** node in n8n → **Options → System Message**. The import
 - **Kamotion shows `Validation failed` / `issues: [...]`** — the workflow responded but the JSON didn't match the card schema. Check the Structured Output Parser is wired to the Agent's `ai_outputParser` input and that its JSON Schema matches the one shipped in the sample. Weaker models occasionally drop required fields; try a stronger model or tighten the system prompt.
 - **Dates look wrong** — the Agent receives `today` via `{{ $now.toFormat('yyyy-MM-dd') }}`. If your n8n instance runs in a timezone different from your users, dates may skew by a day. Pin n8n's timezone or adjust the expression.
 
+## Securing the webhook with Basic Auth
+
+If your n8n instance is internet-reachable, add Basic Auth to the Webhook node:
+
+1. Open the **Webhook** node → **Authentication** → select **Basic Auth**.
+2. Create a credential (user + strong password). Save.
+3. Activate the workflow.
+
+On the Kamotion side, set two env vars on the server that runs the app:
+
+```
+N8N_WEBHOOK_AUTH_USER=your-user
+N8N_WEBHOOK_AUTH_PASSWORD=your-password
+```
+
+Both must be set — if either is blank, Kamotion sends the request unauthenticated (useful for local dev). Credentials never touch the Kamotion database; they live in env only. Restart the app (or redeploy) after setting them.
+
 ## About `onError` on the Webhook nodes
 
 Both `Webhook` and `Respond to Webhook` have `onError: "continueRegularOutput"` at the node level (not inside `parameters`) so the workflow still responds to the caller even when a downstream step fails. This is the placement n8n expects.

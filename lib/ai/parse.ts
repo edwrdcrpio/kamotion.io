@@ -58,10 +58,22 @@ export async function parseViaN8n(params: {
   text: string;
   mode: "solo" | "team";
   teamMembers?: string[];
+  auth?: { user: string; password: string };
 }): Promise<ParsedCard[]> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (params.auth) {
+    // Buffer exists in Node runtime; base64-encode in server-safe fashion.
+    const token = Buffer.from(
+      `${params.auth.user}:${params.auth.password}`,
+    ).toString("base64");
+    headers.Authorization = `Basic ${token}`;
+  }
+
   const res = await fetch(params.webhookUrl, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({
       text: params.text,
       mode: params.mode,
