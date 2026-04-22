@@ -84,6 +84,46 @@ export const CardListQuery = z.object({
 });
 export type CardListQuery = z.infer<typeof CardListQuery>;
 
+export const AiProvider = z.enum([
+  "openrouter",
+  "openai",
+  "anthropic",
+  "google",
+]);
+export type AiProvider = z.infer<typeof AiProvider>;
+
+export const ProcessingPath = z.enum(["in-app", "n8n"]);
+export type ProcessingPath = z.infer<typeof ProcessingPath>;
+
+// All keys editable from the admin UI. `aiApiKeyRef` is the *name* of the env
+// var that holds the API key — never the key itself.
+export const SettingsUpdateInput = z
+  .object({
+    aiProvider: AiProvider,
+    aiModel: z.string().min(1).max(200),
+    aiApiKeyRef: z.string().min(1).max(120),
+    systemPrompt: z.string().min(1).max(20_000),
+    processingPath: ProcessingPath,
+    // settings.value is NOT NULL, so we keep an empty URL as "" rather than null.
+    // Non-empty values must still be valid URLs.
+    n8nWebhookUrl: z.preprocess(
+      (v) => (v === null || v === undefined ? "" : v),
+      z.union([z.string().url(), z.literal("")]),
+    ),
+  })
+  .partial();
+export type SettingsUpdateInput = z.infer<typeof SettingsUpdateInput>;
+
+export const SETTINGS_KEYS = [
+  "aiProvider",
+  "aiModel",
+  "aiApiKeyRef",
+  "systemPrompt",
+  "processingPath",
+  "n8nWebhookUrl",
+] as const;
+export type SettingsKey = (typeof SETTINGS_KEYS)[number];
+
 // Domain Card type — narrows DB string columns to enum unions.
 export type Card = {
   id: string;
