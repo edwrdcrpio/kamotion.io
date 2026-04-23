@@ -270,7 +270,7 @@ export function deleteCard(id: string): boolean { /* … */ }
 - [x] Batch 4 — AppShell demo-mode adaptation
 - [x] Batch 5 — Generate demo adaptation
 - [x] Batch 6 — react-joyride tour
-- [ ] Batch 7 — drag-hint dialog
+- [x] Batch 7 — drag-hint dialog
 - [ ] Batch 8 — polish + verify
 - [ ] Update `01_PLAN_KAMOTION.md` with F.4 entry + lessons
 - [ ] Delete this plan file
