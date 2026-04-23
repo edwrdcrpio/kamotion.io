@@ -38,9 +38,13 @@ const STATUS_OPTIONS: Status[] = [
 export function PreviewDialog({
   cards,
   onOpenChange,
+  redirectTo = "/app",
+  confirmTourAttr,
 }: {
   cards: ParsedCard[] | null;
   onOpenChange: (open: boolean) => void;
+  redirectTo?: string;
+  confirmTourAttr?: string;
 }) {
   const open = cards !== null;
   const [editable, setEditable] = useState<ParsedCard[]>([]);
@@ -65,7 +69,7 @@ export function PreviewDialog({
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cards"] });
       onOpenChange(false);
-      router.push("/app");
+      router.push(redirectTo);
     },
   });
 
@@ -129,6 +133,7 @@ export function PreviewDialog({
             type="button"
             onClick={() => confirm.mutate()}
             disabled={editable.length === 0 || confirm.isPending}
+            data-tour={confirmTourAttr}
             className="cursor-pointer"
           >
             {confirm.isPending
