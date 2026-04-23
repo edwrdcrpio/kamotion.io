@@ -1,10 +1,13 @@
 ---
 Created: 2026-04-23
-Status: Reference
+Status: Reference — first prod deploy completed 2026-04-23, guide is battle-tested against Dokploy 1.x + Nixpacks 1.41 + Node 22.14 + Next.js 16.2.4
 Purpose: How to deploy Kamotion to Hostinger VPS via Dokploy (GitHub source + Nixpacks build)
 ---
 
 # Kamotion — Deployment (Dokploy + Nixpacks)
+
+> **Live**: https://kamotion.io (Let's Encrypt R12 cert, auto-renewing via Traefik; HTTP/2; HTTP→HTTPS 308 redirect; Next.js response cache active). First production deploy shipped 2026-04-23.
+
 
 Kamotion deploys as a single Next.js application managed by [Dokploy](https://docs.dokploy.com/docs/core) on a Hostinger VPS. Dokploy handles GitHub auto-deploy, Traefik reverse proxying, Let's Encrypt SSL, and one-click rollback. Supabase remains the managed Postgres + Auth layer — nothing database-side is hosted on the VPS.
 

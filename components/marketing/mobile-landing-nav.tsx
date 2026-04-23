@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { KamotionWordmark } from "@/components/brand/kamotion-wordmark";
 
 const SECTIONS = [
   { href: "#how", label: "How it works" },
@@ -44,10 +45,10 @@ export function MobileLandingNav({ accessEmail }: { accessEmail: string }) {
             <Link
               href="/"
               onClick={close}
-              className="flex items-baseline gap-0.5 text-lg font-semibold tracking-tight cursor-pointer"
+              className="flex items-center cursor-pointer"
+              aria-label="kamotion home"
             >
-              <span className="text-foreground">kamotion</span>
-              <span className="text-muted-foreground">.io</span>
+              <KamotionWordmark className="h-7 w-auto text-foreground" />
             </Link>
           </SheetTitle>
         </SheetHeader>
