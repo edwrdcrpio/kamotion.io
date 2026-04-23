@@ -114,6 +114,67 @@ export const SettingsUpdateInput = z
   .partial();
 export type SettingsUpdateInput = z.infer<typeof SettingsUpdateInput>;
 
+// Admin user provisioning (Supabase Admin API). Password min length matches
+// the Supabase Auth default; tighten in dashboard if you want.
+export const AdminUserCreateInput = z.object({
+  email: z.string().email().max(254),
+  password: z.string().min(8).max(72),
+  full_name: z.string().min(1).max(120),
+  role: Role,
+});
+export type AdminUserCreateInput = z.infer<typeof AdminUserCreateInput>;
+
+export const AdminUserUpdateInput = z
+  .object({
+    full_name: z.string().min(1).max(120).optional(),
+    role: Role.optional(),
+    status: ProfileStatus.optional(),
+    // Empty string = no password change; non-empty must meet min length.
+    password: z.preprocess(
+      emptyToUndef,
+      z.string().min(8).max(72).optional(),
+    ),
+  })
+  .partial();
+export type AdminUserUpdateInput = z.infer<typeof AdminUserUpdateInput>;
+
+export type AppUser = {
+  id: string;
+  email: string | null;
+  full_name: string;
+  role: Role;
+  status: ProfileStatus;
+  last_logged_in_at: string | null;
+  created_at: string;
+};
+
+// Team members are assignable people. `role` is a free-text label
+// (e.g. "Designer") — NOT the auth Role enum.
+export const TeamMemberCreateInput = z.object({
+  name: z.string().min(1, "Name is required").max(120),
+  email: z.preprocess(
+    emptyToNull,
+    z.string().email().max(254).nullable().optional(),
+  ),
+  role: nullableText(80),
+  active: z.boolean().optional(),
+});
+export type TeamMemberCreateInput = z.infer<typeof TeamMemberCreateInput>;
+
+export const TeamMemberUpdateInput = TeamMemberCreateInput.partial();
+export type TeamMemberUpdateInput = z.infer<typeof TeamMemberUpdateInput>;
+
+export type TeamMember = {
+  id: string;
+  name: string;
+  email: string | null;
+  role: string | null;
+  active: boolean;
+  user_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export const SETTINGS_KEYS = [
   "aiProvider",
   "aiModel",
