@@ -6,6 +6,7 @@ import { MswBootstrap } from "@/lib/demo/msw-client";
 import { DemoProvider } from "@/components/demo/demo-provider";
 import { DemoBanner } from "@/components/demo/demo-banner";
 import { DemoTour } from "@/components/demo/tour";
+import { DragHintDialog } from "@/components/demo/drag-hint-dialog";
 
 export const metadata: Metadata = {
   title: { default: "Try kamotion · demo", template: "%s · try kamotion" },
@@ -44,6 +45,7 @@ export default function TryLayout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
             <DemoTour />
+            <DragHintDialog />
           </AppProviders>
         </DemoProvider>
       </MswBootstrap>
