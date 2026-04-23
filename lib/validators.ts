@@ -97,21 +97,20 @@ export type ProcessingPath = z.infer<typeof ProcessingPath>;
 
 // All keys editable from the admin UI. `aiApiKeyRef` is the *name* of the env
 // var that holds the API key — never the key itself.
-export const SettingsUpdateInput = z
-  .object({
-    aiProvider: AiProvider,
-    aiModel: z.string().min(1).max(200),
-    aiApiKeyRef: z.string().min(1).max(120),
-    systemPrompt: z.string().min(1).max(20_000),
-    processingPath: ProcessingPath,
-    // settings.value is NOT NULL, so we keep an empty URL as "" rather than null.
-    // Non-empty values must still be valid URLs.
-    n8nWebhookUrl: z.preprocess(
-      (v) => (v === null || v === undefined ? "" : v),
-      z.union([z.string().url(), z.literal("")]),
-    ),
-  })
-  .partial();
+// Form uses the required-fields schema; the PATCH endpoint uses the partial
+// twin below so callers can send a subset.
+export const SettingsFormInput = z.object({
+  aiProvider: AiProvider,
+  aiModel: z.string().min(1).max(200),
+  aiApiKeyRef: z.string().min(1).max(120),
+  systemPrompt: z.string().min(1).max(20_000),
+  processingPath: ProcessingPath,
+  // settings.value is NOT NULL; "" means unset, any non-empty value must be a URL.
+  n8nWebhookUrl: z.union([z.string().url(), z.literal("")]),
+});
+export type SettingsFormInput = z.infer<typeof SettingsFormInput>;
+
+export const SettingsUpdateInput = SettingsFormInput.partial();
 export type SettingsUpdateInput = z.infer<typeof SettingsUpdateInput>;
 
 // Admin user provisioning (Supabase Admin API). Password min length matches
