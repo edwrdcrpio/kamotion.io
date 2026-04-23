@@ -267,7 +267,7 @@ export function deleteCard(id: string): boolean { /* … */ }
 - [x] Batch 1 — cleanup + deps + MSW scaffolding
 - [x] Batch 2 — route tree + provider + auth bypass
 - [x] Batch 3 — full MSW handlers
-- [ ] Batch 4 — AppShell demo-mode adaptation
+- [x] Batch 4 — AppShell demo-mode adaptation
 - [ ] Batch 5 — Generate demo adaptation
 - [ ] Batch 6 — react-joyride tour
 - [ ] Batch 7 — drag-hint dialog

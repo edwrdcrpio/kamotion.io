@@ -16,8 +16,17 @@ import { KamotionMark } from "@/components/brand/kamotion-mark";
 import type { Role } from "@/lib/validators";
 import { SidebarNav } from "./sidebar-nav";
 
-export function MobileSidebar({ role }: { role: Role }) {
+export function MobileSidebar({
+  role,
+  demoMode = false,
+}: {
+  role: Role;
+  demoMode?: boolean;
+}) {
   const [open, setOpen] = useState(false);
+  const homeHref = demoMode ? "/try" : "/app";
+  const subtitle = demoMode ? "demo" : brand.domain;
+  const caption = demoMode ? "v0.1 · demo" : "v0.1 · alpha";
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -38,7 +47,7 @@ export function MobileSidebar({ role }: { role: Role }) {
         <SheetHeader className="flex h-14 flex-row items-center border-b border-border px-5 py-0">
           <SheetTitle asChild>
             <Link
-              href="/app"
+              href={homeHref}
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 cursor-pointer text-foreground"
             >
@@ -48,18 +57,22 @@ export function MobileSidebar({ role }: { role: Role }) {
                   {brand.name}
                 </span>
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground leading-none">
-                  {brand.domain}
+                  {subtitle}
                 </span>
               </div>
             </Link>
           </SheetTitle>
         </SheetHeader>
 
-        <SidebarNav role={role} onNavigate={() => setOpen(false)} />
+        <SidebarNav
+          role={role}
+          demoMode={demoMode}
+          onNavigate={() => setOpen(false)}
+        />
 
         <div className="px-5 py-3 border-t border-border">
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-            v0.1 · alpha
+            {caption}
           </span>
         </div>
       </SheetContent>
