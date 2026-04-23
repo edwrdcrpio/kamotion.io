@@ -1,5 +1,6 @@
 ---
 Created: 2026-04-21
+Updated: 2026-04-22
 Status: Reference
 Purpose: Stack / schema / env reference for Kamotion
 ---
@@ -24,6 +25,8 @@ Purpose: Stack / schema / env reference for Kamotion
 | @ai-sdk/openai | latest |
 | @ai-sdk/anthropic | latest |
 | @ai-sdk/google | latest |
+| cmdk | ^1.1.1 |
+| @radix-ui/react-popover | latest (via shadcn) |
 
 ## Environment Variables
 
@@ -32,7 +35,7 @@ Purpose: Stack / schema / env reference for Kamotion
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://njlidscexyofixjbtyhd.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_…   # publishable key
-SUPABASE_SERVICE_ROLE_KEY=                       # not yet set; needed for admin user CRUD
+SUPABASE_SERVICE_ROLE_KEY=                       # required for /app/settings/users (D.3). Legacy service_role JWT works.
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 LOG_LEVEL=debug
 AI_API_KEY_OPENROUTER=sk-or-v1-…                 # primary AI path
@@ -125,6 +128,7 @@ Template — actual values not committed. Same keys with blank values.
 ### Auth + Session
 - `proxy.ts` — root middleware for Supabase cookie refresh (Next.js 16 renamed from `middleware.ts`)
 - `lib/supabase/{client,server,middleware}.ts` — typed factories
+- `lib/supabase/admin.ts` — service-role client (D.3); throws `HttpError(503)` if `SUPABASE_SERVICE_ROLE_KEY` missing
 - `lib/auth.ts` — `getSession()` with React cache (server-only)
 - `lib/rbac.ts` — `requireRole()` + `toResponse()` error handler
 - `app/login/{page,login-form,actions}.tsx`
@@ -152,11 +156,31 @@ Template — actual values not committed. Same keys with blank values.
 - `app/api/cards/bulk/route.ts` — bulk insert
 - `app/app/generate/{page,generate-form,preview-dialog}.tsx`
 
+### Gantt (D.1)
+- `app/app/gantt/page.tsx` — auth-guarded entry
+- `components/gantt/gantt-chart.tsx` — single-file chart (~430 LOC), reuses `["cards"]` query, drag-to-shift due_date, click → `CardDetailDrawer`, status legend, today line, weekend tint, unscheduled list
+
+### Team CRUD (D.2)
+- `app/app/team/{page,team-table}.tsx` — admin-guarded
+- `app/api/team/route.ts` (GET, POST)
+- `app/api/team/[id]/route.ts` (PATCH, DELETE)
+
+### Users CRUD (D.3) + sync (D.3.5)
+- `app/app/settings/users/{page,users-table}.tsx` — admin-guarded; passes `serviceRoleConfigured` flag to client
+- `app/api/admin/users/route.ts` (GET list joined with profiles, POST create + mirror to team_members)
+- `app/api/admin/users/[id]/route.ts` (PATCH name/role/status/password + mirror to team_members; DELETE unlinks team_members.user_id then deletes profile + auth user). Self-protection guards in PATCH and DELETE.
+
+### Person picker (D.3.5)
+- `components/ui/person-combobox.tsx` — searchable team-member dropdown with free-text "Other" fallback. Used in NewCardDialog + CardDetailDrawer. Selected item indicated by `font-medium text-primary` (no leading checkmark — see Lessons Learned).
+- `components/ui/{command,popover,input-group}.tsx` — shadcn primitives installed by `npx shadcn add command popover`
+
 ### API routes
 - `app/api/cards/route.ts` (GET, POST)
 - `app/api/cards/[id]/route.ts` (PATCH, DELETE)
 - `app/api/cards/bulk/route.ts` (POST)
 - `app/api/ai/parse/route.ts` (POST)
+- `app/api/team/route.ts` (GET, POST), `app/api/team/[id]/route.ts` (PATCH, DELETE)
+- `app/api/admin/users/route.ts` (GET, POST), `app/api/admin/users/[id]/route.ts` (PATCH, DELETE)
 
 ### Shared validators + types
 - `lib/validators.ts` — Zod schemas + domain `Card` type

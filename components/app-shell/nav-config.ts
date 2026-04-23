@@ -19,13 +19,13 @@ export type NavItem = {
 
 // Primary nav — top-to-bottom order as it renders.
 export const MAIN_NAV: NavItem[] = [
-  { label: "Board", href: "/app", icon: LayoutDashboard },
   {
     label: "Generate Task(s)",
     href: "/app/generate",
     icon: Sparkles,
     roles: ["admin", "editor"],
   },
+  { label: "Board", href: "/app", icon: LayoutDashboard },
   { label: "Gantt", href: "/app/gantt", icon: GanttChartSquare },
   { label: "Team", href: "/app/team", icon: Users, roles: ["admin"] },
   { label: "Users", href: "/app/settings/users", icon: UserCog, roles: ["admin"] },
