@@ -13,14 +13,24 @@ import {
 } from "@/components/ui/sheet";
 import { KamotionWordmark } from "@/components/brand/kamotion-wordmark";
 
-const SECTIONS = [
-  { href: "#how", label: "How it works" },
-  { href: "#features", label: "Features" },
-  { href: "#who", label: "Who it's for" },
-  { href: "#origin", label: "Origin" },
+type NavLink = { href: string; label: string };
+
+const DEFAULT_SECTIONS: NavLink[] = [
+  { href: "/#how", label: "How it works" },
+  { href: "/#features", label: "Features" },
+  { href: "/#who", label: "Who it's for" },
+  { href: "/docs", label: "Docs" },
+  { href: "/try", label: "Try it" },
 ];
 
-export function MobileLandingNav({ accessEmail }: { accessEmail: string }) {
+export function MobileLandingNav({
+  accessEmail,
+  links,
+}: {
+  accessEmail: string;
+  links?: NavLink[];
+}) {
+  const sections = links ?? DEFAULT_SECTIONS;
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
@@ -55,7 +65,7 @@ export function MobileLandingNav({ accessEmail }: { accessEmail: string }) {
 
         <nav className="flex-1 p-4">
           <ul className="space-y-1">
-            {SECTIONS.map((s) => (
+            {sections.map((s) => (
               <li key={s.href}>
                 <a
                   href={s.href}
