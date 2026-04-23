@@ -21,18 +21,22 @@ import {
   Check,
   GitBranch,
 } from "lucide-react";
-import { brand } from "@/config/brand";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { MobileLandingNav } from "@/components/marketing/mobile-landing-nav";
-import { KamotionWordmark } from "@/components/brand/kamotion-wordmark";
+import { SiteNav, ACCESS_EMAIL } from "@/components/marketing/site-nav";
+import { SiteFooter } from "@/components/marketing/site-footer";
 
-const ACCESS_EMAIL = `mailto:hello@${brand.domain}?subject=kamotion access request`;
+const HOME_NAV_LINKS = [
+  { label: "How it works", href: "#how" },
+  { label: "Features", href: "#features" },
+  { label: "Who it's for", href: "#who" },
+  { label: "Docs", href: "/docs" },
+  { label: "Try it", href: "/try" },
+];
 
 export default function Home() {
   return (
     <>
       <PromoBar />
-      <Nav />
+      <SiteNav links={HOME_NAV_LINKS} />
 
       <main className="flex flex-col">
         <Hero />
@@ -72,69 +76,6 @@ function PromoBar() {
         </a>
       </div>
     </div>
-  );
-}
-
-/* --------------------------------- NAV -------------------------------- */
-
-function Nav() {
-  return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link
-          href="/"
-          className="flex items-center cursor-pointer"
-          aria-label="kamotion home"
-        >
-          <KamotionWordmark className="h-8 sm:h-10 w-auto text-foreground" />
-        </Link>
-
-        <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <a
-            href="#how"
-            className="hover:text-foreground transition-colors cursor-pointer"
-          >
-            How it works
-          </a>
-          <a
-            href="#features"
-            className="hover:text-foreground transition-colors cursor-pointer"
-          >
-            Features
-          </a>
-          <a
-            href="#who"
-            className="hover:text-foreground transition-colors cursor-pointer"
-          >
-            Who it's for
-          </a>
-          <a
-            href="#origin"
-            className="hover:text-foreground transition-colors cursor-pointer"
-          >
-            Origin
-          </a>
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <Link
-            href="/login"
-            className="hidden h-9 items-center justify-center rounded-md px-3 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer md:inline-flex"
-          >
-            Log in
-          </Link>
-          <a
-            href={ACCESS_EMAIL}
-            className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-foreground px-3.5 text-sm font-medium text-background shadow-sm transition-colors hover:bg-foreground/90 cursor-pointer"
-          >
-            Request access
-            <ArrowRight className="h-3.5 w-3.5" />
-          </a>
-          <MobileLandingNav accessEmail={ACCESS_EMAIL} />
-        </div>
-      </div>
-    </header>
   );
 }
 
@@ -1084,89 +1025,3 @@ function FooterCTA() {
   );
 }
 
-/* ------------------------------- FOOTER ------------------------------- */
-
-function SiteFooter() {
-  return (
-    <footer className="border-t border-border bg-muted/20 px-6 py-16">
-      <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-5">
-        <div className="md:col-span-2">
-          <Link
-            href="/"
-            className="flex items-center cursor-pointer"
-            aria-label="kamotion home"
-          >
-            <KamotionWordmark className="h-7 w-auto text-foreground" />
-          </Link>
-          <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-            From scattered messages to organized work. Built for people running
-            on too many channels.
-          </p>
-        </div>
-
-        <FooterCol
-          title="Product"
-          links={[
-            { label: "How it works", href: "#how" },
-            { label: "Features", href: "#features" },
-            { label: "Who it's for", href: "#who" },
-            { label: "Log in", href: "/login" },
-          ]}
-        />
-        <FooterCol
-          title="Use cases"
-          links={[
-            { label: "Meeting follow-ups", href: "#how" },
-            { label: "Client handoffs", href: "#who" },
-            { label: "Slack cleanup", href: "#features" },
-            { label: "Solo operators", href: "#who" },
-          ]}
-        />
-        <FooterCol
-          title="Company"
-          links={[
-            { label: "Origin", href: "#origin" },
-            { label: "Request access", href: ACCESS_EMAIL },
-            { label: "Contact", href: `mailto:hello@${brand.domain}` },
-            { label: "GitHub (soon)", href: "#" },
-          ]}
-        />
-      </div>
-
-      <div className="mx-auto mt-12 flex max-w-7xl flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
-        <span className="font-mono uppercase tracking-[0.15em]">
-          © {new Date().getFullYear()} kamotion
-        </span>
-        <span>Made for people who live in the commotion.</span>
-      </div>
-    </footer>
-  );
-}
-
-function FooterCol({
-  title,
-  links,
-}: {
-  title: string;
-  links: Array<{ label: string; href: string }>;
-}) {
-  return (
-    <div>
-      <h4 className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground">
-        {title}
-      </h4>
-      <ul className="mt-4 flex flex-col gap-2">
-        {links.map((l) => (
-          <li key={l.label}>
-            <a
-              href={l.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              {l.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
