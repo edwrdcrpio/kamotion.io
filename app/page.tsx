@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { brand } from "@/config/brand";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { MobileLandingNav } from "@/components/marketing/mobile-landing-nav";
 
 const ACCESS_EMAIL = `mailto:hello@${brand.domain}?subject=kamotion access request`;
 
@@ -118,7 +119,7 @@ function Nav() {
           <ThemeToggle />
           <Link
             href="/login"
-            className="hidden h-9 items-center justify-center rounded-md px-3 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer sm:inline-flex"
+            className="hidden h-9 items-center justify-center rounded-md px-3 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer md:inline-flex"
           >
             Log in
           </Link>
@@ -129,6 +130,7 @@ function Nav() {
             Request access
             <ArrowRight className="h-3.5 w-3.5" />
           </a>
+          <MobileLandingNav accessEmail={ACCESS_EMAIL} />
         </div>
       </div>
     </header>

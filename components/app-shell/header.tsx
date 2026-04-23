@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { logoutAction } from "@/app/app/actions";
+import { MobileSidebar } from "@/components/app-shell/mobile-sidebar";
 import type { Role } from "@/lib/validators";
 
 const ROLE_LABEL: Record<Role, string> = {
@@ -19,29 +18,20 @@ export function Header({
   role: Role;
 }) {
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background px-6">
-      <div className="flex items-center gap-3 text-sm">
-        <span className="font-medium">{name}</span>
-        <span className="text-muted-foreground">·</span>
-        <span className="font-mono text-xs text-muted-foreground hidden sm:inline">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background px-4 sm:px-6">
+      <div className="flex items-center gap-2 sm:gap-3 text-sm min-w-0">
+        <span className="font-medium truncate">{name}</span>
+        <span className="text-muted-foreground hidden sm:inline">·</span>
+        <span className="font-mono text-xs text-muted-foreground hidden sm:inline truncate">
           {email}
         </span>
-        <span className="inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+        <span className="inline-flex shrink-0 items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
           {ROLE_LABEL[role]}
         </span>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 shrink-0">
         <ThemeToggle />
-        <form action={logoutAction}>
-          <Button
-            type="submit"
-            variant="ghost"
-            size="sm"
-            className="cursor-pointer"
-          >
-            Log out
-          </Button>
-        </form>
+        <MobileSidebar role={role} />
       </div>
     </header>
   );
