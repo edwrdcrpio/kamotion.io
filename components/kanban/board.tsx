@@ -22,7 +22,13 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Triangle, Circle, ClipboardList } from "lucide-react";
+import {
+  Triangle,
+  Circle,
+  ClipboardList,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import type { Card, Column, Status, Priority } from "@/lib/validators";
 import { cn } from "@/lib/utils";
 import { NewCardDialog } from "./new-card-dialog";
@@ -121,6 +127,18 @@ export function Board() {
 
   const [filters, setFilters] = useState<BoardFilters>(INITIAL_FILTERS);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [collapsedColumns, setCollapsedColumns] = useState<Set<Column>>(
+    () => new Set(),
+  );
+
+  const toggleColumn = (name: Column) => {
+    setCollapsedColumns((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
+  };
 
   const cards = useMemo(
     () => applyFilters(allCards, filters),
@@ -256,7 +274,7 @@ export function Board() {
     filters.priority !== "All";
 
   return (
-    <main className="flex flex-1 flex-col p-6">
+    <main className="flex flex-1 flex-col p-4 sm:p-6">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Board</h1>
@@ -291,13 +309,15 @@ export function Board() {
           onDragCancel={() => setActiveId(null)}
           onDragEnd={handleDragEnd}
         >
-          <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2 lg:flex lg:flex-row lg:items-stretch">
             {COLUMN_NAMES.map((col) => (
               <ColumnView
                 key={col}
                 name={col}
                 cards={grouped[col]}
                 onOpen={setSelectedCardId}
+                collapsed={collapsedColumns.has(col)}
+                onToggle={() => toggleColumn(col)}
               />
             ))}
           </div>
@@ -352,10 +372,14 @@ function ColumnView({
   name,
   cards,
   onOpen,
+  collapsed,
+  onToggle,
 }: {
   name: Column;
   cards: Card[];
   onOpen: (id: string) => void;
+  collapsed: boolean;
+  onToggle: () => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: name });
 
@@ -363,35 +387,114 @@ function ColumnView({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex min-h-[40vh] flex-col overflow-hidden rounded-xl border bg-muted/30 transition-colors",
+        "flex flex-col overflow-hidden rounded-xl border bg-muted/30 transition-[background-color,border-color,width,flex] duration-200",
+        !collapsed && "min-h-[40vh]",
+        collapsed
+          ? "lg:w-14 lg:shrink-0 lg:grow-0"
+          : "lg:flex-1 lg:min-w-0 lg:basis-0 lg:grow",
         isOver ? "border-primary/60 bg-primary/5" : "border-border",
       )}
     >
-      <div className="flex items-center justify-between border-b border-border bg-card px-4 py-3">
-        <span className={cn("text-sm font-medium", COLUMN_TITLE_COLOR[name])}>
-          {name}
-        </span>
-        <span className="font-mono text-xs text-muted-foreground">
-          {cards.length}
-        </span>
-      </div>
-      <SortableContext
-        items={cards.map((c) => c.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        <div className="flex flex-1 flex-col gap-2 p-3">
-          {cards.length === 0 ? (
-            <div className="flex flex-1 items-center justify-center rounded-md border border-dashed border-border/70 py-6 text-xs italic text-muted-foreground/60">
-              Drop a card here
-            </div>
-          ) : (
-            cards.map((card) => (
-              <SortableCard key={card.id} card={card} onOpen={onOpen} />
-            ))
-          )}
-        </div>
-      </SortableContext>
+      {collapsed ? (
+        <CollapsedHeader
+          name={name}
+          count={cards.length}
+          onToggle={onToggle}
+        />
+      ) : (
+        <ExpandedHeader
+          name={name}
+          count={cards.length}
+          onToggle={onToggle}
+        />
+      )}
+
+      {!collapsed && (
+        <SortableContext
+          items={cards.map((c) => c.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="flex flex-1 flex-col gap-2 p-3">
+            {cards.length === 0 ? (
+              <div className="flex flex-1 items-center justify-center rounded-md border border-dashed border-border/70 py-6 text-xs italic text-muted-foreground/60">
+                Drop a card here
+              </div>
+            ) : (
+              cards.map((card) => (
+                <SortableCard key={card.id} card={card} onOpen={onOpen} />
+              ))
+            )}
+          </div>
+        </SortableContext>
+      )}
     </div>
+  );
+}
+
+function ExpandedHeader({
+  name,
+  count,
+  onToggle,
+}: {
+  name: Column;
+  count: number;
+  onToggle: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-between border-b border-border bg-card px-4 py-3">
+      <span className={cn("text-sm font-medium", COLUMN_TITLE_COLOR[name])}>
+        {name}
+      </span>
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-xs text-muted-foreground">
+          {count}
+        </span>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={`Collapse ${name} column`}
+          title="Collapse column"
+          className="flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground transition-colors cursor-pointer hover:bg-accent hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CollapsedHeader({
+  name,
+  count,
+  onToggle,
+}: {
+  name: Column;
+  count: number;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={`Expand ${name} column`}
+      title={`Expand ${name}`}
+      className="flex w-full cursor-pointer items-center justify-between gap-2 border-b border-border bg-card px-4 py-3 text-left transition-colors hover:bg-accent lg:h-full lg:flex-col lg:items-center lg:justify-start lg:gap-3 lg:border-b-0 lg:px-2 lg:py-4"
+    >
+      <span
+        className={cn(
+          "text-sm font-medium lg:[writing-mode:vertical-rl] lg:rotate-180 lg:whitespace-nowrap",
+          COLUMN_TITLE_COLOR[name],
+        )}
+      >
+        {name}
+      </span>
+      <div className="flex items-center gap-2 lg:flex-col lg:gap-3">
+        <span className="font-mono text-xs text-muted-foreground">
+          {count}
+        </span>
+        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+      </div>
+    </button>
   );
 }
 

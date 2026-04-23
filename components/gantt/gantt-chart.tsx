@@ -33,7 +33,6 @@ async function patchCard(id: string, patch: Partial<Card>): Promise<Card> {
 
 const ROW_HEIGHT = 36;
 const HEADER_HEIGHT = 56;
-const LABEL_WIDTH = 340;
 const DAY_WIDTH = 48;
 const BAR_INSET = 4;
 const DRAG_THRESHOLD_PX = 6;
@@ -267,7 +266,7 @@ export function GanttChart() {
   const svgHeight = HEADER_HEIGHT + scheduled.length * ROW_HEIGHT;
 
   return (
-    <main className="flex flex-1 flex-col p-6">
+    <main className="flex flex-1 flex-col p-4 sm:p-6">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Gantt</h1>
@@ -297,7 +296,10 @@ export function GanttChart() {
         <EmptyChart hasCards={totalCount > 0} />
       ) : (
         <div className="flex overflow-hidden rounded-xl border border-border bg-card">
-          <LabelColumn cards={scheduled.map((s) => s.card)} />
+          <LabelColumn
+            cards={scheduled.map((s) => s.card)}
+            onOpen={setSelectedCardId}
+          />
           <div className="flex-1 overflow-x-auto">
             <ChartSvg
               width={svgWidth}
@@ -332,12 +334,15 @@ export function GanttChart() {
   );
 }
 
-function LabelColumn({ cards }: { cards: Card[] }) {
+function LabelColumn({
+  cards,
+  onOpen,
+}: {
+  cards: Card[];
+  onOpen: (id: string) => void;
+}) {
   return (
-    <div
-      className="shrink-0 border-r border-border bg-muted/20"
-      style={{ width: LABEL_WIDTH }}
-    >
+    <div className="shrink-0 border-r border-border bg-muted/20 w-[140px] md:w-[340px]">
       <div
         className="border-b border-border"
         style={{ height: HEADER_HEIGHT }}
@@ -346,9 +351,11 @@ function LabelColumn({ cards }: { cards: Card[] }) {
         const priority =
           PRIORITY_ICON[c.priority as Priority] ?? PRIORITY_ICON.Normal;
         return (
-          <div
+          <button
+            type="button"
             key={c.id}
-            className="flex items-center gap-2 border-b border-border px-3 text-sm"
+            onClick={() => onOpen(c.id)}
+            className="flex w-full items-center gap-2 border-b border-border px-2 md:px-3 text-sm text-left transition-colors cursor-pointer hover:bg-accent"
             style={{ height: ROW_HEIGHT }}
             title={c.task}
           >
@@ -362,7 +369,7 @@ function LabelColumn({ cards }: { cards: Card[] }) {
             <span className="truncate">
               {c.task.replace(/^\[demo\]\s*/, "")}
             </span>
-          </div>
+          </button>
         );
       })}
     </div>
