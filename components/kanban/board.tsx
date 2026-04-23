@@ -342,7 +342,7 @@ function EmptyState() {
 
 const COLUMN_TITLE_COLOR: Record<Column, string> = {
   Queue: "text-muted-foreground",
-  Ready: "text-sky-600 dark:text-sky-300",
+  Ready: "text-teal-600 dark:text-teal-300",
   "In Progress": "text-indigo-600 dark:text-indigo-300",
   Review: "text-brand-accent",
   Done: "text-foreground",
@@ -433,7 +433,7 @@ function SortableCard({
 // change without shifting the semantic meaning of the status chip.
 const STATUS_TONE: Record<Status, string> = {
   "Not Started": "bg-muted text-muted-foreground",
-  Ready: "bg-sky-500/10 text-sky-600 dark:text-sky-300",
+  Ready: "bg-teal-500/10 text-teal-600 dark:text-teal-300",
   "In Progress": "bg-indigo-500/10 text-indigo-600 dark:text-indigo-300",
   Blocked: "bg-brand-warning/15 text-amber-700 dark:text-amber-300",
   Review: "bg-brand-accent/10 text-brand-accent",
@@ -448,7 +448,7 @@ const PRIORITY_META: Record<
     node: (
       <Triangle
         aria-hidden
-        className="h-3.5 w-3.5 fill-red-500 text-red-500"
+        className="h-3.5 w-3.5 fill-red-400/60 text-red-400/60"
       />
     ),
     label: "High priority",
@@ -457,7 +457,7 @@ const PRIORITY_META: Record<
     node: (
       <Circle
         aria-hidden
-        className="h-3.5 w-3.5 fill-emerald-500 text-emerald-500"
+        className="h-3.5 w-3.5 fill-emerald-400/60 text-emerald-400/60"
       />
     ),
     label: "Normal priority",
@@ -466,7 +466,7 @@ const PRIORITY_META: Record<
     node: (
       <Triangle
         aria-hidden
-        className="h-3.5 w-3.5 rotate-180 fill-yellow-500 text-yellow-500"
+        className="h-3.5 w-3.5 rotate-180 fill-yellow-400/60 text-yellow-400/60"
       />
     ),
     label: "Low priority",

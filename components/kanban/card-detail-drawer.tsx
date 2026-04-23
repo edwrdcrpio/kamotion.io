@@ -42,6 +42,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { PersonCombobox } from "@/components/ui/person-combobox";
 import { DurationSlider } from "./duration-slider";
 
 type FormIn = z.input<typeof CardUpdateInput>;
@@ -247,11 +248,31 @@ export function CardDetailDrawer({
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="drawer-assignee">Assignee</Label>
-                    <Input id="drawer-assignee" {...register("assignee")} />
+                    <Controller
+                      name="assignee"
+                      control={control}
+                      render={({ field }) => (
+                        <PersonCombobox
+                          id="drawer-assignee"
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
                   </div>
                   <div className="flex flex-col gap-2">
                     <Label htmlFor="drawer-requester">Requester</Label>
-                    <Input id="drawer-requester" {...register("requester")} />
+                    <Controller
+                      name="requester"
+                      control={control}
+                      render={({ field }) => (
+                        <PersonCombobox
+                          id="drawer-requester"
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
                   </div>
                 </div>
 
