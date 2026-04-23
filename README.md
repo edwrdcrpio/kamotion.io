@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# kamotion
 
-## Getting Started
+> Paste the noise. Get the work.
 
-First, run the development server:
+Personal kanban + AI task extractor. Paste unstructured text — meeting transcripts, Slack dumps, email threads, raw notes — and AI extracts the actionable items into cards on a kanban board, with a Gantt view alongside.
+
+Live at **[kamotion.io](https://kamotion.io)** · Invite-only · Built by Edward Carpio (Lumaki, LLC)
+
+## Documentation
+
+- **[Brand & product reference](docs/05_INFO_KAMOTION_BRAND.md)** — what kamotion is, how to talk about it, copy library
+- **[Build plan](docs/01_PLAN_KAMOTION.md)** — milestones + current progress
+- **[Stack reference](docs/05_INFO_STACK.md)** — tech, schema, env vars
+- **[Lessons learned](docs/07_LESSONS_LEARNED.md)** — gotchas, policy decisions
+- **[n8n setup](docs/09_N8N_SETUP.md)** — optional self-hosted AI path
+
+## Stack
+
+Next.js 16 (App Router + Turbopack) · TypeScript strict · Tailwind v4 + shadcn/ui · dnd-kit · TanStack Query v5 · React Hook Form + Zod · Supabase (Postgres + Auth + RLS) · Vercel AI SDK v6 → OpenRouter / Anthropic / OpenAI / Gemini
+
+## Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Required env vars are listed in `docs/05_INFO_STACK.md`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+TBD — open-sourcing once the product is proven.
