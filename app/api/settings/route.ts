@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole, toResponse } from "@/lib/rbac";
 import { SettingsUpdateInput, SETTINGS_KEYS } from "@/lib/validators";
+import type { Json } from "@/lib/types/database.types";
 
 export async function GET() {
   try {
@@ -28,9 +29,9 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const input = SettingsUpdateInput.parse(body);
 
-    const rows = SETTINGS_KEYS.filter((k) => input[k] !== undefined).map(
-      (k) => ({ key: k, value: input[k] as unknown }),
-    );
+    const rows: { key: string; value: Json }[] = SETTINGS_KEYS.filter(
+      (k) => input[k] !== undefined,
+    ).map((k) => ({ key: k, value: (input[k] ?? null) as Json }));
 
     if (rows.length === 0) {
       return NextResponse.json({ updated: 0 });

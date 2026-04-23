@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Save, CheckCircle2, AlertCircle, FlaskConical } from "lucide-react";
 import {
-  SettingsUpdateInput,
+  SettingsFormInput,
   type AiProvider as AiProviderT,
   type ProcessingPath as ProcessingPathT,
 } from "@/lib/validators";
@@ -181,7 +181,7 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
     formState: { errors, isDirty },
     reset,
   } = useForm<SettingsValues>({
-    resolver: zodResolver(SettingsUpdateInput),
+    resolver: zodResolver(SettingsFormInput),
     defaultValues: initial,
   });
 
