@@ -24,6 +24,7 @@ import {
 import { brand } from "@/config/brand";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileLandingNav } from "@/components/marketing/mobile-landing-nav";
+import { KamotionWordmark } from "@/components/brand/kamotion-wordmark";
 
 const ACCESS_EMAIL = `mailto:hello@${brand.domain}?subject=kamotion access request`;
 
@@ -82,10 +83,10 @@ function Nav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link
           href="/"
-          className="flex items-baseline gap-0.5 text-xl font-semibold tracking-tight cursor-pointer"
+          className="flex items-center cursor-pointer"
+          aria-label="kamotion home"
         >
-          <span className="text-foreground">kamotion</span>
-          <span className="text-muted-foreground">.io</span>
+          <KamotionWordmark className="h-8 sm:h-10 w-auto text-foreground" />
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
@@ -1092,10 +1093,10 @@ function SiteFooter() {
         <div className="md:col-span-2">
           <Link
             href="/"
-            className="flex items-baseline gap-0.5 text-lg font-semibold tracking-tight cursor-pointer"
+            className="flex items-center cursor-pointer"
+            aria-label="kamotion home"
           >
-            <span className="text-foreground">kamotion</span>
-            <span className="text-muted-foreground">.io</span>
+            <KamotionWordmark className="h-7 w-auto text-foreground" />
           </Link>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
             From scattered messages to organized work. Built for people running

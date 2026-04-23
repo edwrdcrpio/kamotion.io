@@ -1,0 +1,17 @@
+import { cn } from "@/lib/utils";
+
+export function KamotionMark({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 32"
+      fill="currentColor"
+      aria-hidden="true"
+      className={cn("h-6 w-6", className)}
+    >
+      <polygon points="10.2 29.36 9.97 29.63 9.85 16.66 21.9 2.97 28.38 8.7 16.89 21.75 10.2 29.36" />
+      <polygon points="8.29 30 2.17 24.69 2.06 2 8.16 7.35 8.29 30" />
+      <polygon points="21.84 29.91 16.83 24.09 21.03 19.66 29.94 29.98 21.84 29.91" />
+    </svg>
+  );
+}

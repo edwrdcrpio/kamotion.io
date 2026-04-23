@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { brand } from "@/config/brand";
 import { getSession } from "@/lib/auth";
+import { KamotionMark } from "@/components/brand/kamotion-mark";
 import { LoginForm } from "./login-form";
 
 export const metadata = { title: "Log in" };
@@ -16,11 +17,15 @@ export default async function LoginPage() {
         <div className="mb-10 text-center">
           <Link
             href="/"
-            className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center justify-center text-foreground transition-colors hover:text-primary"
+            aria-label={`${brand.name} home`}
           >
-            {brand.domain}
+            <KamotionMark className="h-8 w-8" />
           </Link>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+          <p className="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+            {brand.domain}
+          </p>
+          <h1 className="mt-4 text-3xl font-semibold tracking-tight">
             Welcome back
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
