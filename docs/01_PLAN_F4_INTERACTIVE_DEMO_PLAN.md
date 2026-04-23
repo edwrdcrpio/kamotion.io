@@ -269,7 +269,7 @@ export function deleteCard(id: string): boolean { /* … */ }
 - [x] Batch 3 — full MSW handlers
 - [x] Batch 4 — AppShell demo-mode adaptation
 - [x] Batch 5 — Generate demo adaptation
-- [ ] Batch 6 — react-joyride tour
+- [x] Batch 6 — react-joyride tour
 - [ ] Batch 7 — drag-hint dialog
 - [ ] Batch 8 — polish + verify
 - [ ] Update `01_PLAN_KAMOTION.md` with F.4 entry + lessons

@@ -309,7 +309,10 @@ export function Board() {
           onDragCancel={() => setActiveId(null)}
           onDragEnd={handleDragEnd}
         >
-          <div className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2 lg:flex lg:flex-row lg:items-stretch">
+          <div
+            data-tour="board-columns"
+            className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2 lg:flex lg:flex-row lg:items-stretch"
+          >
             {COLUMN_NAMES.map((col) => (
               <ColumnView
                 key={col}
