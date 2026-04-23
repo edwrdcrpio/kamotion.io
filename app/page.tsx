@@ -53,8 +53,8 @@ function PromoBar() {
   return (
     <div className="bg-foreground text-background">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-2 px-6 py-2 text-xs sm:flex-row sm:gap-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-warning/15 px-2.5 py-0.5 font-medium text-brand-warning">
-          <span className="h-1.5 w-1.5 rounded-full bg-brand-warning motion-safe:animate-pulse" />
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-2.5 py-0.5 font-medium text-primary">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
           Invite-only beta
         </span>
         <span className="text-background/70">
@@ -138,8 +138,7 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative overflow-hidden px-6 pt-20 pb-24 sm:pt-28">
-      <AuroraBackdrop />
-      <ConvergingLines />
+      <MessToBoardBackdrop />
 
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
         <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
@@ -205,50 +204,216 @@ function Hero() {
   );
 }
 
-function AuroraBackdrop() {
+function MessToBoardBackdrop() {
   return (
     <div
       aria-hidden
       className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
     >
-      <div className="absolute left-[20%] top-[-10%] h-[500px] w-[500px] rounded-full bg-primary/25 blur-[120px] motion-safe:animate-[aurora_14s_ease-in-out_infinite]" />
-      <div className="absolute right-[15%] top-[20%] h-[420px] w-[420px] rounded-full bg-brand-warning/15 blur-[110px] motion-safe:animate-[aurora_18s_ease-in-out_infinite_3s]" />
-      <div className="absolute left-[30%] bottom-[-10%] h-[460px] w-[460px] rounded-full bg-brand-success/15 blur-[120px] motion-safe:animate-[aurora_16s_ease-in-out_infinite_6s]" />
-    </div>
-  );
-}
+      {/* soft ambient glow */}
+      <div className="absolute left-[5%] top-[-5%] h-120 w-120 rounded-full bg-primary/20 blur-[130px] motion-safe:animate-[aurora_16s_ease-in-out_infinite]" />
+      <div className="absolute right-[8%] top-[10%] h-95 w-95 rounded-full bg-[#a4a3a3]/15 blur-[110px] motion-safe:animate-[aurora_20s_ease-in-out_infinite_4s]" />
 
-function ConvergingLines() {
-  return (
-    <svg
-      aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[640px] w-full opacity-40"
-      viewBox="0 0 1200 640"
-      preserveAspectRatio="none"
-    >
-      <defs>
-        <linearGradient id="line-fade" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
-          <stop offset="40%" stopColor="currentColor" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {Array.from({ length: 12 }).map((_, i) => {
-        const startX = (i / 11) * 1200;
-        return (
-          <line
-            key={i}
-            x1={startX}
-            y1={0}
-            x2={600}
-            y2={640}
-            stroke="url(#line-fade)"
-            strokeWidth={0.6}
-            className="text-primary"
-          />
-        );
-      })}
-    </svg>
+      {/* narrative SVG: mess → AI → order */}
+      <svg
+        className="absolute inset-x-0 top-0 h-170 w-full"
+        viewBox="0 0 1200 680"
+        preserveAspectRatio="xMidYMid slice"
+        fill="none"
+      >
+        <defs>
+          <linearGradient id="mtb-fade-y" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="white" stopOpacity="1" />
+            <stop offset="55%" stopColor="white" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+          <mask id="mtb-mask">
+            <rect width="1200" height="680" fill="url(#mtb-fade-y)" />
+          </mask>
+
+          <linearGradient id="mtb-left-fade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="white" stopOpacity="0.7" />
+            <stop offset="80%" stopColor="white" stopOpacity="0" />
+          </linearGradient>
+          <mask id="mtb-left-mask">
+            <rect width="460" height="680" fill="url(#mtb-left-fade)" />
+          </mask>
+
+          <linearGradient id="mtb-right-fade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="white" stopOpacity="0" />
+            <stop offset="30%" stopColor="white" stopOpacity="0.7" />
+          </linearGradient>
+          <mask id="mtb-right-mask">
+            <rect x="720" width="480" height="680" fill="url(#mtb-right-fade)" />
+          </mask>
+
+          <radialGradient id="mtb-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#14b8a6" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+
+        <g mask="url(#mtb-mask)">
+          {/* LEFT ZONE: scattered message fragments */}
+          <g mask="url(#mtb-left-mask)" opacity="0.28">
+            <g transform="translate(28, 48)">
+              <rect x="0" y="0" width="110" height="30" rx="6" stroke="#a4a3a3" strokeWidth="1.2" />
+              <path d="M16 30 L12 38 L26 30Z" stroke="#a4a3a3" strokeWidth="1.2" strokeLinejoin="round" fill="none" />
+              <rect x="8" y="9" width="52" height="3.5" rx="1.75" fill="#a4a3a3" opacity="0.5" />
+              <rect x="8" y="17" width="38" height="3.5" rx="1.75" fill="#a4a3a3" opacity="0.35" />
+            </g>
+
+            <g transform="translate(12, 118)">
+              <rect x="0" y="0" width="140" height="80" rx="4" stroke="#a4a3a3" strokeWidth="1" />
+              <rect x="8" y="10" width="70" height="3" rx="1.5" fill="#a4a3a3" opacity="0.55" />
+              <rect x="8" y="20" width="118" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.3" />
+              <rect x="8" y="27" width="100" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.3" />
+              <rect x="8" y="34" width="112" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.3" />
+              <rect x="8" y="41" width="86" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.3" />
+              <rect x="8" y="54" width="60" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.2" />
+              <rect x="8" y="61" width="90" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.2" />
+            </g>
+
+            <g transform="translate(64, 230)">
+              <circle cx="8" cy="8" r="7" stroke="#a4a3a3" strokeWidth="1" />
+              <rect x="22" y="2" width="68" height="3" rx="1.5" fill="#a4a3a3" opacity="0.4" />
+              <rect x="22" y="9" width="50" height="3" rx="1.5" fill="#a4a3a3" opacity="0.3" />
+            </g>
+            <g transform="translate(40, 260)">
+              <circle cx="8" cy="8" r="7" stroke="#a4a3a3" strokeWidth="1" />
+              <rect x="22" y="2" width="82" height="3" rx="1.5" fill="#a4a3a3" opacity="0.35" />
+              <rect x="22" y="9" width="44" height="3" rx="1.5" fill="#a4a3a3" opacity="0.25" />
+            </g>
+            <g transform="translate(70, 292)">
+              <circle cx="8" cy="8" r="7" stroke="#a4a3a3" strokeWidth="1" />
+              <rect x="22" y="2" width="58" height="3" rx="1.5" fill="#a4a3a3" opacity="0.4" />
+            </g>
+
+            <g transform="translate(8, 340)">
+              <rect x="0" y="0" width="160" height="90" rx="4" stroke="#a4a3a3" strokeWidth="1" strokeDasharray="4 3" />
+              <rect x="8" y="10" width="40" height="2.5" rx="1.25" fill="#14b8a6" opacity="0.4" />
+              <rect x="8" y="18" width="130" height="2" rx="1" fill="#a4a3a3" opacity="0.25" />
+              <rect x="8" y="24" width="118" height="2" rx="1" fill="#a4a3a3" opacity="0.25" />
+              <rect x="8" y="30" width="124" height="2" rx="1" fill="#a4a3a3" opacity="0.2" />
+              <rect x="8" y="44" width="38" height="2.5" rx="1.25" fill="#14b8a6" opacity="0.35" />
+              <rect x="8" y="52" width="128" height="2" rx="1" fill="#a4a3a3" opacity="0.25" />
+              <rect x="8" y="58" width="110" height="2" rx="1" fill="#a4a3a3" opacity="0.2" />
+              <rect x="8" y="64" width="138" height="2" rx="1" fill="#a4a3a3" opacity="0.25" />
+            </g>
+
+            <g transform="translate(155, 60)">
+              <rect x="0" y="0" width="88" height="26" rx="5" stroke="#14b8a6" strokeWidth="1" opacity="0.7" />
+              <path d="M20 26 L16 33 L30 26Z" stroke="#14b8a6" strokeWidth="1" strokeLinejoin="round" fill="none" opacity="0.7" />
+              <rect x="7" y="8" width="42" height="3" rx="1.5" fill="#14b8a6" opacity="0.3" />
+              <rect x="7" y="15" width="30" height="3" rx="1.5" fill="#14b8a6" opacity="0.2" />
+            </g>
+
+            <g transform="translate(180, 140)" opacity="0.4">
+              <rect x="0" y="0" width="74" height="2.5" rx="1.25" fill="#a4a3a3" />
+              <rect x="0" y="8" width="58" height="2.5" rx="1.25" fill="#a4a3a3" />
+              <rect x="0" y="16" width="66" height="2.5" rx="1.25" fill="#a4a3a3" />
+            </g>
+
+            <g transform="translate(210, 190)" opacity="0.35">
+              <circle cx="7" cy="7" r="6" stroke="#a4a3a3" strokeWidth="1" />
+              <rect x="18" y="2" width="54" height="2.5" rx="1.25" fill="#a4a3a3" />
+              <rect x="18" y="8" width="40" height="2.5" rx="1.25" fill="#a4a3a3" />
+            </g>
+
+            <g transform="translate(200, 250)" opacity="0.3">
+              <rect x="0" y="0" width="62" height="18" rx="9" stroke="#a4a3a3" strokeWidth="1" />
+              <rect x="8" y="7" width="36" height="2.5" rx="1.25" fill="#a4a3a3" />
+            </g>
+            <g transform="translate(280, 110)" opacity="0.25">
+              <rect x="0" y="0" width="50" height="18" rx="9" stroke="#14b8a6" strokeWidth="1" />
+              <rect x="8" y="7" width="28" height="2.5" rx="1.25" fill="#14b8a6" />
+            </g>
+
+            <polyline
+              points="300,300 318,288 336,308 354,294 372,310 390,296 408,312"
+              stroke="#a4a3a3" strokeWidth="1.2" strokeLinecap="round" opacity="0.2"
+            />
+            <polyline
+              points="260,360 278,346 296,364 314,350 332,366"
+              stroke="#a4a3a3" strokeWidth="1" strokeLinecap="round" opacity="0.18"
+            />
+
+            <circle cx="340" cy="180" r="3" fill="#a4a3a3" opacity="0.2" />
+            <circle cx="356" cy="200" r="2" fill="#14b8a6" opacity="0.25" />
+            <circle cx="370" cy="188" r="2.5" fill="#a4a3a3" opacity="0.15" />
+
+            <g className="motion-safe:animate-[aurora_22s_ease-in-out_infinite_2s]" style={{ transformOrigin: "200px 200px" }}>
+              <g transform="translate(310, 240)" opacity="0.22">
+                <rect x="0" y="0" width="78" height="22" rx="4" stroke="#a4a3a3" strokeWidth="1" />
+                <rect x="6" y="7" width="48" height="2.5" rx="1.25" fill="#a4a3a3" />
+                <rect x="6" y="13" width="34" height="2.5" rx="1.25" fill="#a4a3a3" />
+              </g>
+            </g>
+          </g>
+
+          {/* CENTER: AI convergence glow + flow lines */}
+          <ellipse cx="600" cy="280" rx="120" ry="100" fill="url(#mtb-glow)" opacity="0.9" />
+
+          <path d="M390 200 Q490 240 570 280" stroke="#14b8a6" strokeWidth="1" strokeLinecap="round" opacity="0.18" />
+          <path d="M390 280 Q490 280 570 280" stroke="#14b8a6" strokeWidth="1.2" strokeLinecap="round" opacity="0.22" />
+          <path d="M390 360 Q490 320 570 280" stroke="#14b8a6" strokeWidth="1" strokeLinecap="round" opacity="0.18" />
+          <path d="M630 280 Q710 240 810 200" stroke="#14b8a6" strokeWidth="1" strokeLinecap="round" opacity="0.18" />
+          <path d="M630 280 Q710 280 810 280" stroke="#14b8a6" strokeWidth="1.2" strokeLinecap="round" opacity="0.22" />
+          <path d="M630 280 Q710 320 810 360" stroke="#14b8a6" strokeWidth="1" strokeLinecap="round" opacity="0.18" />
+
+          <g transform="translate(600, 280)" opacity="0.55">
+            <line x1="-10" y1="0" x2="10" y2="0" stroke="#14b8a6" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="0" y1="-10" x2="0" y2="10" stroke="#14b8a6" strokeWidth="1.5" strokeLinecap="round" />
+            <line x1="-7" y1="-7" x2="7" y2="7" stroke="#14b8a6" strokeWidth="1.2" strokeLinecap="round" />
+            <line x1="7" y1="-7" x2="-7" y2="7" stroke="#14b8a6" strokeWidth="1.2" strokeLinecap="round" />
+            <circle r="3" fill="#14b8a6" />
+            <circle r="16" stroke="#14b8a6" strokeWidth="0.8" opacity="0.4" />
+            <circle r="26" stroke="#14b8a6" strokeWidth="0.5" opacity="0.25" className="motion-safe:animate-[aurora_8s_ease-in-out_infinite]" style={{ transformOrigin: "0px 0px" }} />
+          </g>
+
+          {/* RIGHT ZONE: ordered kanban column silhouettes */}
+          <g mask="url(#mtb-right-mask)" opacity="0.22">
+            <g transform="translate(820, 120)">
+              <rect x="0" y="0" width="100" height="16" rx="4" fill="#a4a3a3" opacity="0.4" />
+              <rect x="0" y="24" width="100" height="44" rx="5" stroke="#a4a3a3" strokeWidth="1.2" />
+              <rect x="8" y="34" width="58" height="3" rx="1.5" fill="#a4a3a3" opacity="0.5" />
+              <rect x="8" y="41" width="44" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.3" />
+              <rect x="8" y="50" width="20" height="8" rx="4" fill="#a4a3a3" opacity="0.2" />
+
+              <rect x="0" y="76" width="100" height="44" rx="5" stroke="#a4a3a3" strokeWidth="1.2" />
+              <rect x="8" y="86" width="68" height="3" rx="1.5" fill="#a4a3a3" opacity="0.5" />
+              <rect x="8" y="93" width="50" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.3" />
+              <rect x="8" y="102" width="20" height="8" rx="4" fill="#14b8a6" opacity="0.25" />
+
+              <rect x="0" y="128" width="100" height="44" rx="5" stroke="#a4a3a3" strokeWidth="1.2" />
+              <rect x="8" y="138" width="52" height="3" rx="1.5" fill="#a4a3a3" opacity="0.5" />
+              <rect x="8" y="145" width="40" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.3" />
+            </g>
+
+            <g transform="translate(940, 120)">
+              <rect x="0" y="0" width="100" height="16" rx="4" fill="#14b8a6" opacity="0.3" />
+              <rect x="0" y="24" width="100" height="44" rx="5" stroke="#14b8a6" strokeWidth="1.2" opacity="0.6" />
+              <rect x="8" y="34" width="62" height="3" rx="1.5" fill="#14b8a6" opacity="0.4" />
+              <rect x="8" y="41" width="46" height="2.5" rx="1.25" fill="#14b8a6" opacity="0.25" />
+              <rect x="8" y="50" width="20" height="8" rx="4" fill="#14b8a6" opacity="0.2" />
+
+              <rect x="0" y="76" width="100" height="44" rx="5" stroke="#14b8a6" strokeWidth="1.2" opacity="0.6" />
+              <rect x="8" y="86" width="54" height="3" rx="1.5" fill="#14b8a6" opacity="0.4" />
+              <rect x="8" y="93" width="38" height="2.5" rx="1.25" fill="#14b8a6" opacity="0.25" />
+            </g>
+
+            <g transform="translate(1060, 120)">
+              <rect x="0" y="0" width="100" height="16" rx="4" fill="#a4a3a3" opacity="0.3" />
+              <rect x="0" y="24" width="100" height="44" rx="5" stroke="#a4a3a3" strokeWidth="1.2" />
+              <rect x="8" y="34" width="58" height="3" rx="1.5" fill="#a4a3a3" opacity="0.4" />
+              <rect x="8" y="41" width="42" height="2.5" rx="1.25" fill="#a4a3a3" opacity="0.3" />
+            </g>
+
+            <line x1="820" y1="112" x2="1160" y2="112" stroke="#a4a3a3" strokeWidth="0.7" opacity="0.25" strokeDasharray="4 4" />
+          </g>
+        </g>
+      </svg>
+    </div>
   );
 }
 
@@ -289,7 +454,7 @@ function HeroMock() {
 
   return (
     <div className="relative mx-auto max-w-5xl">
-      <div className="absolute -inset-6 -z-10 rounded-[32px] bg-gradient-to-br from-primary/10 via-transparent to-brand-warning/10 blur-2xl" />
+      <div className="absolute -inset-6 -z-10 rounded-[32px] bg-gradient-to-br from-primary/15 via-transparent to-[#a4a3a3]/15 blur-2xl" />
 
       <div className="rounded-2xl border border-border bg-card/90 p-3 shadow-2xl shadow-foreground/5 backdrop-blur sm:p-4">
         {/* fake browser chrome */}
@@ -487,7 +652,7 @@ function HowCard({
       <div
         className={`relative flex h-56 items-center justify-center overflow-hidden p-4 ${
           accent
-            ? "bg-gradient-to-br from-primary/15 via-brand-warning/10 to-brand-accent/10"
+            ? "bg-gradient-to-br from-primary/15 via-[#a4a3a3]/10 to-primary/5"
             : "bg-muted/40"
         }`}
       >
@@ -501,7 +666,7 @@ function HowCard({
           <span
             className={`inline-flex h-7 w-7 items-center justify-center rounded-md ${
               accent
-                ? "bg-brand-accent/15 text-brand-accent"
+                ? "bg-primary text-background"
                 : "bg-primary/10 text-primary"
             }`}
           >
@@ -624,6 +789,11 @@ function Features() {
       copy: "Transcripts, emails, Slack exports, raw notes. If it's text, kamotion reads it.",
     },
     {
+      icon: Users2,
+      title: "Solo or team mode",
+      copy: "Keep tasks for yourself or distribute across the crew with a single toggle.",
+    },
+    {
       icon: GanttChartSquare,
       title: "Kanban + Gantt, synced",
       copy: "Flow view and timeline view, same data. Drag in one, it updates the other.",
@@ -642,11 +812,6 @@ function Features() {
       icon: Users,
       title: "Roles that make sense",
       copy: "Admin, Editor, Viewer. Give a client read-only access without giving up control.",
-    },
-    {
-      icon: Users2,
-      title: "Solo or team mode",
-      copy: "Keep tasks for yourself or distribute across the crew with a single toggle.",
     },
   ];
 
@@ -758,17 +923,17 @@ function DarkTrust() {
     {
       icon: ShieldCheck,
       title: "Your data",
-      copy: "Google Sheets storage by default. You own it, export it, migrate any time.",
+      copy: "Supabase-backed. You own it, export it, migrate any time.",
     },
     {
-      icon: Users,
-      title: "Granular roles",
-      copy: "Admin, Editor, Viewer. Hand clients read-only access without losing control.",
+      icon: Eye,
+      title: "Staged previews",
+      copy: "AI suggests cards. You review, edit, confirm. Nothing saves until you say so.",
     },
     {
       icon: GitBranch,
-      title: "Open-source soon",
-      copy: "Once it's proven, kamotion goes open-source for freelancers and solo operators.",
+      title: "Open source soon",
+      copy: "Built to be self-hosted. Once proven, kamotion ships open-source for freelancers.",
     },
   ];
 
@@ -779,7 +944,7 @@ function DarkTrust() {
         className="pointer-events-none absolute inset-0 -z-0 opacity-40"
         style={{
           background:
-            "radial-gradient(ellipse at top left, color-mix(in oklch, var(--primary) 30%, transparent), transparent 50%), radial-gradient(ellipse at bottom right, color-mix(in oklch, var(--brand-warning) 25%, transparent), transparent 50%)",
+            "radial-gradient(ellipse at top left, color-mix(in oklch, var(--primary) 30%, transparent), transparent 50%), radial-gradient(ellipse at bottom right, color-mix(in oklch, #a4a3a3 25%, transparent), transparent 50%)",
         }}
       />
 
@@ -849,14 +1014,20 @@ function Origin() {
           Built because I needed it.
         </h2>
         <p className="mt-5 text-balance leading-relaxed text-muted-foreground">
-          I'm a full-stack dev who also runs marketing. Tasks come at me from
-          Slack, email, Teams, client texts, Zoom transcripts, Google Docs —
-          everywhere. I got tired of re-reading threads just to figure out what
-          I was supposed to do.
+          I'm a full-stack dev, marketer, and solo builder behind Digestible
+          Apps. My tasks don't live in one place — they're scattered across
+          Slack, email, Teams, texts, Zoom, Docs.
         </p>
         <p className="mt-4 text-balance leading-relaxed text-muted-foreground">
-          kamotion is the tool I built for myself. Paste the noise, get the
-          work. I'm opening it up for other people who live in the same
+          I was constantly digging through conversations just to figure out
+          what to do next. So I built kamotion for myself — something that
+          could turn all that noise into clear, actionable work.
+        </p>
+        <p className="mt-6 text-balance text-lg font-medium leading-relaxed text-foreground">
+          Paste the noise. Get the work.
+        </p>
+        <p className="mt-6 text-balance leading-relaxed text-muted-foreground">
+          Now I'm opening it up for others who deal with the same kind of
           commotion.
         </p>
         <p className="mt-6 font-mono text-sm text-foreground">— Edward</p>
@@ -870,13 +1041,13 @@ function Origin() {
 function FooterCTA() {
   return (
     <section className="px-6 pb-24">
-      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/15 via-background to-brand-warning/10 p-12 text-center sm:p-20">
+      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/15 via-background to-[#a4a3a3]/15 p-12 text-center sm:p-20">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 -z-0"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 20% 20%, color-mix(in oklch, var(--primary) 25%, transparent), transparent 40%), radial-gradient(circle at 80% 80%, color-mix(in oklch, var(--brand-warning) 20%, transparent), transparent 45%)",
+              "radial-gradient(circle at 20% 20%, color-mix(in oklch, var(--primary) 25%, transparent), transparent 40%), radial-gradient(circle at 80% 80%, color-mix(in oklch, #a4a3a3 20%, transparent), transparent 45%)",
           }}
         />
         <div className="relative z-10">
