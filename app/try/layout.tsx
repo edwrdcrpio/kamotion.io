@@ -5,6 +5,7 @@ import { Header } from "@/components/app-shell/header";
 import { MswBootstrap } from "@/lib/demo/msw-client";
 import { DemoProvider } from "@/components/demo/demo-provider";
 import { DemoBanner } from "@/components/demo/demo-banner";
+import { DemoTour } from "@/components/demo/tour";
 
 export const metadata: Metadata = {
   title: { default: "Try kamotion · demo", template: "%s · try kamotion" },
@@ -42,6 +43,7 @@ export default function TryLayout({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
             </div>
+            <DemoTour />
           </AppProviders>
         </DemoProvider>
       </MswBootstrap>
