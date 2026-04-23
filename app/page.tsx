@@ -22,6 +22,7 @@ import {
   GitBranch,
 } from "lucide-react";
 import { brand } from "@/config/brand";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const ACCESS_EMAIL = `mailto:hello@${brand.domain}?subject=kamotion access request`;
 
@@ -51,18 +52,18 @@ export default function Home() {
 
 function PromoBar() {
   return (
-    <div className="bg-foreground text-background">
+    <div className="bg-neutral-950 text-neutral-50 dark:border-b dark:border-white/10">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-2 px-6 py-2 text-xs sm:flex-row sm:gap-3">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-2.5 py-0.5 font-medium text-primary">
           <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
           Invite-only beta
         </span>
-        <span className="text-background/70">
+        <span className="text-neutral-400">
           Early access for people drowning in channels.
         </span>
         <a
           href={ACCESS_EMAIL}
-          className="inline-flex items-center gap-1 font-medium text-background underline-offset-2 hover:underline"
+          className="inline-flex items-center gap-1 font-medium text-neutral-50 underline-offset-2 hover:underline"
         >
           Request access
           <ArrowRight className="h-3 w-3" />
@@ -114,6 +115,7 @@ function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <Link
             href="/login"
             className="hidden h-9 items-center justify-center rounded-md px-3 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer sm:inline-flex"
@@ -938,7 +940,7 @@ function DarkTrust() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-foreground px-6 py-24 text-background">
+    <section className="relative overflow-hidden bg-neutral-950 px-6 py-24 text-neutral-50">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-0 opacity-40"
@@ -950,13 +952,13 @@ function DarkTrust() {
 
       <div className="relative z-10 mx-auto max-w-6xl">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-background/60">
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-400">
             The rules
           </span>
           <h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
             Your work, your tools, your rules.
           </h2>
-          <p className="mt-4 text-balance text-background/70">
+          <p className="mt-4 text-balance text-neutral-300">
             No lock-in. No bloat. No upsell to an "enterprise tier" before
             you've even tried the thing.
           </p>
@@ -966,15 +968,15 @@ function DarkTrust() {
           {pillars.map(({ icon: Icon, title, copy }) => (
             <li
               key={title}
-              className="rounded-xl border border-background/10 bg-background/5 p-6 backdrop-blur"
+              className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur"
             >
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-background/10 text-background">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/10 text-neutral-50">
                 <Icon className="h-4 w-4" />
               </span>
               <h3 className="mt-4 text-lg font-semibold tracking-tight">
                 {title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-background/70">
+              <p className="mt-2 text-sm leading-relaxed text-neutral-300">
                 {copy}
               </p>
             </li>
@@ -984,14 +986,14 @@ function DarkTrust() {
         <div className="mt-14 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href={ACCESS_EMAIL}
-            className="inline-flex h-12 items-center justify-center gap-1.5 rounded-lg bg-background px-7 text-sm font-medium text-foreground shadow-lg transition-colors hover:bg-background/90 cursor-pointer"
+            className="inline-flex h-12 items-center justify-center gap-1.5 rounded-lg bg-white px-7 text-sm font-medium text-neutral-900 shadow-lg transition-colors hover:bg-neutral-100 cursor-pointer"
           >
             Request access
             <ArrowRight className="h-4 w-4" />
           </a>
           <Link
             href="/login"
-            className="inline-flex h-12 items-center justify-center rounded-lg border border-background/20 px-7 text-sm font-medium text-background transition-colors hover:bg-background/10 cursor-pointer"
+            className="inline-flex h-12 items-center justify-center rounded-lg border border-white/20 px-7 text-sm font-medium text-neutral-50 transition-colors hover:bg-white/10 cursor-pointer"
           >
             Log in
           </Link>
