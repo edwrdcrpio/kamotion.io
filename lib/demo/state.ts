@@ -24,7 +24,6 @@ function makeUuid(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return crypto.randomUUID();
   }
-  // Fallback — never hits in modern browsers but keeps TS happy in tests.
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     const v = c === "x" ? r : (r & 0x3) | 0x8;
@@ -63,6 +62,8 @@ export function newId(): string {
   return makeUuid();
 }
 
+// ────────────────────────────────── cards ─────────────────────────────────
+
 export function addCards(cards: Card[]): void {
   demoState.cards.push(...cards);
 }
@@ -87,4 +88,44 @@ export function nextPositionFor(columnName: Card["column_name"]): number {
     .filter((c) => c.column_name === columnName && c.archived_at === null)
     .map((c) => c.position);
   return cols.length ? Math.max(...cols) + 1 : 1;
+}
+
+// ─────────────────────────────────── team ─────────────────────────────────
+
+export function addTeamMember(member: TeamMember): void {
+  demoState.team.push(member);
+}
+
+export function updateTeamMember(
+  id: string,
+  patch: Partial<TeamMember>,
+): TeamMember | null {
+  const idx = demoState.team.findIndex((m) => m.id === id);
+  if (idx === -1) return null;
+  const next: TeamMember = {
+    ...demoState.team[idx],
+    ...patch,
+    updated_at: now(),
+  };
+  demoState.team[idx] = next;
+  return next;
+}
+
+export function deleteTeamMember(id: string): boolean {
+  const idx = demoState.team.findIndex((m) => m.id === id);
+  if (idx === -1) return false;
+  demoState.team.splice(idx, 1);
+  return true;
+}
+
+// ───────────────────────────────── settings ───────────────────────────────
+
+export function updateSettings(patch: SettingsMap): void {
+  Object.assign(demoState.settings, patch);
+}
+
+// ───────────────────────────── demo example select ────────────────────────
+
+export function setSelectedExample(id: DemoExample["id"] | null): void {
+  demoState.selectedExampleId = id;
 }
