@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { X, ArrowRight } from "lucide-react";
+import { ACCESS_EMAIL } from "@/components/marketing/site-nav";
 
 export function DemoBanner() {
   const [visible, setVisible] = useState(true);
@@ -15,18 +16,22 @@ export function DemoBanner() {
           Demo mode
         </span>
         <p className="flex-1 text-muted-foreground">
-          <span className="hidden sm:inline">
-            Everything&rsquo;s live — drag, edit, add cards.{" "}
-          </span>
-          Nothing is saved; refresh to reset.
+          <span className="hidden sm:inline">Nothing saves · </span>
+          Refresh to reset.
         </p>
         <Link
-          href="/#who"
+          href="/"
+          className="hidden items-center gap-1 rounded-md border border-border/60 bg-background/70 px-2.5 py-1 text-[12px] font-medium text-foreground transition-colors hover:bg-background sm:inline-flex"
+        >
+          Exit demo
+        </Link>
+        <a
+          href={ACCESS_EMAIL}
           className="hidden items-center gap-1 rounded-md border border-primary/40 bg-background/70 px-2.5 py-1 text-[12px] font-medium text-foreground transition-colors hover:bg-background sm:inline-flex"
         >
-          How it works
+          Request access
           <ArrowRight className="h-3 w-3" />
-        </Link>
+        </a>
         <button
           type="button"
           onClick={() => setVisible(false)}
