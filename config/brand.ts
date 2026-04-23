@@ -5,13 +5,14 @@ export const brand = {
   description:
     "kamotion turns Slack threads, email chains, Zoom transcripts, and meeting notes into structured kanban cards. Paste the noise. AI does the parsing. You do the work.",
   palette: {
-    primary: "#6366F1",
-    primaryDeep: "#4338CA",
-    success: "#10B981",
-    accent: "#F43F5E",
-    warning: "#F59E0B",
-    bgLight: "#F8FAFC",
-    bgDark: "#0B1020",
+    primary: "#14b8a6",
+    primaryDeep: "#0d9488",
+    secondary: "#a4a3a3",
+    success: "#10b981",
+    accent: "#f43f5e",
+    warning: "#f59e0b",
+    bgLight: "#f8fafc",
+    bgDark: "#0b1020",
   },
 } as const;
 
