@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { logoutAction } from "@/app/app/actions";
 import type { Role } from "@/lib/validators";
 
@@ -29,16 +30,19 @@ export function Header({
           {ROLE_LABEL[role]}
         </span>
       </div>
-      <form action={logoutAction}>
-        <Button
-          type="submit"
-          variant="ghost"
-          size="sm"
-          className="cursor-pointer"
-        >
-          Log out
-        </Button>
-      </form>
+      <div className="flex items-center gap-1">
+        <ThemeToggle />
+        <form action={logoutAction}>
+          <Button
+            type="submit"
+            variant="ghost"
+            size="sm"
+            className="cursor-pointer"
+          >
+            Log out
+          </Button>
+        </form>
+      </div>
     </header>
   );
 }
