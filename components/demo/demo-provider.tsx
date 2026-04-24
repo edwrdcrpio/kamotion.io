@@ -35,8 +35,8 @@ export type DemoContextValue = {
 };
 
 const DEMO_PROFILE: DemoProfile = {
-  full_name: "Sarah Chen",
-  email: "sarah@acme.co",
+  full_name: "John Wix",
+  email: "jwix@continental.com",
   role: "admin",
 };
 

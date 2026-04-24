@@ -2,8 +2,9 @@
 
 // Interactive tour for /try/*. Runs unless the visitor has completed or
 // dismissed it this session (both flags live in DemoProvider → refresh wipes
-// them). Steps span multiple routes; joyride waits for a target to mount
-// when the user navigates (targetWaitTimeout 30s).
+// them). Most transitions are action-gated: the user advances by clicking
+// the highlighted element, not a generic "Next" button.
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import {
   Joyride,
@@ -14,6 +15,19 @@ import {
 } from "react-joyride";
 import { useDemo } from "./demo-provider";
 
+// Each step's target lives on one of these routes; used to auto-advance when
+// the user navigates by clicking the spotlit element. The "Your board" slot
+// after Add to Queue is handled by <DragHintDialog> rather than a joyride
+// step — avoids competing modals on /try.
+const STEP_ROUTES: Record<number, string> = {
+  0: "/try",
+  1: "/try",
+  2: "/try/generate",
+  3: "/try/generate",
+  4: "/try/generate",
+  5: "/try",
+};
+
 const STEPS: Step[] = [
   {
     target: "body",
@@ -21,27 +35,34 @@ const STEPS: Step[] = [
     title: "Welcome to kamotion",
     content:
       "This is the real app running against a sandbox — drag cards, edit fields, generate new ones. Nothing is saved; refresh to reset.",
+    buttons: ["primary"],
+    locale: { next: "Begin" },
   },
   {
     target: '[data-tour="generate-link"]',
     title: "Start by generating cards",
     content:
-      "Click Generate Task(s). In the real app you paste an email, a transcript, anything — the AI extracts structured cards.",
+      "Click Generate Task(s) in the sidebar. In the real app you'd paste an email, a transcript, anything — the AI extracts structured cards.",
     placement: "right",
+    buttons: ["skip"],
+    spotlightPadding: 6,
   },
   {
     target: '[data-tour="picker-cards"]',
     title: "Pick a source",
     content:
-      "In the demo you can't paste freely, so pick one of three curated sources. Each shows how kamotion parses a different kind of input.",
+      "Each card is a curated example showing how kamotion parses a different kind of input. Pick one, then click Select.",
     placement: "bottom",
+    buttons: ["primary", "skip"],
+    locale: { next: "Select" },
   },
   {
     target: '[data-tour="extract-button"]',
     title: "Extract cards",
     content:
-      "Now click Extract. The AI returns structured cards — you'll review and edit them before they land on the board.",
+      "Click Extract. The AI returns structured cards — you'll review and edit them before they land on the board.",
     placement: "top",
+    buttons: ["skip"],
   },
   {
     target: '[data-tour="add-to-queue"]',
@@ -49,13 +70,7 @@ const STEPS: Step[] = [
     content:
       "Tweak titles, assignees, dates, priorities — drop any cards you don't want. Then click Add to Queue.",
     placement: "top",
-  },
-  {
-    target: '[data-tour="board-columns"]',
-    title: "Your board",
-    content:
-      "Drag cards between columns to update their status. Click any card to edit every field in the drawer.",
-    placement: "top",
+    buttons: ["skip"],
   },
   {
     target: "body",
@@ -63,8 +78,16 @@ const STEPS: Step[] = [
     title: "You've got it",
     content:
       "Explore Gantt for the timeline, Team to manage assignees, or just drag cards around. Nothing saves — refresh to reset the sandbox.",
+    buttons: ["primary"],
+    locale: { last: "Finish" },
   },
 ];
+
+// Index of the step whose target only exists while a dialog is open. We
+// watch the DOM for its target to mount and advance the tour as soon as the
+// user opens the Preview dialog.
+const DIALOG_WATCH_STEP = 3;
+const DIALOG_TARGET_SELECTOR = '[data-tour="add-to-queue"]';
 
 export function DemoTour() {
   const {
@@ -72,10 +95,55 @@ export function DemoTour() {
     setTourStep,
     tourSkipped,
     tourCompleted,
+    dragHintDismissed,
     skipTour,
     completeTour,
   } = useDemo();
   const pathname = usePathname();
+
+  // Route-gated advancement: when the user clicks a highlighted link that
+  // changes route, jump to the next step on the new route. Only fires when
+  // the current step's expected route doesn't match — otherwise multiple
+  // steps on the same route would cascade through on mount.
+  useEffect(() => {
+    if (tourSkipped || tourCompleted) return;
+    const currentRoute = STEP_ROUTES[tourStep];
+    if (currentRoute === pathname) return;
+
+    const totalSteps = Object.keys(STEP_ROUTES).length;
+    for (let i = tourStep + 1; i < totalSteps; i++) {
+      if (STEP_ROUTES[i] === pathname) {
+        setTourStep(i);
+        return;
+      }
+    }
+    for (let i = tourStep - 1; i >= 0; i--) {
+      if (STEP_ROUTES[i] === pathname) {
+        setTourStep(i);
+        return;
+      }
+    }
+  }, [pathname, tourStep, tourSkipped, tourCompleted, setTourStep]);
+
+  // Dialog-gated advancement: the Preview dialog's Add to Queue button only
+  // exists when the user has clicked Extract. Observe the DOM while we're on
+  // the Extract step and bump forward as soon as it appears.
+  useEffect(() => {
+    if (tourStep !== DIALOG_WATCH_STEP) return;
+    if (tourSkipped || tourCompleted) return;
+    if (document.querySelector(DIALOG_TARGET_SELECTOR)) {
+      setTourStep(DIALOG_WATCH_STEP + 1);
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      if (document.querySelector(DIALOG_TARGET_SELECTOR)) {
+        setTourStep(DIALOG_WATCH_STEP + 1);
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [tourStep, tourSkipped, tourCompleted, setTourStep]);
 
   const handleEvent = (data: EventData) => {
     const { status, action, index, type } = data;
@@ -88,15 +156,21 @@ export function DemoTour() {
       completeTour();
       return;
     }
-    // Advance our controlled stepIndex after joyride finishes a step and the
-    // user hit Next/Back.
-    if (type === "step:after") {
-      if (action === ACTIONS.NEXT) setTourStep(index + 1);
-      else if (action === ACTIONS.PREV) setTourStep(Math.max(0, index - 1));
+    // Manual Next click (only exists on non-action-gated steps): advance.
+    if (type === "step:after" && action === ACTIONS.NEXT) {
+      setTourStep(index + 1);
     }
   };
 
-  const running = !tourSkipped && !tourCompleted && pathname.startsWith("/try");
+  // The Finish step (index 5) lives on /try alongside <DragHintDialog>. When
+  // the drag-hint is still open, pause the tour so the two modals don't
+  // compete for focus. As soon as the user clicks Got it, joyride resumes.
+  const pausedForDragHint = tourStep === 5 && !dragHintDismissed;
+  const running =
+    !tourSkipped &&
+    !tourCompleted &&
+    !pausedForDragHint &&
+    pathname.startsWith("/try");
 
   return (
     <Joyride
@@ -107,7 +181,7 @@ export function DemoTour() {
       onEvent={handleEvent}
       options={{
         primaryColor: "#14b8a6",
-        overlayColor: "rgba(15, 23, 42, 0.55)",
+        overlayColor: "rgba(15, 23, 42, 0.4)",
         textColor: "#0f172a",
         backgroundColor: "#ffffff",
         arrowColor: "#ffffff",
@@ -115,7 +189,9 @@ export function DemoTour() {
         overlayClickAction: false,
         closeButtonAction: "skip",
         showProgress: true,
-        buttons: ["back", "close", "primary", "skip"],
+        buttons: ["primary", "skip"],
+        spotlightPadding: 8,
+        spotlightRadius: 8,
         zIndex: 60,
         targetWaitTimeout: 30_000,
       }}

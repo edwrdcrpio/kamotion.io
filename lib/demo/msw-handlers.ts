@@ -39,7 +39,10 @@ type CardInput = Partial<Omit<Card, "id" | "created_at" | "updated_at">>;
 
 function hydrateCard(input: CardInput): Card {
   const nowIso = new Date().toISOString();
-  const column = input.column_name ?? "Ready";
+  // Default to Queue to match the real DB column default. ParsedCard doesn't
+  // carry column_name, so bulk-inserted cards from /api/ai/parse → /api/cards/bulk
+  // land here without one and should go to Queue, not Ready.
+  const column = input.column_name ?? "Queue";
   return {
     id: newId(),
     task: input.task ?? "",

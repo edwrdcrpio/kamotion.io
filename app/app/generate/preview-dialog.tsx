@@ -40,11 +40,16 @@ export function PreviewDialog({
   onOpenChange,
   redirectTo = "/app",
   confirmTourAttr,
+  disableOutsideClose = false,
 }: {
   cards: ParsedCard[] | null;
   onOpenChange: (open: boolean) => void;
   redirectTo?: string;
   confirmTourAttr?: string;
+  // When true, ignore overlay clicks + ESC — the dialog only closes via
+  // Cancel or the bulk mutation success. Demo uses this so joyride's
+  // [data-tour="add-to-queue"] target doesn't vanish under the cursor.
+  disableOutsideClose?: boolean;
 }) {
   const open = cards !== null;
   const [editable, setEditable] = useState<ParsedCard[]>([]);
@@ -85,7 +90,15 @@ export function PreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-3xl">
+      <DialogContent
+        className="flex max-h-[90vh] flex-col sm:max-w-3xl"
+        onPointerDownOutside={
+          disableOutsideClose ? (e) => e.preventDefault() : undefined
+        }
+        onEscapeKeyDown={
+          disableOutsideClose ? (e) => e.preventDefault() : undefined
+        }
+      >
         <DialogHeader>
           <DialogTitle>
             Review {editable.length}{" "}
