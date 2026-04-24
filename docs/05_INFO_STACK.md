@@ -33,7 +33,7 @@ Purpose: Stack / schema / env reference for Kamotion
 ### `.env.local` (gitignored)
 
 ```
-NEXT_PUBLIC_SUPABASE_URL=https://njlidscexyofixjbtyhd.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://<your-project-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_…   # publishable key
 SUPABASE_SERVICE_ROLE_KEY=                       # required for /app/settings/users (D.3). Legacy service_role JWT works.
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -51,8 +51,8 @@ Template — actual values not committed. Same keys with blank values.
 ## Supabase
 
 - **Project**: `kamotion.io`
-- **Ref**: `njlidscexyofixjbtyhd`
-- **URL**: `https://njlidscexyofixjbtyhd.supabase.co`
+- **Ref**: `<your-project-ref>`
+- **URL**: `https://<your-project-ref>.supabase.co`
 - **Region**: us-east-2
 - **Postgres**: 17
 
@@ -120,7 +120,7 @@ Template — actual values not committed. Same keys with blank values.
 ## MCP
 
 - **Project-scoped**: `.mcp.json` at repo root, gitignored
-- **Auth**: personal access token, scoped with `--project-ref=njlidscexyofixjbtyhd`
+- **Auth**: personal access token, scoped with `--project-ref=<your-project-ref>`
 - **Purpose**: isolated from employer Supabase account
 
 ## File Map (key files)

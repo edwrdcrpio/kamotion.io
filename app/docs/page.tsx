@@ -13,13 +13,7 @@ import {
   DocTable,
   DocCardLink,
 } from "@/components/docs/primitives";
-import {
-  GenerateMock,
-  BoardMock,
-  GanttMock,
-  TeamMock,
-  FlowMock,
-} from "@/components/docs/mocks";
+import { FlowMock } from "@/components/docs/mocks";
 
 export const metadata: Metadata = {
   title: "Docs · kamotion",
@@ -75,6 +69,7 @@ export default function DocsPage() {
         <DocH3>Who it&rsquo;s for</DocH3>
         <DocList
           items={[
+            <><DocStrong>Personal life</DocStrong> — groceries, birthdays, school forms, trip packing, a move. Anything that lives in a group chat or a brain-dump note becomes one clear list.</>,
             <><DocStrong>Solo operators</DocStrong> — freelancers, founders, and makers who need a single pane for a noisy inbox.</>,
             <><DocStrong>Small teams</DocStrong> — up to a handful of members with admin/member/viewer roles.</>,
             <><DocStrong>Developers</DocStrong> — anyone who wants a hackable PM tool they control end-to-end.</>,
@@ -224,11 +219,11 @@ values (
           few seeded demo cards.
         </DocP>
         <DocFigure
-          label="First-run board with demo cards"
+          label="First-run board"
           route="/app"
-          theme="both"
-          capture="Freshly-seeded board after first login — 4 demo cards distributed across Ready, In Progress, Review, Done columns. Sidebar visible with admin nav items."
-          notes="Capture at 1440px width. Both themes — swap the toggle before each capture. Crop to include the header bar."
+          theme="light"
+          file="screenshot-board.png"
+          capture="Freshly seeded board after first login — four demo cards across Ready, In Progress, Review, and Done. The admin sidebar sits on the left."
         />
       </DocSection>
 
@@ -244,12 +239,12 @@ values (
           flow in your browser. <DocLink href="/try">Open the demo →</DocLink>
         </DocCallout>
         <DocFigure
-          label="Generate page — inline mock"
-          theme="both"
-          capture="(optional) real screenshot of /app/generate with text pasted in and parsed-card preview modal open"
-        >
-          <GenerateMock />
-        </DocFigure>
+          label="Paste text into Generate"
+          route="/app/generate"
+          theme="light"
+          file="screenshot-paste-text.png"
+          capture="The Generate page with a pasted email in the input. Character count below, Extract cards button ready to fire."
+        />
         <DocH3>How to use it</DocH3>
         <DocList
           ordered
@@ -262,11 +257,11 @@ values (
           ]}
         />
         <DocFigure
-          label="Preview modal — parsed cards with checkboxes"
+          label="Preview modal"
           route="/app/generate"
-          theme="both"
-          capture="Preview dialog after clicking Generate. Show 3–4 parsed cards with different priorities (at least one high, one normal, one low), one with a due date. A couple checked, one unchecked."
-          notes="Paste a Slack-style multi-task blurb to produce realistic output. Keep the modal centered in frame."
+          theme="light"
+          file="screenshot-generate-preview.png"
+          capture="The preview dialog after Generate runs. Parsed cards with mixed priorities and a due date on one; checkboxes pick which make it onto the board."
         />
         <DocCallout tone="tip" title="What makes a good input">
           Dense, action-heavy text parses best. Meeting notes with &ldquo;next
@@ -282,12 +277,12 @@ values (
           per-card detail drawer, filter bar.
         </DocP>
         <DocFigure
-          label="Board overview — inline mock"
-          theme="both"
-          capture="(optional) real screenshot of /app with 2–3 cards per column"
-        >
-          <BoardMock />
-        </DocFigure>
+          label="The kanban board"
+          route="/app"
+          theme="light"
+          file="screenshot-board.png"
+          capture="Five status columns — Queue, Ready, In Progress, Review, Done. Drag between columns to change status; click any card to open the detail drawer."
+        />
 
         <DocH3>Creating cards</DocH3>
         <DocList
@@ -315,11 +310,11 @@ values (
           ]}
         />
         <DocFigure
-          label="Card detail drawer with all fields"
+          label="Card detail drawer"
           route="/app (drawer open)"
-          theme="both"
-          capture="Click a card to open the side drawer. Show a card that has every field populated — title, description (2–3 lines), status, priority, duration, due date, assignee, requester. The Archive and Delete buttons visible at the bottom."
-          notes="On desktop the drawer is ~608px wide and slides from the right. Keep the board visible behind it for context."
+          theme="light"
+          file="screenshot-card-drawer.png"
+          capture="The card detail drawer slides in from the right with every field editable. Archive and Delete live at the bottom; the board stays visible behind it."
         />
 
         <DocH3>Filtering</DocH3>
@@ -338,12 +333,12 @@ values (
           <DocInlineCode>estimated_duration</DocInlineCode>.
         </DocP>
         <DocFigure
-          label="Gantt chart — inline mock"
-          theme="both"
-          capture="(optional) real screenshot of /app/gantt with 4–6 scheduled cards spanning ~2 weeks"
-        >
-          <GanttMock />
-        </DocFigure>
+          label="The Gantt view"
+          route="/app/gantt"
+          theme="light"
+          file="screenshot-gantt.png"
+          capture="Scheduled cards as bars, positioned by due date and sized by duration. A vertical line marks today; weekends are tinted; unscheduled cards sit below as clickable chips."
+        />
 
         <DocH3>Interactions</DocH3>
         <DocList
@@ -354,13 +349,6 @@ values (
             <><DocStrong>Weekend tint</DocStrong> on Sat/Sun columns — a visual cue, not a constraint.</>,
             <><DocStrong>Unscheduled cards</DocStrong> (no due date) are listed below the chart as clickable chips. Open one and set a date to pull it into the Gantt.</>,
           ]}
-        />
-        <DocFigure
-          label="Gantt — full view with today line"
-          route="/app/gantt"
-          theme="both"
-          capture="Scheduled cards spanning roughly 2 weeks. Today line visible somewhere in the middle. At least one late card (bar ends before today line). Weekend tint visible. Unscheduled chips row at the bottom with 2–3 entries."
-          notes="Capture after setting demo card due_dates so the chart is populated. 1440px width."
         />
       </DocSection>
 
@@ -373,12 +361,12 @@ values (
           need to have login access to kamotion.
         </DocP>
         <DocFigure
-          label="Team table — inline mock"
-          theme="both"
-          capture="(optional) real screenshot of /app/team with 3–5 rows"
-        >
-          <TeamMock />
-        </DocFigure>
+          label="Team table"
+          route="/app/team"
+          theme="light"
+          file="screenshot-team.png"
+          capture="Roster of assignable people — name, email, role, and active toggle per row. Inline edit and delete actions; Add member top-right."
+        />
         <DocList
           items={[
             <>Click <DocStrong>+ Add member</DocStrong> → fill name/email/role → save.</>,
@@ -417,11 +405,11 @@ values (
           Supabase dashboard.
         </DocCallout>
         <DocFigure
-          label="Users page with service role key present"
+          label="Users page"
           route="/app/settings/users"
-          theme="both"
-          capture="The users table showing 2–3 rows including your own (with a 'you' badge). One row should be a non-admin member for variety. Show the + Add user button."
-          notes="If the banner is showing, SUPABASE_SERVICE_ROLE_KEY is missing — fix the env var before capturing the happy path."
+          theme="light"
+          file="screenshot-users.png"
+          capture="The Users table with active members and Add user top-right. Your own row is tagged so you can't accidentally lock yourself out."
         />
       </DocSection>
 
@@ -440,11 +428,11 @@ values (
           ]}
         />
         <DocFigure
-          label="Archive table with restore actions"
+          label="Archive"
           route="/app/archive"
-          theme="both"
-          capture="Archive table with 2–3 archived cards. Show the Restore and Delete permanently buttons on each row."
-          notes="Archive a couple of cards from the board before capturing."
+          theme="light"
+          file="screenshot-archive.png"
+          capture="Soft-deleted cards held for 30 days. Each row has Restore (puts the card back in its status column) or Delete permanently."
         />
       </DocSection>
 
@@ -486,11 +474,11 @@ values (
           you every major model with one key and one account.
         </DocCallout>
         <DocFigure
-          label="Settings page — AI config + test parse"
+          label="Settings"
           route="/app/settings"
-          theme="both"
-          capture="Full Settings page showing: processing path = in-app (radio), provider = OpenRouter, model dropdown with a model selected, system prompt visible, and the Test parse section at the bottom with a sample input."
-          notes="Scroll to fit provider/model + test section in one shot if possible; otherwise split into 2 captures."
+          theme="light"
+          file="screenshot-settings.png"
+          capture="Processing path, AI provider and model, the system prompt, and a Test parse section at the bottom for sanity-checking the pipeline."
         />
       </DocSection>
 
@@ -537,9 +525,9 @@ values (
         </DocCallout>
         <DocFigure
           label="n8n workflow after import"
-          theme="both"
-          capture="Your n8n canvas after importing kamotion's sample workflow. Show the 4 nodes wired up, with the Chat Model sub-node attached under the AI Agent."
-          notes="Take this in the n8n UI, not kamotion. Either light or dark is fine — n8n has its own theme."
+          theme="light"
+          file="screenshot-n8n-workflow.png"
+          capture="The n8n canvas after importing the sample workflow — Webhook → AI Agent (with a Structured Output Parser) → Respond to Webhook, with a Chat Model sub-node attached."
         />
       </DocSection>
 
@@ -702,9 +690,9 @@ fix: resolve C.2 typecheck errors in settings route
 docs: add n8n setup walkthrough
 refactor: extract site nav and footer into shared components`}</DocCode>
         <DocP>
-          And ends with <DocInlineCode>Authored By: Lumaki, LLC &amp; Claude
-          &lt;hello@digestibleapps.com&gt;</DocInlineCode> for AI-pair-programmed
-          work.
+          And ends with <DocInlineCode>Authored By: Edward Carpio
+          &lt;https://github.com/edwrdcrpio&gt; &amp; Claude</DocInlineCode> for
+          AI-pair-programmed work.
         </DocP>
 
         <DocH3>Dev loop</DocH3>
@@ -769,6 +757,27 @@ npm run lint         # eslint`}</DocCode>
           Slang for <DocStrong>commotion</DocStrong> — the organized chaos of
           messages, threads, and calls that become clarity once they&rsquo;re
           on a board.
+        </DocP>
+      </DocSection>
+
+      {/* COMING SOON */}
+      <DocSection id="coming-soon" eyebrow="17" title="Coming soon">
+        <DocP>
+          kamotion today is the kanban and the parser. Here&rsquo;s what&rsquo;s
+          on deck — what you&rsquo;ll see land in the repo next.
+        </DocP>
+        <DocList
+          items={[
+            <><DocStrong>Inbox sync</DocStrong> — kamotion pulls new emails on its own and queues them for parsing. Skip the paste step entirely.</>,
+            <><DocStrong>Slack &amp; Telegram bots</DocStrong> — tag <DocInlineCode>@kamotion</DocInlineCode> in a channel and the thread becomes cards without anyone leaving the conversation.</>,
+            <><DocStrong>Active comms</DocStrong> — due-date nudges, team pings, and drafted follow-up emails routed to whoever owns the card.</>,
+            <><DocStrong>Delegate to AI</DocStrong> — assign a card to an agent to write the blog, email the vendor, plan the event, or fix the site bug. You review the output before it ships.</>,
+          ]}
+        />
+        <DocP>
+          Roadmap is best-effort, not a contract — but the order roughly
+          reflects how we&rsquo;re sequencing them. Each lands behind a
+          feature flag so you can opt in when you&rsquo;re ready.
         </DocP>
       </DocSection>
 

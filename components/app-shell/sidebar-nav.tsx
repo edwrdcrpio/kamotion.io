@@ -13,11 +13,13 @@ function NavLink({
   active,
   onNavigate,
   demoMode,
+  collapsed,
 }: {
   item: NavItem;
   active: boolean;
   onNavigate?: () => void;
   demoMode: boolean;
+  collapsed: boolean;
 }) {
   const { label, icon: Icon, demoLocked } = item;
   const href = demoMode ? item.demoHref : item.href;
@@ -26,16 +28,18 @@ function NavLink({
     <Link
       href={href}
       onClick={onNavigate}
+      title={collapsed ? label : undefined}
       className={cn(
-        "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors cursor-pointer",
+        "flex items-center gap-2 rounded-md py-2 text-sm transition-colors cursor-pointer",
+        collapsed ? "justify-center px-2" : "px-3",
         active
           ? "bg-primary/10 text-primary font-medium"
           : "text-muted-foreground hover:bg-accent hover:text-foreground",
       )}
     >
-      <Icon className="h-4 w-4" />
-      <span className="flex-1">{label}</span>
-      {showLock ? <Lock className="h-3 w-3 opacity-60" /> : null}
+      <Icon className="h-4 w-4 shrink-0" />
+      {!collapsed && <span className="flex-1">{label}</span>}
+      {!collapsed && showLock ? <Lock className="h-3 w-3 opacity-60" /> : null}
     </Link>
   );
 }
@@ -49,10 +53,12 @@ export function SidebarNav({
   role,
   onNavigate,
   demoMode = false,
+  collapsed = false,
 }: {
   role: Role;
   onNavigate?: () => void;
   demoMode?: boolean;
+  collapsed?: boolean;
 }) {
   const pathname = usePathname();
   const mainItems = MAIN_NAV.filter(
@@ -60,6 +66,11 @@ export function SidebarNav({
   );
   const footerItems = FOOTER_NAV.filter(
     (it) => !it.roles || it.roles.includes(role),
+  );
+
+  const actionClass = cn(
+    "flex w-full items-center gap-2 rounded-md py-2 text-sm text-muted-foreground transition-colors cursor-pointer hover:bg-accent hover:text-foreground",
+    collapsed ? "justify-center px-2" : "px-3",
   );
 
   return (
@@ -78,6 +89,7 @@ export function SidebarNav({
                   active={isActive(pathname, href)}
                   onNavigate={onNavigate}
                   demoMode={demoMode}
+                  collapsed={collapsed}
                 />
               </li>
             );
@@ -99,6 +111,7 @@ export function SidebarNav({
                   active={isActive(pathname, href)}
                   onNavigate={onNavigate}
                   demoMode={demoMode}
+                  collapsed={collapsed}
                 />
               </li>
             );
@@ -108,19 +121,21 @@ export function SidebarNav({
               <Link
                 href="/"
                 onClick={onNavigate}
-                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors cursor-pointer hover:bg-accent hover:text-foreground"
+                title={collapsed ? "Exit demo" : undefined}
+                className={actionClass}
               >
-                <LogOut className="h-4 w-4" />
-                Exit demo
+                <LogOut className="h-4 w-4 shrink-0" />
+                {!collapsed && "Exit demo"}
               </Link>
             ) : (
               <form action={logoutAction}>
                 <button
                   type="submit"
-                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors cursor-pointer hover:bg-accent hover:text-foreground"
+                  title={collapsed ? "Log out" : undefined}
+                  className={actionClass}
                 >
-                  <LogOut className="h-4 w-4" />
-                  Log out
+                  <LogOut className="h-4 w-4 shrink-0" />
+                  {!collapsed && "Log out"}
                 </button>
               </form>
             )}

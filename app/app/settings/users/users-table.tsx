@@ -540,6 +540,7 @@ function EditDialog({
   useEffect(() => {
     if (user) {
       reset({
+        email: user.email ?? "",
         full_name: user.full_name,
         role: user.role,
         status: user.status,
@@ -572,12 +573,28 @@ function EditDialog({
           <form onSubmit={handleSubmit((data) => save.mutate(data))}>
             <DialogHeader>
               <DialogTitle>Edit user</DialogTitle>
-              <DialogDescription className="font-mono text-xs">
-                {user.email}
+              <DialogDescription>
+                Changes take effect immediately. Share a new password securely
+                if you set one.
               </DialogDescription>
             </DialogHeader>
 
             <div className="flex flex-col gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="edit-email">Email</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  autoComplete="off"
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <p className="text-xs text-destructive">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
               <div className="flex flex-col gap-2">
                 <Label htmlFor="edit-name">Full name</Label>
                 <Input id="edit-name" {...register("full_name")} />

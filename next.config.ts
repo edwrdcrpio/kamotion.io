@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Pin Turbopack's workspace root to this repo. Without this, an unrelated
+  // package-lock.json in a parent directory confuses the resolver.
+  turbopack: {
+    root: import.meta.dirname,
+  },
 };
 
 export default nextConfig;
