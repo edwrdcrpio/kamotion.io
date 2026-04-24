@@ -15,11 +15,14 @@ import {
   FileText,
   Hash,
   ShieldCheck,
-  Code2,
+  ListChecks,
   Briefcase,
   Users2,
   Check,
   GitBranch,
+  Inbox,
+  Bot,
+  Bell,
 } from "lucide-react";
 import { SiteNav } from "@/components/marketing/site-nav";
 import { SiteFooter } from "@/components/marketing/site-footer";
@@ -47,6 +50,7 @@ export default function Home() {
         <Personas />
         <DarkTrust />
         <Origin />
+        <ComingSoon />
         <FooterCTA />
       </main>
 
@@ -804,9 +808,9 @@ function Features() {
 function Personas() {
   const personas = [
     {
-      icon: Code2,
-      title: "Full-stack devs",
-      copy: "Wearing five hats — client calls, PRs, marketing side-work. kamotion keeps the non-code work from eating your focus.",
+      icon: ListChecks,
+      title: "Personal life",
+      copy: "Groceries, birthdays, school forms, packing a trip, a move — anything that lives in group chats or brain-dump notes turns into one clear list.",
     },
     {
       icon: Briefcase,
@@ -961,9 +965,9 @@ function Origin() {
           Built because I needed it.
         </h2>
         <p className="mt-5 text-balance leading-relaxed text-muted-foreground">
-          I'm a full-stack dev, marketer, and solo builder behind Digestible
-          Apps. My tasks don't live in one place — they're scattered across
-          Slack, email, Teams, texts, Zoom, Docs.
+          I'm a full-stack dev, marketer, and solo builder. My tasks don't
+          live in one place — they're scattered across Slack, email, Teams,
+          texts, Zoom, Docs.
         </p>
         <p className="mt-4 text-balance leading-relaxed text-muted-foreground">
           I was constantly digging through conversations just to figure out
@@ -978,6 +982,69 @@ function Origin() {
           commotion.
         </p>
         <p className="mt-6 font-mono text-sm text-foreground">— Edward</p>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------ COMING SOON ---------------------------- */
+
+function ComingSoon() {
+  const items = [
+    {
+      icon: Inbox,
+      title: "Inbox sync",
+      copy: "kamotion pulls new emails on its own and queues them for parsing — skip the paste step entirely.",
+    },
+    {
+      icon: Bot,
+      title: "Slack & Telegram bots",
+      copy: "Tag @kamotion in a channel and the thread becomes cards without anyone leaving the conversation.",
+    },
+    {
+      icon: Bell,
+      title: "Active comms",
+      copy: "Due-date nudges, team pings, and drafted follow-up emails routed to whoever owns the card.",
+    },
+    {
+      icon: Sparkles,
+      title: "Delegate to AI",
+      copy: "Assign a card to an agent — write the blog, email the vendor, plan the event, fix the site bug.",
+    },
+  ];
+
+  return (
+    <section id="roadmap" className="px-6 py-24">
+      <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            Coming soon
+          </span>
+          <h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+            What&rsquo;s next.
+          </h2>
+          <p className="mt-4 text-balance text-muted-foreground">
+            kamotion today is the kanban and the parser. Here&rsquo;s where
+            it&rsquo;s going.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {items.map(({ icon: Icon, title, copy }) => (
+            <article
+              key={title}
+              className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6"
+            >
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Icon className="h-5 w-5" />
+              </span>
+              <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {copy}
+              </p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

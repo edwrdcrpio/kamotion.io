@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { Camera, Info, AlertTriangle, Sparkles, ArrowRight } from "lucide-react";
+import { Info, AlertTriangle, Sparkles, ArrowRight } from "lucide-react";
 
 export function DocSection({
   id,
@@ -166,35 +166,27 @@ export function DocFigure({
   route,
   theme,
   capture,
-  notes,
-  children,
+  file,
 }: {
   label: string;
   route?: string;
   theme?: "light" | "dark" | "both";
   capture: string;
-  notes?: string;
-  children?: ReactNode;
+  file: string;
 }) {
   return (
-    <figure className="my-4 overflow-hidden rounded-xl border border-dashed border-border bg-muted/30">
-      {children ? (
-        <div className="border-b border-border/60 bg-background p-4">{children}</div>
-      ) : (
-        <div className="flex min-h-[220px] items-center justify-center border-b border-border/60 bg-background p-8">
-          <div className="flex flex-col items-center gap-2 text-center text-muted-foreground">
-            <Camera className="h-5 w-5 text-muted-foreground/60" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em]">
-              Screenshot placeholder
-            </span>
-          </div>
-        </div>
-      )}
+    <figure className="my-4 overflow-hidden rounded-xl border border-border bg-muted/30">
+      <div className="border-b border-border/60 bg-background">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`/assets/${file}`}
+          alt={label}
+          className="block h-auto w-full"
+          loading="lazy"
+        />
+      </div>
       <figcaption className="flex flex-col gap-1.5 px-4 py-3 text-[12px]">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary">
-            {children ? "Mock" : "Capture"}
-          </span>
           <span className="font-medium text-foreground">{label}</span>
           {route && (
             <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
@@ -208,15 +200,8 @@ export function DocFigure({
           )}
         </div>
         <p className="text-[12px] leading-relaxed text-muted-foreground">
-          <span className="font-medium text-foreground/80">What to show: </span>
           {capture}
         </p>
-        {notes && (
-          <p className="text-[12px] leading-relaxed text-muted-foreground/80">
-            <span className="font-medium text-foreground/70">Notes: </span>
-            {notes}
-          </p>
-        )}
       </figcaption>
     </figure>
   );

@@ -446,9 +446,9 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
             </div>
             <Textarea
               id="systemPrompt"
-              rows={8}
+              rows={12}
               {...register("systemPrompt")}
-              className="font-mono text-sm"
+              className="field-sizing-fixed resize-y font-mono text-sm"
             />
             {errors.systemPrompt && (
               <p className="text-xs text-destructive">

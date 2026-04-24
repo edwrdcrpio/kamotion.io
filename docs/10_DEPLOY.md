@@ -16,7 +16,7 @@ Kamotion deploys as a single Next.js application managed by [Dokploy](https://do
 | Layer | Where it lives |
 |---|---|
 | Next.js app (this repo) | Dokploy container on VPS, built by Nixpacks |
-| Postgres + Auth + Storage | Supabase (managed, project `njlidscexyofixjbtyhd`) |
+| Postgres + Auth + Storage | Supabase (managed, project `<your-project-ref>`) |
 | AI calls (in-app path) | Provider API from inside the container (OpenRouter / OpenAI / Anthropic / Google) |
 | AI calls (n8n path) | Wherever your n8n instance runs (Kamotion just POSTs to a webhook URL) |
 | Reverse proxy + SSL | Traefik (bundled with Dokploy) |
@@ -42,7 +42,7 @@ Dokploy's env-vars panel exposes both. Mark build-time vars accordingly if the p
 
 | Var | Phase | Value |
 |---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | **build** | `https://njlidscexyofixjbtyhd.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_URL` | **build** | `https://<your-project-ref>.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | **build** | Supabase Dashboard → API Settings → `anon public` |
 | `SUPABASE_SERVICE_ROLE_KEY` | runtime | Supabase Dashboard → API Settings → `service_role` (**secret**) |
 | `AI_API_KEY_OPENROUTER` | runtime | OpenRouter account → Keys (**secret**). Name must match the "API key env var" set in `/app/settings`. |
@@ -92,7 +92,7 @@ Run through these in order — they're ordered so a failure points you at the la
 
 1. **Homepage loads**: `/` renders the Mixpanel-style landing page.
 2. **Theme toggle**: click the sun/moon icon in the sticky nav — site switches light/dark.
-3. **Login**: `/login` → sign in as the admin (`edwardcarpio@me.com`) → redirects to `/app`.
+3. **Login**: `/login` → sign in as the admin (`admin@example.com`) → redirects to `/app`.
 4. **Board loads**: `/app` shows the kanban columns with seeded demo cards. (If the fetch fails → check `NEXT_PUBLIC_SUPABASE_*`.)
 5. **Create card**: click **New Card** → fill → save. Card appears in Queue. (If PATCH fails → check Supabase RLS; admin user should pass.)
 6. **Generate page**: `/app/generate` → paste a short task dump → parse runs, cards preview. (If 500 → check `AI_API_KEY_OPENROUTER` env var + the "API key env var" name in `/app/settings` matches.)

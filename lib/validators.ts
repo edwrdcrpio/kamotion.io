@@ -125,6 +125,7 @@ export type AdminUserCreateInput = z.infer<typeof AdminUserCreateInput>;
 
 export const AdminUserUpdateInput = z
   .object({
+    email: z.string().email().max(254).optional(),
     full_name: z.string().min(1).max(120).optional(),
     role: Role.optional(),
     status: ProfileStatus.optional(),

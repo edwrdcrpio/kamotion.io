@@ -57,11 +57,23 @@ export async function PATCH(
       if (tmErr) console.error("[admin/users] team_members mirror failed:", tmErr);
     }
 
-    if (input.password) {
-      const { error: pwErr } = await admin.auth.admin.updateUserById(id, {
-        password: input.password,
+    const authUpdate: { password?: string; email?: string } = {};
+    if (input.password) authUpdate.password = input.password;
+    if (input.email !== undefined) authUpdate.email = input.email;
+    if (Object.keys(authUpdate).length > 0) {
+      const { error: authErr } = await admin.auth.admin.updateUserById(id, {
+        ...authUpdate,
+        email_confirm: true,
       });
-      if (pwErr) throw new HttpError(400, pwErr.message);
+      if (authErr) throw new HttpError(400, authErr.message);
+    }
+
+    if (input.email !== undefined) {
+      const { error: tmEmailErr } = await admin
+        .from("team_members")
+        .update({ email: input.email })
+        .eq("user_id", id);
+      if (tmEmailErr) console.error("[admin/users] team_members email mirror failed:", tmEmailErr);
     }
 
     return NextResponse.json({ ok: true });

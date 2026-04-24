@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { SettingsForm, type SettingsValues } from "./settings-form";
 import { AiProvider, ProcessingPath } from "@/lib/validators";
+import { DEFAULT_SYSTEM_PROMPT } from "@/lib/ai/default-prompt";
 
 export const metadata = { title: "Settings" };
 
@@ -28,10 +29,7 @@ export default async function SettingsPage() {
     aiProvider: providerParsed.success ? providerParsed.data : "openrouter",
     aiModel: str(map.aiModel, "anthropic/claude-sonnet-4-6"),
     aiApiKeyRef: str(map.aiApiKeyRef, "AI_API_KEY_OPENROUTER"),
-    systemPrompt: str(
-      map.systemPrompt,
-      "You are a project management assistant. Extract actionable tasks from the provided text and return them as structured cards. Return only valid JSON matching the schema.",
-    ),
+    systemPrompt: str(map.systemPrompt, DEFAULT_SYSTEM_PROMPT),
     processingPath: pathParsed.success ? pathParsed.data : "in-app",
     n8nWebhookUrl: str(map.n8nWebhookUrl, ""),
   };
