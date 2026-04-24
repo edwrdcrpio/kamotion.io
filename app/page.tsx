@@ -21,8 +21,9 @@ import {
   Check,
   GitBranch,
 } from "lucide-react";
-import { SiteNav, ACCESS_EMAIL } from "@/components/marketing/site-nav";
+import { SiteNav } from "@/components/marketing/site-nav";
 import { SiteFooter } from "@/components/marketing/site-footer";
+import { GithubStar } from "@/components/marketing/github-star";
 
 const HOME_NAV_LINKS = [
   { label: "How it works", href: "#how" },
@@ -62,18 +63,18 @@ function PromoBar() {
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-center gap-2 px-6 py-2 text-xs sm:flex-row sm:gap-3">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-2.5 py-0.5 font-medium text-primary">
           <span className="h-1.5 w-1.5 rounded-full bg-primary motion-safe:animate-pulse" />
-          Invite-only beta
+          Live demo
         </span>
         <span className="text-neutral-400">
-          Early access for people drowning in channels.
+          Play with the real app in your browser — no signup.
         </span>
-        <a
-          href={ACCESS_EMAIL}
+        <Link
+          href="/try"
           className="inline-flex items-center gap-1 font-medium text-neutral-50 underline-offset-2 hover:underline"
         >
-          Request access
+          Try the demo
           <ArrowRight className="h-3 w-3" />
-        </a>
+        </Link>
       </div>
     </div>
   );
@@ -111,13 +112,13 @@ function Hero() {
         </p>
 
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
-          <a
-            href={ACCESS_EMAIL}
+          <Link
+            href="/try"
             className="inline-flex h-12 items-center justify-center gap-1.5 rounded-lg bg-foreground px-7 text-sm font-medium text-background shadow-lg shadow-foreground/10 transition-colors hover:bg-foreground/90 cursor-pointer"
           >
-            Request access
+            Try the demo
             <ArrowRight className="h-4 w-4" />
-          </a>
+          </Link>
           <Link
             href="/login"
             className="inline-flex h-12 items-center justify-center rounded-lg border border-border bg-background/70 px-7 text-sm font-medium text-foreground backdrop-blur transition-colors hover:bg-accent cursor-pointer"
@@ -928,13 +929,13 @@ function DarkTrust() {
         </ul>
 
         <div className="mt-14 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <a
-            href={ACCESS_EMAIL}
+          <Link
+            href="/try"
             className="inline-flex h-12 items-center justify-center gap-1.5 rounded-lg bg-white px-7 text-sm font-medium text-neutral-900 shadow-lg transition-colors hover:bg-neutral-100 cursor-pointer"
           >
-            Request access
+            Try the demo
             <ArrowRight className="h-4 w-4" />
-          </a>
+          </Link>
           <Link
             href="/login"
             className="inline-flex h-12 items-center justify-center rounded-lg border border-white/20 px-7 text-sm font-medium text-neutral-50 transition-colors hover:bg-white/10 cursor-pointer"
@@ -1001,23 +1002,26 @@ function FooterCTA() {
             Cut through the commotion.
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-balance text-muted-foreground sm:text-lg">
-            kamotion is invite-only right now. If you're drowning in channels
-            and want in, reach out.
+            Take it for a spin — the demo is the real app, seeded with sample
+            data. Nothing to install, nothing to sign up for.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <a
-              href={ACCESS_EMAIL}
+            <Link
+              href="/try"
               className="inline-flex h-12 items-center justify-center gap-1.5 rounded-lg bg-foreground px-7 text-sm font-medium text-background shadow-lg shadow-foreground/10 transition-colors hover:bg-foreground/90 cursor-pointer"
             >
-              Request access
+              Try the demo
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
             <Link
               href="/login"
               className="inline-flex h-12 items-center justify-center rounded-lg border border-border bg-background/70 px-7 text-sm font-medium text-foreground backdrop-blur transition-colors hover:bg-accent cursor-pointer"
             >
               Log in
             </Link>
+          </div>
+          <div className="mt-6 flex justify-center">
+            <GithubStar />
           </div>
         </div>
       </div>

@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { brand } from "@/config/brand";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileLandingNav } from "@/components/marketing/mobile-landing-nav";
 import { KamotionWordmark } from "@/components/brand/kamotion-wordmark";
-
-const ACCESS_EMAIL = `mailto:hello@${brand.domain}?subject=kamotion access request`;
 
 export type SiteNavLink = { label: string; href: string };
 
@@ -49,18 +46,16 @@ export function SiteNav({ links = HOME_LINKS }: { links?: SiteNavLink[] }) {
           >
             Log in
           </Link>
-          <a
-            href={ACCESS_EMAIL}
+          <Link
+            href="/try"
             className="inline-flex h-9 items-center justify-center gap-1.5 rounded-md bg-foreground px-3.5 text-sm font-medium text-background shadow-sm transition-colors hover:bg-foreground/90 cursor-pointer"
           >
-            Request access
+            Try the demo
             <ArrowRight className="h-3.5 w-3.5" />
-          </a>
-          <MobileLandingNav accessEmail={ACCESS_EMAIL} links={links} />
+          </Link>
+          <MobileLandingNav links={links} />
         </div>
       </div>
     </header>
   );
 }
-
-export { ACCESS_EMAIL };

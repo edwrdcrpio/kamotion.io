@@ -39,12 +39,12 @@ export default async function LoginPage() {
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
           No account?{" "}
-          <a
-            href={`mailto:hello@${brand.domain}?subject=Kamotion access request`}
+          <Link
+            href="/try"
             className="underline underline-offset-4 hover:text-foreground transition-colors"
           >
-            Request access
-          </a>
+            Try the demo
+          </Link>
           .
         </p>
       </div>

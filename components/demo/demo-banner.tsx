@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { X, ArrowRight } from "lucide-react";
-import { ACCESS_EMAIL } from "@/components/marketing/site-nav";
+import { X } from "lucide-react";
 
 export function DemoBanner() {
   const [visible, setVisible] = useState(true);
@@ -25,13 +24,6 @@ export function DemoBanner() {
         >
           Exit demo
         </Link>
-        <a
-          href={ACCESS_EMAIL}
-          className="hidden items-center gap-1 rounded-md border border-primary/40 bg-background/70 px-2.5 py-1 text-[12px] font-medium text-foreground transition-colors hover:bg-background sm:inline-flex"
-        >
-          Request access
-          <ArrowRight className="h-3 w-3" />
-        </a>
         <button
           type="button"
           onClick={() => setVisible(false)}
