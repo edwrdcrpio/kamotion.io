@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { brand } from "@/config/brand";
 import { KamotionWordmark } from "@/components/brand/kamotion-wordmark";
-
-const ACCESS_EMAIL = `mailto:hello@${brand.domain}?subject=kamotion access request`;
+import { GithubStar } from "@/components/marketing/github-star";
 
 export function SiteFooter() {
   return (
@@ -20,6 +19,9 @@ export function SiteFooter() {
             From scattered messages to organized work. Built for people running
             on too many channels.
           </p>
+          <div className="mt-4">
+            <GithubStar variant="link" />
+          </div>
         </div>
 
         <FooterCol
@@ -27,7 +29,7 @@ export function SiteFooter() {
           links={[
             { label: "How it works", href: "/#how" },
             { label: "Features", href: "/#features" },
-            { label: "Try it live", href: "/try" },
+            { label: "Try the demo", href: "/try" },
             { label: "Docs", href: "/docs" },
             { label: "Log in", href: "/login" },
           ]}
@@ -46,9 +48,11 @@ export function SiteFooter() {
           links={[
             { label: "Origin", href: "/#origin" },
             { label: "Docs", href: "/docs" },
-            { label: "Request access", href: ACCESS_EMAIL },
             { label: "Contact", href: `mailto:hello@${brand.domain}` },
-            { label: "GitHub (soon)", href: "#" },
+            {
+              label: brand.github ? "GitHub" : "GitHub (soon)",
+              href: brand.github ?? "#",
+            },
           ]}
         />
       </div>

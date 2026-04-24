@@ -23,13 +23,7 @@ const DEFAULT_SECTIONS: NavLink[] = [
   { href: "/try", label: "Try it" },
 ];
 
-export function MobileLandingNav({
-  accessEmail,
-  links,
-}: {
-  accessEmail: string;
-  links?: NavLink[];
-}) {
+export function MobileLandingNav({ links }: { links?: NavLink[] }) {
   const sections = links ?? DEFAULT_SECTIONS;
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
@@ -87,14 +81,14 @@ export function MobileLandingNav({
           >
             Log in
           </Link>
-          <a
-            href={accessEmail}
+          <Link
+            href="/try"
             onClick={close}
             className="inline-flex h-10 items-center justify-center gap-1.5 rounded-md bg-foreground px-3.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90 cursor-pointer"
           >
-            Request access
+            Try the demo
             <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          </Link>
         </div>
       </SheetContent>
     </Sheet>
