@@ -19,14 +19,13 @@ function NavLink({
   onNavigate?: () => void;
   demoMode: boolean;
 }) {
-  const { label, icon: Icon, demoLocked, tourAttr } = item;
+  const { label, icon: Icon, demoLocked } = item;
   const href = demoMode ? item.demoHref : item.href;
   const showLock = demoMode && demoLocked;
   return (
     <Link
       href={href}
       onClick={onNavigate}
-      data-tour={demoMode ? tourAttr : undefined}
       className={cn(
         "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors cursor-pointer",
         active
@@ -70,7 +69,10 @@ export function SidebarNav({
           {mainItems.map((item) => {
             const href = demoMode ? item.demoHref : item.href;
             return (
-              <li key={href}>
+              <li
+                key={href}
+                data-tour={demoMode ? item.tourAttr : undefined}
+              >
                 <NavLink
                   item={item}
                   active={isActive(pathname, href)}
@@ -88,7 +90,10 @@ export function SidebarNav({
           {footerItems.map((item) => {
             const href = demoMode ? item.demoHref : item.href;
             return (
-              <li key={href}>
+              <li
+                key={href}
+                data-tour={demoMode ? item.tourAttr : undefined}
+              >
                 <NavLink
                   item={item}
                   active={isActive(pathname, href)}

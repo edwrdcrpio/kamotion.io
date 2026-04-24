@@ -58,6 +58,29 @@ const COLUMN_TO_STATUS: Record<Column, Status> = {
   Done: "Approved",
 };
 
+// Parse "30m" / "Xh" / "Xd" → days, min 1. Matches the gantt-chart formula
+// so auto-scheduled cards render at the duration the user set.
+function parseDurationDays(d: string | null | undefined): number {
+  if (!d) return 1;
+  const m = d.match(/^(\d+(?:\.\d+)?)(m|h|d)$/);
+  if (!m) return 1;
+  const n = Number(m[1]);
+  const unit = m[2];
+  if (unit === "d") return Math.max(1, Math.round(n));
+  if (unit === "h") return Math.max(1, Math.ceil(n / 24));
+  return 1;
+}
+
+// When a card is promoted out of Queue without a due_date, default to today
+// + (duration - 1) so it lands on the gantt starting today. User can drag
+// or resize to adjust.
+function defaultDueDate(duration: string | null | undefined): string {
+  const days = parseDurationDays(duration);
+  const d = new Date();
+  d.setDate(d.getDate() + days - 1);
+  return d.toISOString().slice(0, 10);
+}
+
 type CardsResponse = { cards: Card[] };
 
 async function fetchCards(): Promise<CardsResponse> {
@@ -260,6 +283,12 @@ export function Board() {
     if (!isSameColumn) {
       patch.column_name = destColumn;
       patch.status = COLUMN_TO_STATUS[destColumn];
+      // Auto-schedule: cards leaving Queue without a due_date get one based
+      // on their estimated_duration so they land on the gantt instead of
+      // sitting in Unscheduled. User can still adjust via drag/resize.
+      if (destColumn !== "Queue" && !source.due_date) {
+        patch.due_date = defaultDueDate(source.estimated_duration);
+      }
     }
 
     reorderCard.mutate({ id: sourceId, patch });

@@ -4,7 +4,6 @@
 // cards on the /try board. The tour already mentions drag-and-drop in the
 // "Board columns" step; this reinforces it with a motion hint and a concrete
 // micro-animation of a card sliding Ready → In Progress.
-import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -26,8 +25,7 @@ async function fetchCards(): Promise<{ cards: Card[] }> {
 }
 
 export function DragHintDialog() {
-  const { dragHintDismissed, dismissDragHint, tourStep, tourSkipped } =
-    useDemo();
+  const { dragHintDismissed, dismissDragHint } = useDemo();
   const pathname = usePathname();
 
   // Only poll once — the dialog is strictly a "first cards land on the board"
@@ -40,20 +38,9 @@ export function DragHintDialog() {
   });
 
   const hasCards = (data?.cards ?? []).length > 0;
-  // Keep this independent of the tour — if the visitor skipped the tour we
-  // still want to teach them drag-and-drop once cards exist.
-  const shouldOpen =
-    pathname === "/try" &&
-    !dragHintDismissed &&
-    hasCards &&
-    (tourSkipped || tourStep >= 5);
-
-  // Small delay so the dialog doesn't slam in at the same instant as the
-  // router.push("/try") from PreviewDialog — gives the board a moment to
-  // hydrate first.
-  useEffect(() => {
-    // no-op; retained so this component can grow a timer later.
-  }, []);
+  // Fires whenever the board has cards — covers both the tour flow and the
+  // "user skipped the tour and added cards manually" case.
+  const shouldOpen = pathname === "/try" && !dragHintDismissed && hasCards;
 
   return (
     <Dialog
@@ -64,10 +51,10 @@ export function DragHintDialog() {
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>One more thing — drag to update status</DialogTitle>
+          <DialogTitle>Your board</DialogTitle>
           <DialogDescription>
-            Cards move by dragging. Dropping a card into a different column
-            updates its status automatically.
+            Drag cards between columns to update their status. Click any card
+            to edit every field in the drawer.
           </DialogDescription>
         </DialogHeader>
 

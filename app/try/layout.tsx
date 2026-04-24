@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 // nav item renders; Users + Settings are flagged demoLocked in nav-config
 // so they render a lock icon and route to the <LockedPanel> stubs.
 const DEMO_PROFILE = {
-  full_name: "Sarah Chen",
-  email: "sarah@acme.co",
+  full_name: "John Wix",
+  email: "jwix@continental.com",
   role: "admin" as const,
 };
 

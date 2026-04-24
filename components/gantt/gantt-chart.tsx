@@ -157,6 +157,11 @@ export function GanttChart() {
   const [dragOffsetDays, setDragOffsetDays] = useState<Record<string, number>>(
     {},
   );
+  // Resize offsets are separate from move offsets so the bar can grow/shrink
+  // without shifting its start date.
+  const [resizeOffsetDays, setResizeOffsetDays] = useState<
+    Record<string, number>
+  >({});
 
   const filtered = useMemo(
     () => applyFilters(allCards, filters),
@@ -245,6 +250,30 @@ export function GanttChart() {
     onSettled: () => qc.invalidateQueries({ queryKey: ["cards"] }),
   });
 
+  const updateSchedule = useMutation({
+    mutationFn: ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: { due_date: string; estimated_duration: string };
+    }) => patchCard(id, patch),
+    onMutate: async ({ id, patch }) => {
+      await qc.cancelQueries({ queryKey: ["cards"] });
+      const prev = qc.getQueryData<CardsResponse>(["cards"]);
+      qc.setQueryData<CardsResponse>(["cards"], (old) => ({
+        cards: (old?.cards ?? []).map((c) =>
+          c.id === id ? { ...c, ...patch } : c,
+        ),
+      }));
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["cards"], ctx.prev);
+    },
+    onSettled: () => qc.invalidateQueries({ queryKey: ["cards"] }),
+  });
+
   const selectedCard =
     selectedCardId != null
       ? allCards.find((c) => c.id === selectedCardId) ?? null
@@ -311,10 +340,13 @@ export function GanttChart() {
               scheduled={scheduled}
               dragOffsetDays={dragOffsetDays}
               setDragOffsetDays={setDragOffsetDays}
+              resizeOffsetDays={resizeOffsetDays}
+              setResizeOffsetDays={setResizeOffsetDays}
               onOpen={setSelectedCardId}
               onCommit={(id, due_date) =>
                 updateDueDate.mutate({ id, due_date })
               }
+              onResize={(id, patch) => updateSchedule.mutate({ id, patch })}
             />
           </div>
         </div>
@@ -404,8 +436,16 @@ type ChartSvgProps = {
   setDragOffsetDays: React.Dispatch<
     React.SetStateAction<Record<string, number>>
   >;
+  resizeOffsetDays: Record<string, number>;
+  setResizeOffsetDays: React.Dispatch<
+    React.SetStateAction<Record<string, number>>
+  >;
   onOpen: (id: string) => void;
   onCommit: (id: string, due_date: string) => void;
+  onResize: (
+    id: string,
+    patch: { due_date: string; estimated_duration: string },
+  ) => void;
 };
 
 function ChartSvg({
@@ -418,17 +458,33 @@ function ChartSvg({
   scheduled,
   dragOffsetDays,
   setDragOffsetDays,
+  resizeOffsetDays,
+  setResizeOffsetDays,
   onOpen,
   onCommit,
+  onResize,
 }: ChartSvgProps) {
   const dragRef = useRef<{
     id: string;
     startX: number;
     moved: boolean;
   } | null>(null);
+  const resizeRef = useRef<{
+    id: string;
+    startX: number;
+    moved: boolean;
+    baseDays: number;
+  } | null>(null);
 
   const clearOffset = (id: string) =>
     setDragOffsetDays((prev) => {
+      if (!(id in prev)) return prev;
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  const clearResize = (id: string) =>
+    setResizeOffsetDays((prev) => {
       if (!(id in prev)) return prev;
       const next = { ...prev };
       delete next[id];
@@ -478,6 +534,54 @@ function ChartSvg({
         onCommit(id, toIso(newEnd));
       }
       clearOffset(id);
+    };
+
+  // Right-edge resize: shifts the due_date without moving the start. The
+  // bar's effective duration in days becomes base + offset (clamped ≥ 1).
+  const handleResizeDown =
+    (id: string, baseDays: number) =>
+    (e: React.PointerEvent<SVGRectElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      (e.currentTarget as Element).setPointerCapture(e.pointerId);
+      resizeRef.current = { id, startX: e.clientX, moved: false, baseDays };
+    };
+
+  const handleResizeMove = (e: React.PointerEvent<SVGRectElement>) => {
+    const r = resizeRef.current;
+    if (!r) return;
+    const dx = e.clientX - r.startX;
+    if (Math.abs(dx) >= DRAG_THRESHOLD_PX) r.moved = true;
+    const days = Math.round(dx / DAY_WIDTH);
+    const clamped = Math.max(days, -(r.baseDays - 1));
+    setResizeOffsetDays((prev) =>
+      prev[r.id] === clamped ? prev : { ...prev, [r.id]: clamped },
+    );
+  };
+
+  const handleResizeUp =
+    (id: string) => (e: React.PointerEvent<SVGRectElement>) => {
+      const r = resizeRef.current;
+      resizeRef.current = null;
+      const target = e.currentTarget as Element;
+      if (target.hasPointerCapture(e.pointerId)) {
+        target.releasePointerCapture(e.pointerId);
+      }
+      const offset = resizeOffsetDays[id] ?? 0;
+      if (!r?.moved || offset === 0) {
+        clearResize(id);
+        return;
+      }
+      const sched = scheduled.find((s) => s.card.id === id);
+      if (sched) {
+        const newDurationDays = Math.max(1, sched.durationDays + offset);
+        const newEnd = addDays(sched.start, newDurationDays - 1);
+        onResize(id, {
+          due_date: toIso(newEnd),
+          estimated_duration: `${newDurationDays}d`,
+        });
+      }
+      clearResize(id);
     };
 
   return (
@@ -581,17 +685,20 @@ function ChartSvg({
       ))}
 
       {scheduled.map((s, i) => {
-        const offset = dragOffsetDays[s.card.id] ?? 0;
-        const startIdx = diffDays(s.start, rangeStart) + offset;
+        const moveOffset = dragOffsetDays[s.card.id] ?? 0;
+        const resizeOffset = resizeOffsetDays[s.card.id] ?? 0;
+        const startIdx = diffDays(s.start, rangeStart) + moveOffset;
         const x = startIdx * DAY_WIDTH + 2;
         const y = HEADER_HEIGHT + i * ROW_HEIGHT + BAR_INSET;
-        const w = Math.max(s.durationDays * DAY_WIDTH - 4, 12);
+        const effectiveDays = Math.max(1, s.durationDays + resizeOffset);
+        const w = Math.max(effectiveDays * DAY_WIDTH - 4, 12);
         const h = ROW_HEIGHT - BAR_INSET * 2;
-        const newEnd = addDays(s.end, offset);
+        const newEnd = addDays(s.end, moveOffset + resizeOffset);
         const labelChars = Math.max(0, Math.floor((w - 16) / 7));
         const labelText = s.card.task
           .replace(/^\[demo\]\s*/, "")
           .slice(0, labelChars);
+        const handleW = 6;
         return (
           <g
             key={s.card.id}
@@ -613,7 +720,7 @@ function ChartSvg({
               style={{ cursor: "grab", touchAction: "none" }}
             >
               <title>
-                {s.card.task} · ends {toIso(newEnd)} · {s.durationDays}d
+                {s.card.task} · ends {toIso(newEnd)} · {effectiveDays}d
               </title>
             </rect>
             {labelText.length > 0 && (
@@ -625,6 +732,22 @@ function ChartSvg({
                 {labelText}
               </text>
             )}
+            {/* Right-edge resize handle. Wider hit area than the visible grip
+                so it's easier to grab on touch devices. */}
+            <rect
+              x={x + w - handleW}
+              y={y}
+              width={handleW}
+              height={h}
+              className="fill-white/30 hover:fill-white/60"
+              onPointerDown={handleResizeDown(s.card.id, s.durationDays)}
+              onPointerMove={handleResizeMove}
+              onPointerUp={handleResizeUp(s.card.id)}
+              onPointerCancel={handleResizeUp(s.card.id)}
+              style={{ cursor: "ew-resize", touchAction: "none" }}
+            >
+              <title>Drag to change due date</title>
+            </rect>
           </g>
         );
       })}

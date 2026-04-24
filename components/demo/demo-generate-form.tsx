@@ -121,6 +121,7 @@ export function DemoGenerateForm() {
         }}
         redirectTo="/try"
         confirmTourAttr="add-to-queue"
+        disableOutsideClose
       />
     </main>
   );

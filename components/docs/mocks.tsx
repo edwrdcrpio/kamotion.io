@@ -157,9 +157,9 @@ export function GanttMock() {
           Task
         </div>
         <div className="grid grid-cols-8 border-b border-border pb-1">
-          {days.map((d) => (
+          {days.map((d, i) => (
             <div
-              key={d}
+              key={`${d}-${i}`}
               className="text-center font-mono text-[9px] uppercase tracking-wider text-muted-foreground"
             >
               {d}

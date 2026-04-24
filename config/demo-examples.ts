@@ -42,7 +42,8 @@ export const DEMO_EXAMPLES: DemoExample[] = [
     id: "email",
     label: "Email thread",
     sourceLabel: "Internal email — Q3 launch prep",
-    description: "5 marketing-team cards",
+    description:
+      "Your marketing lead pings the team about Q3 launch blockers",
     source: `From: Sarah Chen <sarah@acme.co>
 To: Marketing team
 Subject: Re: Q3 launch prep — where are we?
@@ -128,7 +129,8 @@ Let me know what's blocking any of these and I'll help unstick.
     id: "text",
     label: "Text conversation",
     sourceLabel: "iMessage — Casey & Morgan",
-    description: "4 website issue cards",
+    description:
+      "A coworker texts you about bugs they spotted on the pricing page",
     source: `Casey · 2:14 PM
 hey are you seeing this
 
@@ -209,7 +211,8 @@ ok i'll file these. the broken button has to go first`,
     id: "transcript",
     label: "Zoom transcript",
     sourceLabel: "Weekly IT sync — Priya & Sam",
-    description: "6 IT ops cards",
+    description:
+      "Your weekly IT sync covers a VPN crisis and a SOC-2 deadline",
     source: `[Transcript · Weekly IT sync · 9:00 AM]
 
 Priya: OK, let's run through open IT items. Sam, lead us off.

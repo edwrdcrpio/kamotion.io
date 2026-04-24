@@ -34,7 +34,7 @@ export function Header({
         </span>
       </div>
       <div className="flex items-center gap-1 shrink-0">
-        <ThemeToggle />
+        {demoMode ? null : <ThemeToggle />}
         <MobileSidebar role={role} demoMode={demoMode} />
       </div>
     </header>
