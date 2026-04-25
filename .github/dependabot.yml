@@ -1,0 +1,33 @@
+ version: 2                                                                                                                                                                                            
+  updates:                                                                                                                                                                                              
+    - package-ecosystem: "npm"                                                                                                                                                                          
+      directory: "/"                                                                                                                                                                                    
+      schedule:                                                                                                                                                                                         
+        interval: "monthly"                                                                                                                                                                             
+      open-pull-requests-limit: 5              
+      groups:                         
+        next:
+          patterns:                                                                                                                                                                                     
+            - "next"
+            - "@next/*"                                                                                                                                                                                 
+            - "eslint-config-next"             
+        react:                        
+          patterns:
+            - "react"
+            - "react-dom"
+            - "@types/react*"
+        radix:                                                                                                                                                                                          
+          patterns:
+            - "radix-ui"                                                                                                                                                                                
+            - "@radix-ui/*"                    
+        tanstack:                     
+          patterns:
+            - "@tanstack/*"
+        ai-sdk:                                                                                                                                                                                         
+          patterns:
+            - "ai"                                                                                                                                                                                      
+            - "@ai-sdk/*"                      
+        types:                        
+          patterns:
+            - "@types/*"
+          dependency-type: "development"
