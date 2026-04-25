@@ -4,7 +4,7 @@
 // dismissed it this session (both flags live in DemoProvider → refresh wipes
 // them). Most transitions are action-gated: the user advances by clicking
 // the highlighted element, not a generic "Next" button.
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   Joyride,
@@ -101,11 +101,26 @@ export function DemoTour() {
   } = useDemo();
   const pathname = usePathname();
 
+  // The joyride spotlight + tooltips don't lay out well on phones (the sidebar
+  // is in a Sheet drawer, picker cards stack, etc.) and the action-gated
+  // transitions assume a desktop interaction model. On <md viewports we just
+  // skip the tour entirely and let visitors roam freely. The drag-hint dialog
+  // is independent and still fires once the board has cards.
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
   // Route-gated advancement: when the user clicks a highlighted link that
   // changes route, jump to the next step on the new route. Only fires when
   // the current step's expected route doesn't match — otherwise multiple
   // steps on the same route would cascade through on mount.
   useEffect(() => {
+    if (!isDesktop) return;
     if (tourSkipped || tourCompleted) return;
     const currentRoute = STEP_ROUTES[tourStep];
     if (currentRoute === pathname) return;
@@ -123,12 +138,13 @@ export function DemoTour() {
         return;
       }
     }
-  }, [pathname, tourStep, tourSkipped, tourCompleted, setTourStep]);
+  }, [pathname, tourStep, tourSkipped, tourCompleted, setTourStep, isDesktop]);
 
   // Dialog-gated advancement: the Preview dialog's Add to Queue button only
   // exists when the user has clicked Extract. Observe the DOM while we're on
   // the Extract step and bump forward as soon as it appears.
   useEffect(() => {
+    if (!isDesktop) return;
     if (tourStep !== DIALOG_WATCH_STEP) return;
     if (tourSkipped || tourCompleted) return;
     if (document.querySelector(DIALOG_TARGET_SELECTOR)) {
@@ -143,7 +159,7 @@ export function DemoTour() {
     });
     observer.observe(document.body, { childList: true, subtree: true });
     return () => observer.disconnect();
-  }, [tourStep, tourSkipped, tourCompleted, setTourStep]);
+  }, [tourStep, tourSkipped, tourCompleted, setTourStep, isDesktop]);
 
   const handleEvent = (data: EventData) => {
     const { status, action, index, type } = data;
@@ -167,6 +183,7 @@ export function DemoTour() {
   // compete for focus. As soon as the user clicks Got it, joyride resumes.
   const pausedForDragHint = tourStep === 5 && !dragHintDismissed;
   const running =
+    isDesktop &&
     !tourSkipped &&
     !tourCompleted &&
     !pausedForDragHint &&
