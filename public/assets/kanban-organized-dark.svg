@@ -1,0 +1,262 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" fill="none" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Page background -->
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+
+  <!-- Top header strip -->
+  <line x1="0" y1="48" x2="1600" y2="48" stroke="#1f1f23"/>
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="40" y="30" font-size="13" fill="#a1a1aa">John Wix</text>
+    <!-- moon icon -->
+    <g transform="translate(1548 18)" stroke="#a1a1aa" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3a6 6 0 1 0 9 9 7 7 0 0 1-9-9z"/>
+    </g>
+  </g>
+
+  <!-- Page title row -->
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <text x="40" y="92" font-size="28" font-weight="700" fill="#fafafa">Board</text>
+    <text x="40" y="114" font-size="12" fill="#71717a">9 cards</text>
+
+    <!-- + New card button -->
+    <g transform="translate(1438 76)">
+      <rect width="124" height="34" rx="7" fill="#14b8a6"/>
+      <g stroke="#fff" stroke-width="2" stroke-linecap="round">
+        <line x1="18" y1="17" x2="28" y2="17"/>
+        <line x1="23" y1="12" x2="23" y2="22"/>
+      </g>
+      <text x="40" y="22" font-size="13" font-weight="600" fill="#ffffff">New card</text>
+    </g>
+  </g>
+
+  <!-- Filter bar -->
+  <g transform="translate(40 138)" font-family="system-ui, -apple-system, sans-serif">
+    <!-- search -->
+    <rect width="380" height="34" rx="7" fill="#0f0f12" stroke="#27272a"/>
+    <g transform="translate(12 11)" stroke="#52525b" stroke-width="1.5" fill="none" stroke-linecap="round">
+      <circle cx="6" cy="6" r="5"/>
+      <line x1="10" y1="10" x2="14" y2="14"/>
+    </g>
+    <text x="38" y="22" font-size="12" fill="#52525b">Search tasks or notes…</text>
+
+    <!-- All assignees -->
+    <rect x="392" width="180" height="34" rx="7" fill="#0f0f12" stroke="#27272a"/>
+    <text x="406" y="22" font-size="12" fill="#a1a1aa">All assignees</text>
+    <path d="M 555 14 l 5 5 l 5 -5" stroke="#71717a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- All priorities -->
+    <rect x="584" width="180" height="34" rx="7" fill="#0f0f12" stroke="#27272a"/>
+    <text x="598" y="22" font-size="12" fill="#a1a1aa">All priorities</text>
+    <path d="M 747 14 l 5 5 l 5 -5" stroke="#71717a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- =================== COLUMNS =================== -->
+  <!--
+    5 columns @ 296px wide, gap 12, starting at x=40
+    col 0 (Queue):       x=40
+    col 1 (Ready):       x=348
+    col 2 (In Progress): x=656
+    col 3 (Review):      x=964
+    col 4 (Done):        x=1272
+    column header y=192, cards from y=232
+  -->
+
+  <!-- Column dividers / track -->
+  <g>
+    <rect x="40"   y="192" width="296" height="788" rx="10" fill="#0d0d10" stroke="#1f1f23"/>
+    <rect x="348"  y="192" width="296" height="788" rx="10" fill="#0d0d10" stroke="#1f1f23"/>
+    <rect x="656"  y="192" width="296" height="788" rx="10" fill="#0d0d10" stroke="#1f1f23"/>
+    <rect x="964"  y="192" width="296" height="788" rx="10" fill="#0d0d10" stroke="#1f1f23"/>
+    <rect x="1272" y="192" width="296" height="788" rx="10" fill="#0d0d10" stroke="#1f1f23"/>
+  </g>
+
+  <!-- Column headers -->
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <!-- Queue -->
+    <text x="60"  y="219" font-size="13" font-weight="600" fill="#a1a1aa">Queue</text>
+    <text x="306" y="219" font-size="11" fill="#71717a" text-anchor="end">2</text>
+    <path d="M 320 213 l -5 5 l 5 5" stroke="#52525b" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Ready -->
+    <text x="368" y="219" font-size="13" font-weight="600" fill="#14b8a6">Ready</text>
+    <text x="614" y="219" font-size="11" fill="#71717a" text-anchor="end">2</text>
+    <path d="M 628 213 l -5 5 l 5 5" stroke="#52525b" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- In Progress -->
+    <text x="676" y="219" font-size="13" font-weight="600" fill="#818cf8">In Progress</text>
+    <text x="922" y="219" font-size="11" fill="#71717a" text-anchor="end">2</text>
+    <path d="M 936 213 l -5 5 l 5 5" stroke="#52525b" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Review -->
+    <text x="984"  y="219" font-size="13" font-weight="600" fill="#fb7185">Review</text>
+    <text x="1230" y="219" font-size="11" fill="#71717a" text-anchor="end">1</text>
+    <path d="M 1244 213 l -5 5 l 5 5" stroke="#52525b" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+    <!-- Done -->
+    <text x="1292" y="219" font-size="13" font-weight="600" fill="#34d399">Done</text>
+    <text x="1538" y="219" font-size="11" fill="#71717a" text-anchor="end">2</text>
+    <path d="M 1552 213 l -5 5 l 5 5" stroke="#52525b" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- =================== CARDS =================== -->
+
+  <!-- ============== QUEUE COLUMN (x=40, inner 56-326) ============== -->
+  <!-- Card 1: Onboarding -->
+  <g transform="translate(56 244)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="118" rx="9" fill="#18181b" stroke="#27272a"/>
+    <!-- Priority: Normal (green circle) -->
+    <circle cx="246" cy="18" r="4" fill="#34d399" opacity="0.6"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#fafafa">Provision Jordan&apos;s laptop</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#fafafa">+ Slack / Jira / Figma access</text>
+    <text x="14" y="62" font-size="11" fill="#a1a1aa">Set up before Monday start.</text>
+    <text x="14" y="76" font-size="11" fill="#a1a1aa">Figma → Design Team (editor).</text>
+    <line x1="14" y1="90" x2="250" y2="90" stroke="#27272a"/>
+    <!-- assignee chip -->
+    <rect x="14" y="98" width="42" height="16" rx="3" fill="#27272a"/>
+    <text x="35" y="110" font-size="10" fill="#d4d4d8" text-anchor="middle">IT</text>
+    <!-- status chip -->
+    <rect x="190" y="98" width="60" height="16" rx="3" fill="#27272a"/>
+    <text x="220" y="110" font-size="10" fill="#a1a1aa" text-anchor="middle">Not Started</text>
+  </g>
+
+  <!-- Card 2: QR code -->
+  <g transform="translate(56 380)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="100" rx="9" fill="#18181b" stroke="#27272a"/>
+    <!-- Priority: Normal -->
+    <circle cx="246" cy="18" r="4" fill="#34d399" opacity="0.6"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#fafafa">Update expo QR code →</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#fafafa">demo signup page</text>
+    <text x="14" y="62" font-size="11" fill="#a1a1aa">Currently points to general form.</text>
+    <line x1="14" y1="74" x2="250" y2="74" stroke="#27272a"/>
+    <rect x="14" y="80" width="68" height="16" rx="3" fill="#27272a"/>
+    <text x="48" y="92" font-size="10" fill="#d4d4d8" text-anchor="middle">Marketing</text>
+    <rect x="190" y="80" width="60" height="16" rx="3" fill="#27272a"/>
+    <text x="220" y="92" font-size="10" fill="#a1a1aa" text-anchor="middle">Not Started</text>
+  </g>
+
+  <!-- ============== READY COLUMN (x=348) ============== -->
+  <!-- Card 3: Onboarding doc -->
+  <g transform="translate(364 244)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="118" rx="9" fill="#18181b" stroke="#27272a"/>
+    <circle cx="246" cy="18" r="4" fill="#34d399" opacity="0.6"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#fafafa">Send Jordan onboarding doc</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#fafafa">+ benefits before Friday</text>
+    <text x="14" y="62" font-size="11" fill="#a1a1aa">Includes office access steps</text>
+    <text x="14" y="76" font-size="11" fill="#a1a1aa">and standard payroll forms.</text>
+    <line x1="14" y1="90" x2="250" y2="90" stroke="#27272a"/>
+    <rect x="14" y="98" width="32" height="16" rx="3" fill="#27272a"/>
+    <text x="30" y="110" font-size="10" fill="#d4d4d8" text-anchor="middle">HR</text>
+    <rect x="206" y="98" width="44" height="16" rx="3" fill="#0f3a32"/>
+    <text x="228" y="110" font-size="10" fill="#5eead4" text-anchor="middle">Ready</text>
+  </g>
+
+  <!-- Card 4: Booth coverage -->
+  <g transform="translate(364 380)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="118" rx="9" fill="#18181b" stroke="#27272a"/>
+    <!-- Priority: High (red triangle) -->
+    <path d="M 240 14 l 8 14 l -16 0 z" fill="#f87171" opacity="0.7"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#fafafa">Confirm booth coverage</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#fafafa">11 AM – 2 PM peak traffic</text>
+    <text x="14" y="62" font-size="11" fill="#a1a1aa">Need 2 reps on the floor.</text>
+    <text x="14" y="76" font-size="11" fill="#a1a1aa">Build staffing schedule today.</text>
+    <line x1="14" y1="90" x2="250" y2="90" stroke="#27272a"/>
+    <rect x="14" y="98" width="46" height="16" rx="3" fill="#27272a"/>
+    <text x="37" y="110" font-size="10" fill="#d4d4d8" text-anchor="middle">Sales</text>
+    <rect x="206" y="98" width="44" height="16" rx="3" fill="#0f3a32"/>
+    <text x="228" y="110" font-size="10" fill="#5eead4" text-anchor="middle">Ready</text>
+  </g>
+
+  <!-- ============== IN PROGRESS COLUMN (x=656) ============== -->
+  <!-- Card 5: Mobile Safari bug -->
+  <g transform="translate(672 244)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="118" rx="9" fill="#18181b" stroke="#27272a"/>
+    <!-- Priority: High -->
+    <path d="M 240 14 l 8 14 l -16 0 z" fill="#f87171" opacity="0.7"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#fafafa">Fix Place Order button</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#fafafa">on mobile Safari</text>
+    <text x="14" y="62" font-size="11" fill="#a1a1aa">Tap fires nothing. Verify if</text>
+    <text x="14" y="76" font-size="11" fill="#a1a1aa">payment API gets duplicates.</text>
+    <line x1="14" y1="90" x2="250" y2="90" stroke="#27272a"/>
+    <rect x="14" y="98" width="46" height="16" rx="3" fill="#27272a"/>
+    <text x="37" y="110" font-size="10" fill="#d4d4d8" text-anchor="middle">Eng</text>
+    <rect x="184" y="98" width="66" height="16" rx="3" fill="#1e1b4b"/>
+    <text x="217" y="110" font-size="10" fill="#a5b4fc" text-anchor="middle">In Progress</text>
+  </g>
+
+  <!-- Card 6: Headline rewrite -->
+  <g transform="translate(672 380)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="118" rx="9" fill="#18181b" stroke="#27272a"/>
+    <circle cx="246" cy="18" r="4" fill="#34d399" opacity="0.6"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#fafafa">Rewrite landing page</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#fafafa">headline for ops teams</text>
+    <text x="14" y="62" font-size="11" fill="#a1a1aa">Aim at manual intake teams</text>
+    <text x="14" y="76" font-size="11" fill="#a1a1aa">handling back-and-forth requests.</text>
+    <line x1="14" y1="90" x2="250" y2="90" stroke="#27272a"/>
+    <rect x="14" y="98" width="46" height="16" rx="3" fill="#27272a"/>
+    <text x="37" y="110" font-size="10" fill="#d4d4d8" text-anchor="middle">Nina</text>
+    <rect x="184" y="98" width="66" height="16" rx="3" fill="#1e1b4b"/>
+    <text x="217" y="110" font-size="10" fill="#a5b4fc" text-anchor="middle">In Progress</text>
+  </g>
+
+  <!-- ============== REVIEW COLUMN (x=964) ============== -->
+  <!-- Card 7: Loading state -->
+  <g transform="translate(980 244)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="134" rx="9" fill="#18181b" stroke="#27272a"/>
+    <circle cx="246" cy="18" r="4" fill="#34d399" opacity="0.6"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#fafafa">Add loading state +</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#fafafa">spinner to checkout CTA</text>
+    <text x="14" y="62" font-size="11" fill="#a1a1aa">Switch to “Processing…” on tap.</text>
+    <text x="14" y="76" font-size="11" fill="#a1a1aa">Restore on error w/ message.</text>
+    <text x="14" y="90" font-size="11" fill="#a1a1aa">Drawer covers CTA on small.</text>
+    <line x1="14" y1="104" x2="250" y2="104" stroke="#27272a"/>
+    <rect x="14" y="112" width="50" height="16" rx="3" fill="#27272a"/>
+    <text x="39" y="124" font-size="10" fill="#d4d4d8" text-anchor="middle">Priya</text>
+    <rect x="200" y="112" width="50" height="16" rx="3" fill="#3f1d2c"/>
+    <text x="225" y="124" font-size="10" fill="#fda4af" text-anchor="middle">Review</text>
+  </g>
+
+  <!-- ============== DONE COLUMN (x=1272) ============== -->
+  <!-- Card 8: VPN rollback -->
+  <g transform="translate(1288 244)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="118" rx="9" fill="#18181b" stroke="#27272a" opacity="0.85"/>
+    <path d="M 240 14 l 8 14 l -16 0 z" fill="#f87171" opacity="0.5"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#d4d4d8" text-decoration="line-through" text-decoration-color="#52525b">Roll back VPN firmware</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#d4d4d8" text-decoration="line-through" text-decoration-color="#52525b">before Friday</text>
+    <text x="14" y="62" font-size="11" fill="#71717a">Pre-update version restored.</text>
+    <text x="14" y="76" font-size="11" fill="#71717a">All sites reconnected.</text>
+    <line x1="14" y1="90" x2="250" y2="90" stroke="#27272a"/>
+    <rect x="14" y="98" width="50" height="16" rx="3" fill="#27272a"/>
+    <text x="39" y="110" font-size="10" fill="#a1a1aa" text-anchor="middle">Priya</text>
+    <rect x="208" y="98" width="42" height="16" rx="3" fill="#0d3724"/>
+    <text x="229" y="110" font-size="10" fill="#6ee7b7" text-anchor="middle">Done</text>
+  </g>
+
+  <!-- Card 9: SOC-2 keys -->
+  <g transform="translate(1288 380)" filter="url(#cardShadow)" font-family="system-ui, -apple-system, sans-serif">
+    <rect width="264" height="118" rx="9" fill="#18181b" stroke="#27272a" opacity="0.85"/>
+    <path d="M 240 14 l 8 14 l -16 0 z" fill="#f87171" opacity="0.5"/>
+    <text x="14" y="26" font-size="13" font-weight="600" fill="#d4d4d8" text-decoration="line-through" text-decoration-color="#52525b">SOC-2 key rotation —</text>
+    <text x="14" y="42" font-size="13" font-weight="600" fill="#d4d4d8" text-decoration="line-through" text-decoration-color="#52525b">30-day deadline</text>
+    <text x="14" y="62" font-size="11" fill="#71717a">All service keys rotated.</text>
+    <text x="14" y="76" font-size="11" fill="#71717a">Compliance log updated.</text>
+    <line x1="14" y1="90" x2="250" y2="90" stroke="#27272a"/>
+    <rect x="14" y="98" width="50" height="16" rx="3" fill="#27272a"/>
+    <text x="39" y="110" font-size="10" fill="#a1a1aa" text-anchor="middle">Sam</text>
+    <rect x="208" y="98" width="42" height="16" rx="3" fill="#0d3724"/>
+    <text x="229" y="110" font-size="10" fill="#6ee7b7" text-anchor="middle">Done</text>
+  </g>
+
+  <!-- "Drop a card here" placeholder for empty space below Review column -->
+  <g transform="translate(980 800)" font-family="system-ui, -apple-system, sans-serif">
+    <text x="132" y="0" font-size="11" fill="#52525b" text-anchor="middle">Drop a card here</text>
+  </g>
+</svg>

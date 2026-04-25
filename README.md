@@ -32,12 +32,9 @@ Product walkthrough and setup guide: **[kamotion.io/docs](https://kamotion.io/do
 
 Deep-dive references in this repo:
 
-- **[Brand & product reference](docs/05_INFO_KAMOTION_BRAND.md)** — what kamotion is, how to talk about it, copy library
-- **[Build plan](docs/01_PLAN_KAMOTION.md)** — milestones + current progress
-- **[Stack reference](docs/05_INFO_STACK.md)** — tech, schema, env vars
-- **[Lessons learned](docs/07_LESSONS_LEARNED.md)** — gotchas, policy decisions
-- **[n8n setup](docs/09_N8N_SETUP.md)** — optional self-hosted AI path
-- **[Deployment](docs/10_DEPLOY.md)** — Dokploy + Nixpacks guide
+- **[Stack reference](docs/00_INFO_STACK.md)** — tech, schema, env vars
+- **[n8n setup](docs/00_N8N_SETUP.md)** — optional self-hosted AI path
+- **[Deployment](docs/00_DEPLOY.md)** — Dokploy + Nixpacks guide
 
 ## Stack
 
@@ -46,6 +43,8 @@ Next.js 16 (App Router + Turbopack) · TypeScript strict · Tailwind v4 + shadcn
 ## Quickstart
 
 ```bash
+git clone https://github.com/edwrdcrpio/kamotion.io.git
+cd kamotion.io
 npm install
 cp .env.example .env.local
 # fill in the Supabase + AI provider keys — see .env.example for the full list
@@ -63,7 +62,7 @@ Required variables:
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase Dashboard → Project Settings → API → `service_role` (**secret**) |
 | `AI_API_KEY_OPENROUTER` | [OpenRouter](https://openrouter.ai) account → Keys (or substitute `AI_API_KEY_OPENAI` / `_ANTHROPIC` / `_GOOGLE`) |
 
-First-time Supabase setup (migrations + admin user) is documented in [`docs/10_DEPLOY.md`](docs/10_DEPLOY.md). Full stack and env reference in [`docs/05_INFO_STACK.md`](docs/05_INFO_STACK.md).
+First-time Supabase setup (migrations + admin user) is documented in [`docs/00_DEPLOY.md`](docs/00_DEPLOY.md). Full stack and env reference in [`docs/00_INFO_STACK.md`](docs/00_INFO_STACK.md).
 
 ## License
 

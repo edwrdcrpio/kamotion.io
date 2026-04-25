@@ -6,7 +6,7 @@ import { brand } from "@/config/brand";
 export function GithubStar({
   variant = "pill",
 }: {
-  variant?: "pill" | "link";
+  variant?: "pill" | "link" | "header";
 }) {
   const href = brand.github;
   if (!href) return null;
@@ -21,6 +21,21 @@ export function GithubStar({
       >
         <Star className="h-3.5 w-3.5" />
         Star on GitHub
+      </a>
+    );
+  }
+
+  if (variant === "header") {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Star kamotion on GitHub"
+        className="hidden h-9 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground cursor-pointer md:inline-flex"
+      >
+        <Star className="h-3.5 w-3.5" />
+        Star
       </a>
     );
   }

@@ -1,0 +1,248 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" fill="none" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#eef0f3"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+    <filter id="shadowSoft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="#cbd5e1" stroke-width="0.4" stroke-opacity="0.4"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect width="1600" height="1000" fill="url(#grid)"/>
+
+  <!-- Tangled chaos lines weaving across -->
+  <g stroke-linecap="round" fill="none" opacity="0.55">
+    <path d="M 60 540 C 220 320, 380 760, 540 480 S 820 700, 960 420 S 1240 700, 1480 380"
+          stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="2 8"/>
+    <path d="M 120 220 C 320 480, 540 200, 740 520 S 1100 240, 1320 560"
+          stroke="#cbd5e1" stroke-width="2"/>
+    <path d="M 200 820 C 460 640, 700 920, 980 720 S 1340 880, 1500 700"
+          stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 6"/>
+  </g>
+
+  <!-- Scattered "?" and "!" marks -->
+  <g font-family="system-ui, -apple-system, sans-serif" font-weight="700" opacity="0.55">
+    <text x="80" y="180" font-size="44" fill="#94a3b8">?</text>
+    <text x="780" y="120" font-size="38" fill="#cbd5e1">?</text>
+    <text x="1380" y="220" font-size="50" fill="#94a3b8">!</text>
+    <text x="50" y="780" font-size="40" fill="#cbd5e1">!</text>
+    <text x="1500" y="900" font-size="48" fill="#94a3b8">?</text>
+    <text x="700" y="950" font-size="36" fill="#cbd5e1">?</text>
+  </g>
+
+  <!-- ============== CARD A: SLACK ============== -->
+  <g transform="translate(140 110) rotate(-5)" filter="url(#shadow)">
+    <rect width="440" height="220" rx="14" fill="#ffffff" stroke="#e5e7eb"/>
+    <rect width="6" height="220" rx="3" fill="#611f69"/>
+    <g font-family="system-ui, -apple-system, sans-serif">
+      <text x="28" y="34" font-size="13" font-weight="600" fill="#0f172a"># client-feedback</text>
+      <text x="380" y="34" font-size="11" fill="#94a3b8" text-anchor="end">Slack</text>
+      <line x1="22" y1="48" x2="418" y2="48" stroke="#f1f5f9"/>
+
+      <circle cx="44" cy="78" r="14" fill="#fbbf24"/>
+      <text x="68" y="74" font-size="12" font-weight="700" fill="#0f172a">Sam</text>
+      <text x="104" y="74" font-size="10" fill="#94a3b8">8:45 AM</text>
+      <text x="68" y="94" font-size="12" fill="#475569">Rachel sent feedback. Headline is too broad —</text>
+      <text x="68" y="110" font-size="12" fill="#475569">they want it aimed at ops teams.</text>
+
+      <circle cx="44" cy="146" r="14" fill="#34d399"/>
+      <text x="68" y="142" font-size="12" font-weight="700" fill="#0f172a">Nina</text>
+      <text x="108" y="142" font-size="10" fill="#94a3b8">8:48 AM</text>
+      <text x="68" y="162" font-size="12" fill="#475569">What needs to change?</text>
+
+      <circle cx="44" cy="194" r="14" fill="#fbbf24"/>
+      <text x="68" y="190" font-size="12" font-weight="700" fill="#0f172a">Sam</text>
+      <text x="104" y="190" font-size="10" fill="#94a3b8">8:56 AM</text>
+      <text x="68" y="206" font-size="12" fill="#475569">Also "How it works" sounds too technical…</text>
+    </g>
+  </g>
+
+  <!-- ============== CARD B: EMAIL ============== -->
+  <g transform="translate(880 80) rotate(4)" filter="url(#shadow)">
+    <rect width="500" height="240" rx="14" fill="#ffffff" stroke="#e5e7eb"/>
+    <rect width="500" height="38" rx="14" fill="#f8fafc"/>
+    <rect y="24" width="500" height="14" fill="#f8fafc"/>
+    <g font-family="system-ui, -apple-system, sans-serif">
+      <text x="20" y="24" font-size="11" font-weight="600" fill="#475569">📧 Email</text>
+      <text x="480" y="24" font-size="10" fill="#94a3b8" text-anchor="end">11:06 AM</text>
+      <text x="20" y="64" font-size="13" font-weight="700" fill="#0f172a">New hire onboarding — Jordan Lee</text>
+
+      <text x="20" y="92" font-size="11" fill="#64748b">From: Alicia · Team Manager</text>
+      <text x="20" y="108" font-size="11" fill="#64748b">To: IT, Admin, HR</text>
+      <line x1="20" y1="122" x2="480" y2="122" stroke="#f1f5f9"/>
+
+      <text x="20" y="148" font-size="12" fill="#334155">Hi team,</text>
+      <text x="20" y="170" font-size="12" fill="#475569">Jordan starts Monday — laptop, Slack, email,</text>
+      <text x="20" y="188" font-size="12" fill="#475569">Jira, Figma (Design Team workspace, editor).</text>
+      <text x="20" y="210" font-size="12" fill="#475569">HR — confirm payroll &amp; tax forms.</text>
+      <text x="20" y="228" font-size="12" fill="#475569">Send onboarding doc + benefits before Friday…</text>
+    </g>
+  </g>
+
+  <!-- ============== CARD C: iMESSAGE STACK ============== -->
+  <g transform="translate(80 410) rotate(-9)" filter="url(#shadow)">
+    <rect width="380" height="320" rx="22" fill="#ffffff" stroke="#e5e7eb"/>
+    <rect width="380" height="42" rx="22" fill="#f8fafc"/>
+    <rect y="22" width="380" height="20" fill="#f8fafc"/>
+    <g font-family="system-ui, -apple-system, sans-serif">
+      <text x="190" y="28" font-size="12" font-weight="600" fill="#0f172a" text-anchor="middle">Group · TechOps Expo</text>
+
+      <!-- left bubble -->
+      <rect x="20" y="60" width="240" height="46" rx="18" fill="#e5e7eb"/>
+      <text x="34" y="80" font-size="10" font-weight="600" fill="#475569">Dana · 10:18</text>
+      <text x="34" y="98" font-size="11" fill="#0f172a">Expo's Thursday — gear shipping?</text>
+
+      <!-- left bubble -->
+      <rect x="20" y="120" width="290" height="62" rx="18" fill="#e5e7eb"/>
+      <text x="34" y="140" font-size="10" font-weight="600" fill="#475569">Dana · 10:25</text>
+      <text x="34" y="158" font-size="11" fill="#0f172a">Finalize banner + signage by EOD.</text>
+      <text x="34" y="174" font-size="11" fill="#0f172a">Old tagline still on the files.</text>
+
+      <!-- right bubble -->
+      <rect x="120" y="196" width="240" height="46" rx="18" fill="#3b82f6"/>
+      <text x="346" y="216" font-size="10" font-weight="600" fill="#dbeafe" text-anchor="end">Jordan · 10:29</text>
+      <text x="346" y="232" font-size="11" fill="#ffffff" text-anchor="end">On it — updating QR code.</text>
+
+      <!-- left bubble -->
+      <rect x="20" y="256" width="320" height="46" rx="18" fill="#e5e7eb"/>
+      <text x="34" y="276" font-size="10" font-weight="600" fill="#475569">Dana · 10:42</text>
+      <text x="34" y="294" font-size="11" fill="#0f172a">Elise — confirm monitor, scanner, signage…</text>
+    </g>
+  </g>
+
+  <!-- ============== CARD D: EMAIL THREAD ============== -->
+  <g transform="translate(540 380) rotate(2)" filter="url(#shadow)">
+    <rect width="460" height="280" rx="14" fill="#ffffff" stroke="#e5e7eb"/>
+    <g font-family="system-ui, -apple-system, sans-serif">
+      <text x="20" y="32" font-size="11" font-weight="600" fill="#475569">↩ Re: Re: Re: Checkout issue on mobile Safari</text>
+      <line x1="20" y1="44" x2="440" y2="44" stroke="#f1f5f9"/>
+
+      <rect x="20" y="58" width="420" height="62" rx="8" fill="#f8fafc"/>
+      <text x="32" y="78" font-size="11" font-weight="700" fill="#0f172a">Mia · PM</text>
+      <text x="430" y="78" font-size="10" fill="#94a3b8" text-anchor="end">9:12 AM</text>
+      <text x="32" y="98" font-size="11" fill="#475569">"Place Order" does nothing on mobile</text>
+      <text x="32" y="112" font-size="11" fill="#475569">Safari. Frontend or payment API?</text>
+
+      <rect x="20" y="132" width="420" height="62" rx="8" fill="#f8fafc"/>
+      <text x="32" y="152" font-size="11" font-weight="700" fill="#0f172a">Priya · UX</text>
+      <text x="430" y="152" font-size="10" fill="#94a3b8" text-anchor="end">9:41 AM</text>
+      <text x="32" y="172" font-size="11" fill="#475569">Agree — switch to "Processing…" with</text>
+      <text x="32" y="186" font-size="11" fill="#475569">spinner. Drawer covers CTA on small screens.</text>
+
+      <rect x="20" y="206" width="420" height="58" rx="8" fill="#f8fafc"/>
+      <text x="32" y="226" font-size="11" font-weight="700" fill="#0f172a">Mia</text>
+      <text x="430" y="226" font-size="10" fill="#94a3b8" text-anchor="end">10:03 AM</text>
+      <text x="32" y="246" font-size="11" fill="#475569">Split: bug for Safari tap, separate UX</text>
+      <text x="32" y="260" font-size="11" fill="#475569">task, verify duplicate API requests…</text>
+    </g>
+  </g>
+
+  <!-- ============== CARD E: STICKY NOTE ============== -->
+  <g transform="translate(1080 420) rotate(7)" filter="url(#shadow)">
+    <path d="M 0 0 L 280 0 L 280 220 L 16 220 L 0 200 Z" fill="#fef9c3" stroke="#facc15" stroke-opacity="0.4"/>
+    <g font-family="'Comic Sans MS', 'Marker Felt', cursive" fill="#713f12">
+      <text x="22" y="40" font-size="20" font-weight="700">TODO!?</text>
+      <text x="22" y="76" font-size="14">- follow up jordan?</text>
+      <text x="22" y="100" font-size="14">- vpn rollback</text>
+      <text x="22" y="124" font-size="14">- soc-2 keys</text>
+      <text x="22" y="148" font-size="14">- printer 4th floor</text>
+      <text x="22" y="172" font-size="14">- ask priya re: API</text>
+      <text x="22" y="196" font-size="14" font-style="italic" fill="#a16207">…where did I put</text>
+    </g>
+  </g>
+
+  <!-- ============== CARD F: TRANSCRIPT ============== -->
+  <g transform="translate(380 720) rotate(-3)" filter="url(#shadowSoft)">
+    <rect width="540" height="220" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+    <rect width="540" height="34" rx="12" fill="#1e293b"/>
+    <rect y="22" width="540" height="12" fill="#1e293b"/>
+    <g font-family="system-ui, -apple-system, sans-serif">
+      <circle cx="22" cy="17" r="5" fill="#ef4444"/>
+      <text x="40" y="22" font-size="11" font-weight="600" fill="#f8fafc">Zoom · Weekly IT sync · 32m</text>
+      <text x="520" y="22" font-size="10" fill="#94a3b8" text-anchor="end">Auto-transcript</text>
+
+      <text x="20" y="58" font-size="10" fill="#94a3b8" font-family="monospace">[00:04:12]</text>
+      <text x="100" y="58" font-size="11" font-weight="700" fill="#0f172a">Priya:</text>
+      <text x="146" y="58" font-size="11" fill="#475569">VPN firmware needs rollback before Friday.</text>
+
+      <text x="20" y="84" font-size="10" fill="#94a3b8" font-family="monospace">[00:09:48]</text>
+      <text x="100" y="84" font-size="11" font-weight="700" fill="#0f172a">Sam:</text>
+      <text x="142" y="84" font-size="11" fill="#475569">New hire creds for Jordan — Monday start.</text>
+
+      <text x="20" y="110" font-size="10" fill="#94a3b8" font-family="monospace">[00:14:21]</text>
+      <text x="100" y="110" font-size="11" font-weight="700" fill="#0f172a">Priya:</text>
+      <text x="146" y="110" font-size="11" fill="#475569">Mike's account locked again — third time.</text>
+
+      <text x="20" y="136" font-size="10" fill="#94a3b8" font-family="monospace">[00:18:09]</text>
+      <text x="100" y="136" font-size="11" font-weight="700" fill="#0f172a">Sam:</text>
+      <text x="142" y="136" font-size="11" fill="#475569">Drive archival — old 2023 projects?</text>
+
+      <text x="20" y="162" font-size="10" fill="#94a3b8" font-family="monospace">[00:22:55]</text>
+      <text x="100" y="162" font-size="11" font-weight="700" fill="#0f172a">Priya:</text>
+      <text x="146" y="162" font-size="11" fill="#475569">SOC-2 key rotation — 30-day deadline.</text>
+
+      <text x="20" y="188" font-size="10" fill="#94a3b8" font-family="monospace">[00:28:17]</text>
+      <text x="100" y="188" font-size="11" font-weight="700" fill="#0f172a">Sam:</text>
+      <text x="142" y="188" font-size="11" fill="#475569">Printer on 4th floor — third ticket this week.</text>
+    </g>
+  </g>
+
+  <!-- ============== CARD G: VOICEMAIL / Voice memo ============== -->
+  <g transform="translate(1020 740) rotate(-7)" filter="url(#shadowSoft)">
+    <rect width="320" height="180" rx="16" fill="#ffffff" stroke="#e5e7eb"/>
+    <g font-family="system-ui, -apple-system, sans-serif">
+      <circle cx="36" cy="36" r="16" fill="#14b8a6" opacity="0.15"/>
+      <path d="M 30 28 v 16 M 36 22 v 28 M 42 30 v 12" stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="64" y="32" font-size="12" font-weight="700" fill="#0f172a">Voice memo</text>
+      <text x="64" y="48" font-size="10" fill="#94a3b8">Maya · 2:34</text>
+
+      <!-- waveform -->
+      <g stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round" opacity="0.85">
+        <line x1="20" y1="98" x2="20" y2="118"/>
+        <line x1="32" y1="92" x2="32" y2="124"/>
+        <line x1="44" y1="86" x2="44" y2="130"/>
+        <line x1="56" y1="100" x2="56" y2="116"/>
+        <line x1="68" y1="80" x2="68" y2="136"/>
+        <line x1="80" y1="90" x2="80" y2="126"/>
+        <line x1="92" y1="74" x2="92" y2="142"/>
+        <line x1="104" y1="92" x2="104" y2="124"/>
+        <line x1="116" y1="84" x2="116" y2="132"/>
+        <line x1="128" y1="96" x2="128" y2="120"/>
+        <line x1="140" y1="78" x2="140" y2="138"/>
+        <line x1="152" y1="88" x2="152" y2="128"/>
+        <line x1="164" y1="100" x2="164" y2="116"/>
+        <line x1="176" y1="84" x2="176" y2="132"/>
+      </g>
+      <g stroke="#cbd5e1" stroke-width="2.5" stroke-linecap="round">
+        <line x1="188" y1="92" x2="188" y2="124"/>
+        <line x1="200" y1="100" x2="200" y2="116"/>
+        <line x1="212" y1="86" x2="212" y2="130"/>
+        <line x1="224" y1="94" x2="224" y2="122"/>
+        <line x1="236" y1="98" x2="236" y2="118"/>
+        <line x1="248" y1="88" x2="248" y2="128"/>
+        <line x1="260" y1="100" x2="260" y2="116"/>
+        <line x1="272" y1="92" x2="272" y2="124"/>
+        <line x1="284" y1="98" x2="284" y2="118"/>
+        <line x1="296" y1="100" x2="296" y2="116"/>
+      </g>
+
+      <text x="20" y="160" font-size="11" fill="#475569">"Hey can you remind me about the…"</text>
+    </g>
+  </g>
+
+  <!-- vignette -->
+  <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+    <stop offset="60%" stop-color="#000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000" stop-opacity="0.10"/>
+  </radialGradient>
+  <rect width="1600" height="1000" fill="url(#vignette)"/>
+</svg>

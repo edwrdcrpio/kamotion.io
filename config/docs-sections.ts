@@ -17,6 +17,7 @@ export const DOCS_SECTIONS: DocsSection[] = [
   { id: "n8n-path", label: "n8n path" },
   { id: "deployment", label: "Deployment" },
   { id: "free-self-host", label: "Run it for $0" },
+  { id: "hosted-access", label: "Hosted access" },
   { id: "tech-stack", label: "Tech stack" },
   { id: "contributing", label: "Contributing" },
   { id: "faq", label: "FAQ" },

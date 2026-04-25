@@ -7,10 +7,9 @@ import { DOCS_SECTIONS } from "@/config/docs-sections";
 
 const NAV_LINKS = [
   { label: "How it works", href: "/#how" },
-  { label: "Features", href: "/#features" },
-  { label: "Who it's for", href: "/#who" },
-  { label: "Origin", href: "/#origin" },
+  { label: "Use cases", href: "/#features" },
   { label: "Docs", href: "/docs" },
+  { label: "Demo", href: "/try" },
 ];
 
 export default function DocsLayout({ children }: { children: ReactNode }) {
