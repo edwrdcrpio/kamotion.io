@@ -73,7 +73,7 @@ export function GenerateForm() {
             onChange={(e) => setText(e.target.value)}
             rows={14}
             placeholder="Drop in bullets, paragraphs, transcripts — no format required.&#10;&#10;Example:&#10;&#10;Meeting with Acme. Deliverables: brand moodboard by Fri, homepage wireframe next Tuesday, decide on nav pattern (client leaning mega-menu)."
-            className="font-mono text-sm leading-relaxed"
+            className="min-h-[384px] font-mono text-sm leading-relaxed"
           />
           <p className="text-xs text-muted-foreground">
             {text.trim() === ""

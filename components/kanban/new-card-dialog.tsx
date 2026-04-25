@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Plus, Sparkles, PencilLine } from "lucide-react";
 import type { z } from "zod";
 import {
   CardCreateInput,
@@ -40,6 +41,8 @@ type FormOut = z.output<typeof CardCreateInput>;
 
 type CardsResponse = { cards: Card[] };
 
+type Step = "choose" | "manual";
+
 const STATUS_OPTIONS: Status[] = [
   "Not Started",
   "Ready",
@@ -65,6 +68,12 @@ const FORM_DEFAULTS: FormIn = {
 
 export function NewCardDialog() {
   const [open, setOpen] = useState(false);
+  const [step, setStep] = useState<Step>("choose");
+  const router = useRouter();
+  const pathname = usePathname();
+  const generateHref = pathname?.startsWith("/try")
+    ? "/try/generate"
+    : "/app/generate";
   const qc = useQueryClient();
 
   const {
@@ -96,186 +105,235 @@ export function NewCardDialog() {
       qc.invalidateQueries({ queryKey: ["cards"] });
       reset(FORM_DEFAULTS);
       setOpen(false);
+      setStep("choose");
     },
   });
 
+  const handleOpenChange = (v: boolean) => {
+    setOpen(v);
+    if (!v) {
+      reset(FORM_DEFAULTS);
+      setStep("choose");
+    }
+  };
+
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(v) => {
-        setOpen(v);
-        if (!v) reset(FORM_DEFAULTS);
-      }}
-    >
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button className="cursor-pointer">
           <Plus className="h-4 w-4" />
-          New card
+          Add task
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
-        <form onSubmit={handleSubmit((data) => create.mutate(data))}>
-          <DialogHeader>
-            <DialogTitle>New card</DialogTitle>
-            <DialogDescription>
-              Lands in{" "}
-              <span className="font-medium text-foreground">Queue</span>. You
-              can edit the rest from the card drawer once B3 ships.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-4 py-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="task">Task</Label>
-              <Input
-                id="task"
-                {...register("task")}
-                autoFocus
-                placeholder="e.g. Write the onboarding email"
-              />
-              {errors.task && (
-                <p className="text-xs text-destructive">
-                  {errors.task.message}
+        {step === "choose" ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>How would you like to add tasks?</DialogTitle>
+              <DialogDescription>
+                Let AI extract tasks from a chunk of text, or type one in by
+                hand.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-3 py-2 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  router.push(generateHref);
+                }}
+                className="group flex cursor-pointer flex-col items-start gap-2 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:border-primary/60 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-brand-accent/10 text-brand-accent">
+                  <Sparkles className="h-5 w-5" />
+                </span>
+                <span className="text-sm font-semibold">
+                  Generate with AI
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Paste an email, transcript, or notes — Kamotion extracts
+                  tasks for you to review.
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep("manual")}
+                className="group flex cursor-pointer flex-col items-start gap-2 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:border-primary/60 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <PencilLine className="h-5 w-5" />
+                </span>
+                <span className="text-sm font-semibold">Add manually</span>
+                <span className="text-xs text-muted-foreground">
+                  Type in a single task with assignee, due date, and details.
+                </span>
+              </button>
+            </div>
+          </>
+        ) : (
+          <form onSubmit={handleSubmit((data) => create.mutate(data))}>
+            <DialogHeader>
+              <DialogTitle>Add task manually</DialogTitle>
+              <DialogDescription>
+                Lands in{" "}
+                <span className="font-medium text-foreground">Queue</span>. You
+                can edit the rest from the card drawer once B3 ships.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4 py-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="task">Task</Label>
+                <Input
+                  id="task"
+                  {...register("task")}
+                  autoFocus
+                  placeholder="e.g. Write the onboarding email"
+                />
+                {errors.task && (
+                  <p className="text-xs text-destructive">
+                    {errors.task.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="assignee">Assignee</Label>
+                  <Controller
+                    name="assignee"
+                    control={control}
+                    render={({ field }) => (
+                      <PersonCombobox
+                        id="assignee"
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="requester">Requester</Label>
+                  <Controller
+                    name="requester"
+                    control={control}
+                    render={({ field }) => (
+                      <PersonCombobox
+                        id="requester"
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-2">
+                  <Label>Status</Label>
+                  <Controller
+                    name="status"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value ?? "Not Started"}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {STATUS_OPTIONS.map((s) => (
+                            <SelectItem key={s} value={s}>
+                              {s}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Priority</Label>
+                  <Controller
+                    name="priority"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value ?? "Normal"}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {PRIORITY_OPTIONS.map((p) => (
+                            <SelectItem key={p} value={p}>
+                              {p}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="due_date">Due date</Label>
+                <Input id="due_date" type="date" {...register("due_date")} />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label>Estimated duration</Label>
+                <Controller
+                  name="estimated_duration"
+                  control={control}
+                  render={({ field }) => (
+                    <DurationSlider
+                      value={
+                        (field.value as string | null | undefined) ?? null
+                      }
+                      onChange={(v) => field.onChange(v ?? "")}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="notes">Notes</Label>
+                <Textarea
+                  id="notes"
+                  {...register("notes")}
+                  rows={3}
+                  placeholder="Context, links, constraints…"
+                />
+              </div>
+
+              {create.error && (
+                <p className="text-sm text-destructive">
+                  {(create.error as Error).message}
                 </p>
               )}
             </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="assignee">Assignee</Label>
-                <Controller
-                  name="assignee"
-                  control={control}
-                  render={({ field }) => (
-                    <PersonCombobox
-                      id="assignee"
-                      value={field.value ?? ""}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="requester">Requester</Label>
-                <Controller
-                  name="requester"
-                  control={control}
-                  render={({ field }) => (
-                    <PersonCombobox
-                      id="requester"
-                      value={field.value ?? ""}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex flex-col gap-2">
-                <Label>Status</Label>
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      value={field.value ?? "Not Started"}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {STATUS_OPTIONS.map((s) => (
-                          <SelectItem key={s} value={s}>
-                            {s}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label>Priority</Label>
-                <Controller
-                  name="priority"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      value={field.value ?? "Normal"}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {PRIORITY_OPTIONS.map((p) => (
-                          <SelectItem key={p} value={p}>
-                            {p}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="due_date">Due date</Label>
-              <Input id="due_date" type="date" {...register("due_date")} />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label>Estimated duration</Label>
-              <Controller
-                name="estimated_duration"
-                control={control}
-                render={({ field }) => (
-                  <DurationSlider
-                    value={
-                      (field.value as string | null | undefined) ?? null
-                    }
-                    onChange={(v) => field.onChange(v ?? "")}
-                  />
-                )}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea
-                id="notes"
-                {...register("notes")}
-                rows={3}
-                placeholder="Context, links, constraints…"
-              />
-            </div>
-
-            {create.error && (
-              <p className="text-sm text-destructive">
-                {(create.error as Error).message}
-              </p>
-            )}
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setOpen(false)}
-              className="cursor-pointer"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={create.isPending}
-              className="cursor-pointer"
-            >
-              {create.isPending ? "Creating…" : "Create card"}
-            </Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setStep("choose")}
+                className="cursor-pointer"
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                disabled={create.isPending}
+                className="cursor-pointer"
+              >
+                {create.isPending ? "Creating…" : "Create card"}
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
