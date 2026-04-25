@@ -53,7 +53,7 @@ Dokploy's env-vars panel exposes both. Mark build-time vars accordingly if the p
 |---|---|---|
 | `AI_API_KEY_OPENAI` / `AI_API_KEY_ANTHROPIC` / `AI_API_KEY_GOOGLE` | runtime | If you switch provider in `/app/settings`, the env var name in that form must match one you've set here |
 | `N8N_WEBHOOK_AUTH_USER` | runtime | Basic-auth username for n8n webhook (only applied when both user + password set) |
-| `N8N_WEBHOOK_AUTH_PASSWORD` | runtime | Basic-auth password. **Avoid `$` characters** — Next's env loader expands `$VAR` references silently (see `07_LESSONS_LEARNED.md`) |
+| `N8N_WEBHOOK_AUTH_PASSWORD` | runtime | Basic-auth password. **Avoid `$` characters** — Next.js's env loader expands `$VAR` references silently, even inside single quotes, which silently corrupts the password |
 | `LOG_LEVEL` | runtime | `debug` / `info` / `warn` / `error` — defaults to `info` |
 
 ## Step 1 — Create the Dokploy Application

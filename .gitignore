@@ -37,6 +37,9 @@ yarn-error.log*
 # local MCP config (contains access tokens)
 .mcp.json
 
+# private working docs (build journal, brand voice, lessons) — kept locally only
+/_private/
+
 # User-installed Claude Code skill data (not project source)
 .claude/skills/
 

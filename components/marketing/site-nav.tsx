@@ -2,16 +2,16 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileLandingNav } from "@/components/marketing/mobile-landing-nav";
+import { GithubStar } from "@/components/marketing/github-star";
 import { KamotionWordmark } from "@/components/brand/kamotion-wordmark";
 
 export type SiteNavLink = { label: string; href: string };
 
 const HOME_LINKS: SiteNavLink[] = [
   { label: "How it works", href: "/#how" },
-  { label: "Features", href: "/#features" },
-  { label: "Who it's for", href: "/#who" },
+  { label: "Use cases", href: "/#features" },
   { label: "Docs", href: "/docs" },
-  { label: "Try it", href: "/try" },
+  { label: "Demo", href: "/try" },
 ];
 
 export function SiteNav({ links = HOME_LINKS }: { links?: SiteNavLink[] }) {
@@ -39,6 +39,7 @@ export function SiteNav({ links = HOME_LINKS }: { links?: SiteNavLink[] }) {
         </nav>
 
         <div className="flex items-center gap-2">
+          <GithubStar variant="header" />
           <ThemeToggle />
           <Link
             href="/login"

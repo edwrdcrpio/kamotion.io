@@ -17,10 +17,9 @@ type NavLink = { href: string; label: string };
 
 const DEFAULT_SECTIONS: NavLink[] = [
   { href: "/#how", label: "How it works" },
-  { href: "/#features", label: "Features" },
-  { href: "/#who", label: "Who it's for" },
+  { href: "/#features", label: "Use cases" },
   { href: "/docs", label: "Docs" },
-  { href: "/try", label: "Try it" },
+  { href: "/try", label: "Demo" },
 ];
 
 export function MobileLandingNav({ links }: { links?: NavLink[] }) {

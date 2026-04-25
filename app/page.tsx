@@ -4,36 +4,42 @@ import {
   ClipboardPaste,
   Sparkles,
   LayoutDashboard,
-  GanttChartSquare,
-  Users,
-  Eye,
-  KeyRound,
   MessageSquare,
   Mail,
   Video,
   Phone,
   FileText,
   Hash,
-  ShieldCheck,
   ListChecks,
   Briefcase,
   Users2,
   Check,
   GitBranch,
-  Inbox,
-  Bot,
-  Bell,
+  Server,
+  Code2,
+  Workflow,
+  Unlock,
 } from "lucide-react";
 import { SiteNav } from "@/components/marketing/site-nav";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { GithubStar } from "@/components/marketing/github-star";
+import { ConversationsAccordion } from "@/components/marketing/conversations-accordion";
+import { ImageComparison } from "@/components/ui/image-comparison-slider";
+import { FeatureCard } from "@/components/blocks/grid-feature-cards";
+import {
+  FeatureGridContainer,
+  FeatureGridItem,
+} from "@/components/marketing/feature-grid";
+import { HostedContactForm } from "@/components/marketing/hosted-contact";
+import { RoadmapFlow } from "@/components/marketing/roadmap-flow";
+import { Reveal } from "@/components/marketing/reveal";
+import { brand } from "@/config/brand";
 
 const HOME_NAV_LINKS = [
   { label: "How it works", href: "#how" },
-  { label: "Features", href: "#features" },
-  { label: "Who it's for", href: "#who" },
+  { label: "Use cases", href: "#features" },
   { label: "Docs", href: "/docs" },
-  { label: "Try it", href: "/try" },
+  { label: "Demo", href: "/try" },
 ];
 
 export default function Home() {
@@ -44,14 +50,33 @@ export default function Home() {
 
       <main className="flex flex-col">
         <Hero />
-        <ChannelStrip />
-        <HowItWorks />
-        <Features />
-        <Personas />
-        <DarkTrust />
-        <Origin />
-        <ComingSoon />
-        <FooterCTA />
+        <Reveal>
+          <ChannelStrip />
+        </Reveal>
+        <Reveal>
+          <HowItWorks />
+        </Reveal>
+        <Reveal>
+          <ConversationsAccordion />
+        </Reveal>
+        <Reveal>
+          <Transformation />
+        </Reveal>
+        <Reveal>
+          <Personas />
+        </Reveal>
+        <Reveal>
+          <OpenSource />
+        </Reveal>
+        <Reveal>
+          <NonTechnicals />
+        </Reveal>
+        <Reveal>
+          <ComingSoon />
+        </Reveal>
+        <Reveal>
+          <FooterCTA />
+        </Reveal>
       </main>
 
       <SiteFooter />
@@ -369,93 +394,271 @@ function MessToBoardBackdrop() {
 }
 
 function HeroMock() {
-  const columns = [
+  return (
+    <div className="relative mx-auto max-w-6xl">
+      <div className="absolute -inset-6 z-0 rounded-[32px] bg-linear-to-br from-primary/15 via-transparent to-[#a4a3a3]/15 blur-2xl" />
+
+      <div className="relative grid items-stretch gap-3 lg:grid-cols-[1.05fr_auto_1fr_auto_1.1fr]">
+        <SourcePanel />
+        <FlowArrow label="AI parses" />
+        <ParsePanel />
+        <FlowArrow label="Lands in Queue" />
+        <BoardPanel />
+      </div>
+    </div>
+  );
+}
+
+function FlowArrow({ label }: { label: string }) {
+  return (
+    <div className="flex flex-row items-center justify-center gap-2 lg:flex-col lg:gap-1.5">
+      {/* Mobile: down arrow */}
+      <svg
+        className="h-5 w-5 text-primary lg:hidden"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <polyline points="19 12 12 19 5 12" />
+      </svg>
+      {/* Desktop: right arrow */}
+      <svg
+        className="hidden h-5 w-5 text-primary lg:block"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden
+      >
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+      </svg>
+      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function SourcePanel() {
+  return (
+    <div className="flex flex-col rounded-2xl border border-border bg-card/90 shadow-2xl shadow-foreground/5 backdrop-blur">
+      {/* Slack-style chrome */}
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+        <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+          <Hash className="h-3 w-3" />
+          <span>client-launch</span>
+        </div>
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          Source
+        </span>
+      </div>
+
+      <div className="flex-1 space-y-3 px-4 py-4 text-[12px] leading-relaxed">
+        <SlackLine
+          name="Mia"
+          time="9:12"
+          color="bg-amber-400"
+          body="Customer reports the Place Order button does nothing on mobile Safari."
+        />
+        <SlackLine
+          name="Priya"
+          time="9:41"
+          color="bg-rose-400"
+          muted
+          body="Agree on loading state — switch to “Processing…” + spinner on tap."
+        />
+        <SlackLine
+          name="Mia"
+          time="10:03"
+          color="bg-amber-400"
+          body="Let’s split: bug for Safari tap, UX task for loading state, and verify the API for duplicate requests."
+        />
+      </div>
+    </div>
+  );
+}
+
+function SlackLine({
+  name,
+  time,
+  body,
+  color,
+  muted = false,
+}: {
+  name: string;
+  time: string;
+  body: string;
+  color: string;
+  muted?: boolean;
+}) {
+  return (
+    <div className="flex gap-2">
+      <span
+        className={`mt-0.5 inline-block h-6 w-6 shrink-0 rounded-md ${color}`}
+        aria-hidden
+      />
+      <div>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[12px] font-semibold text-foreground">
+            {name}
+          </span>
+          <span className="font-mono text-[10px] text-muted-foreground">
+            {time}
+          </span>
+        </div>
+        <p
+          className={
+            muted ? "text-muted-foreground" : "text-foreground/90"
+          }
+        >
+          {body}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ParsePanel() {
+  const tasks = [
     {
-      title: "Queue",
-      tone: "bg-muted text-muted-foreground",
-      cards: [
-        { title: "Pull social Q3 metrics", owner: "ME", accent: "rose" },
-        { title: "Draft H3 roadmap email", owner: "EC", accent: "amber" },
-      ],
+      title: "Fix Place Order tap on mobile Safari",
+      meta: "High · Bug",
     },
     {
-      title: "In progress",
-      tone: "bg-primary/10 text-primary",
-      cards: [
-        {
-          title: "Reply to Acme contract thread",
-          owner: "EC",
-          accent: "teal",
-        },
-        { title: "Ship onboarding fix", owner: "ME", accent: "violet" },
-      ],
+      title: "Add loading state + spinner to checkout CTA",
+      meta: "Normal · UX",
     },
     {
-      title: "Done",
-      tone: "bg-brand-success/15 text-brand-success",
-      cards: [
-        {
-          title: "Send invoice to Pied Piper",
-          owner: "ME",
-          accent: "emerald",
-        },
-      ],
+      title: "Verify payment API for duplicate requests",
+      meta: "Normal · Eng",
     },
   ];
 
   return (
-    <div className="relative mx-auto max-w-5xl">
-      <div className="absolute -inset-6 -z-10 rounded-[32px] bg-gradient-to-br from-primary/15 via-transparent to-[#a4a3a3]/15 blur-2xl" />
-
-      <div className="rounded-2xl border border-border bg-card/90 p-3 shadow-2xl shadow-foreground/5 backdrop-blur sm:p-4">
-        {/* fake browser chrome */}
-        <div className="mb-3 flex items-center gap-1.5 px-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-muted" />
-          <span className="h-2.5 w-2.5 rounded-full bg-muted" />
-          <span className="h-2.5 w-2.5 rounded-full bg-muted" />
-          <span className="ml-3 inline-flex items-center gap-1.5 rounded-md bg-muted px-2 py-0.5 text-[11px] font-mono text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-success" />
-            kamotion.io/app
+    <div className="relative flex flex-col rounded-2xl border border-border bg-card/95 shadow-2xl shadow-foreground/5 backdrop-blur">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+        <div className="flex items-center gap-1.5 text-[11px] font-medium text-foreground">
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-brand-accent/15 text-brand-accent">
+            <Sparkles className="h-3 w-3" />
           </span>
+          <span>3 tasks found</span>
         </div>
-
-        <div className="grid gap-3 rounded-xl bg-background p-3 sm:grid-cols-3 sm:p-4">
-          {columns.map((col) => (
-            <div key={col.title} className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium uppercase tracking-wide ${col.tone}`}
-                >
-                  {col.title}
-                  <span className="text-muted-foreground/80">
-                    {col.cards.length}
-                  </span>
-                </span>
-              </div>
-              <div className="flex flex-col gap-2">
-                {col.cards.map((card, idx) => (
-                  <MockCard key={idx} {...card} />
-                ))}
-                <div className="rounded-md border border-dashed border-border/80 py-2 text-center text-[11px] text-muted-foreground">
-                  + new card
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          Preview
+        </span>
       </div>
 
-      {/* Floating AI preview badge */}
-      <div className="absolute -right-2 -top-3 hidden rotate-2 rounded-xl border border-border bg-background p-3 shadow-lg shadow-foreground/5 sm:block sm:-right-6 sm:-top-6">
-        <div className="flex items-center gap-2 text-xs font-medium">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-brand-accent/15 text-brand-accent">
-            <Sparkles className="h-3.5 w-3.5" />
-          </span>
-          <span>3 cards extracted</span>
+      <ul className="flex flex-1 flex-col gap-2 px-4 py-4">
+        {tasks.map((t) => (
+          <li
+            key={t.title}
+            className="flex items-start gap-2 rounded-lg border border-border bg-background/60 px-3 py-2"
+          >
+            <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] bg-primary text-primary-foreground">
+              <Check className="h-3 w-3" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-[12px] font-medium leading-snug text-foreground">
+                {t.title}
+              </p>
+              <p className="font-mono text-[10px] text-muted-foreground">
+                {t.meta}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="border-t border-border px-4 py-2.5">
+        <div className="inline-flex h-7 items-center justify-center rounded-md bg-foreground px-3 text-[11px] font-medium text-background">
+          Add 3 to board
         </div>
-        <p className="mt-1 max-w-[180px] text-[11px] leading-snug text-muted-foreground">
-          From "Acme handoff call · transcript.txt"
-        </p>
+      </div>
+    </div>
+  );
+}
+
+function BoardPanel() {
+  return (
+    <div className="flex flex-col rounded-2xl border border-border bg-card/90 shadow-2xl shadow-foreground/5 backdrop-blur">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
+        <span className="text-[11px] font-medium text-foreground">Board</span>
+        <span className="inline-flex items-center gap-1.5 rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+          <span className="h-1.5 w-1.5 rounded-full bg-brand-success" />
+          kamotion.io/app
+        </span>
+      </div>
+
+      <div className="grid flex-1 grid-cols-2 gap-3 px-4 py-4">
+        <BoardColumn
+          title="Queue"
+          count={3}
+          tone="bg-muted text-muted-foreground"
+          cards={[
+            { title: "Fix Place Order tap on Safari", priority: "high" },
+            { title: "Add loading state to checkout", priority: "normal" },
+            { title: "Verify duplicate API requests", priority: "normal" },
+          ]}
+          highlight
+        />
+        <BoardColumn
+          title="In Progress"
+          count={1}
+          tone="bg-primary/10 text-primary"
+          cards={[
+            { title: "Reply to Acme contract thread", priority: "normal" },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+
+function BoardColumn({
+  title,
+  count,
+  tone,
+  cards,
+  highlight = false,
+}: {
+  title: string;
+  count: number;
+  tone: string;
+  cards: { title: string; priority: "high" | "normal" }[];
+  highlight?: boolean;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[10px] font-medium uppercase tracking-wide ${tone}`}
+        >
+          {title}
+          <span className="text-muted-foreground/80">{count}</span>
+        </span>
+        {highlight && (
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-primary">
+            New
+          </span>
+        )}
+      </div>
+      <div className="flex flex-col gap-2">
+        {cards.map((card, idx) => (
+          <MockCard
+            key={idx}
+            title={card.title}
+            priority={card.priority}
+            isNew={highlight && idx < 3}
+          />
+        ))}
       </div>
     </div>
   );
@@ -463,34 +666,41 @@ function HeroMock() {
 
 function MockCard({
   title,
-  owner,
-  accent,
+  priority,
+  isNew = false,
 }: {
   title: string;
-  owner: string;
-  accent: string;
+  priority: "high" | "normal";
+  isNew?: boolean;
 }) {
-  const accentMap: Record<string, string> = {
-    rose: "bg-brand-accent",
-    amber: "bg-brand-warning",
-    teal: "bg-primary",
-    violet: "bg-chart-3",
-    emerald: "bg-brand-success",
-  };
   return (
-    <div className="group relative rounded-lg border border-border bg-card p-3 shadow-sm transition-shadow hover:shadow-md">
-      <div
-        className={`absolute left-0 top-2 h-[calc(100%-1rem)] w-[3px] rounded-r ${accentMap[accent] ?? "bg-primary"}`}
-      />
-      <p className="pl-2 text-xs font-medium leading-snug text-foreground">
-        {title}
-      </p>
-      <div className="mt-2 flex items-center justify-between pl-2">
-        <span className="text-[10px] font-mono uppercase tracking-wide text-muted-foreground">
+    <div
+      className={`relative rounded-lg border bg-card px-3 py-2.5 shadow-sm ${
+        isNew ? "border-primary/40 ring-1 ring-primary/20" : "border-border"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-[11px] font-medium leading-snug text-foreground">
+          {title}
+        </p>
+        {priority === "high" ? (
+          <span
+            className="mt-0.5 inline-block h-0 w-0 shrink-0 border-x-[5px] border-b-8 border-x-transparent border-b-rose-400/70"
+            aria-hidden
+          />
+        ) : (
+          <span
+            className="mt-1 inline-block h-2 w-2 shrink-0 rounded-full bg-emerald-400/60"
+            aria-hidden
+          />
+        )}
+      </div>
+      <div className="mt-2 flex items-center justify-between">
+        <span className="font-mono text-[9px] uppercase tracking-wide text-muted-foreground">
           Ship this week
         </span>
-        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[9px] font-semibold text-muted-foreground ring-1 ring-border">
-          {owner}
+        <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-muted text-[8px] font-semibold text-muted-foreground ring-1 ring-border">
+          ME
         </span>
       </div>
     </div>
@@ -730,74 +940,39 @@ function BoardVisual() {
   );
 }
 
-/* ------------------------------ FEATURES ------------------------------ */
+/* --------------------------- TRANSFORMATION --------------------------- */
 
-function Features() {
-  const features = [
-    {
-      icon: ClipboardPaste,
-      title: "Paste anything",
-      copy: "Transcripts, emails, Slack exports, raw notes. If it's text, kamotion reads it.",
-    },
-    {
-      icon: Users2,
-      title: "Solo or team mode",
-      copy: "Keep tasks for yourself or distribute across the crew with a single toggle.",
-    },
-    {
-      icon: GanttChartSquare,
-      title: "Kanban + Gantt, synced",
-      copy: "Flow view and timeline view, same data. Drag in one, it updates the other.",
-    },
-    {
-      icon: KeyRound,
-      title: "Bring your own AI",
-      copy: "OpenRouter, Anthropic, OpenAI, or Gemini. Your key, your model, your cost.",
-    },
-    {
-      icon: Eye,
-      title: "Staged previews, not surprises",
-      copy: "AI suggests cards. You review, edit, confirm. Nothing saves until you say so.",
-    },
-    {
-      icon: Users,
-      title: "Roles that make sense",
-      copy: "Admin, Editor, Viewer. Give a client read-only access without giving up control.",
-    },
-  ];
-
+function Transformation() {
   return (
-    <section id="features" className="bg-muted/30 px-6 py-24">
+    <section className="relative overflow-hidden px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-3xl text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-            Features
+            The transformation
           </span>
-          <h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-            Built for how work actually happens.
+          <h2 className="mt-3 text-balance text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">
+            From conversation chaos to{" "}
+            <span className="relative inline-block">
+              <span className="relative z-10">organized tasks</span>
+              <span
+                aria-hidden
+                className="absolute inset-x-0 bottom-1 z-0 h-3 bg-primary/25 sm:bottom-1.5 sm:h-3.5"
+              />
+            </span>
+            .
           </h2>
-          <p className="mt-4 text-balance text-muted-foreground">
-            Not another "supercharge your productivity" SaaS. The tool you wish
-            the last one had been.
-          </p>
         </div>
 
-        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map(({ icon: Icon, title, copy }) => (
-            <li
-              key={title}
-              className="group flex flex-col gap-3 rounded-xl border border-border bg-card p-6 transition-colors hover:border-foreground/20"
-            >
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
-                <Icon className="h-4 w-4" />
-              </span>
-              <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {copy}
-              </p>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-12 aspect-[16/10] w-full">
+          <ImageComparison
+            beforeImage="/assets/kanban-organized-dark.svg"
+            afterImage="/assets/conversation-chaos.svg"
+            altBefore="The same tasks organized into a kamotion kanban board"
+            altAfter="Scattered conversations across Slack, email, texts, and notes"
+            initialPosition={50}
+            className="h-full"
+          />
+        </div>
       </div>
     </section>
   );
@@ -864,87 +1039,98 @@ function Personas() {
 
 /* ------------------------------ DARK TRUST ----------------------------- */
 
-function DarkTrust() {
-  const pillars = [
+function OpenSource() {
+  const features = [
     {
-      icon: KeyRound,
-      title: "Your API key",
-      copy: "Swap providers any time. Your model, your cost, no markup.",
+      icon: Server,
+      title: "Self-host when you need control",
+      description:
+        "Run it on your own infrastructure so sensitive conversations, tasks, and workflows stay where you want them.",
     },
     {
-      icon: ShieldCheck,
-      title: "Your data",
-      copy: "Supabase-backed. You own it, export it, migrate any time.",
-    },
-    {
-      icon: Eye,
-      title: "Staged previews",
-      copy: "AI suggests cards. You review, edit, confirm. Nothing saves until you say so.",
+      icon: Code2,
+      title: "Built in the open",
+      description:
+        "Review the code, understand how it works, and contribute improvements instead of relying on a closed system.",
     },
     {
       icon: GitBranch,
-      title: "Open source soon",
-      copy: "Built to be self-hosted. Once proven, kamotion ships open-source for freelancers.",
+      title: "Branch it and build more",
+      description:
+        "Developers can fork the project, create custom features, and adapt the product far beyond the default experience.",
+    },
+    {
+      icon: Workflow,
+      title: "Customize every workflow",
+      description:
+        "Adapt parsing rules, task categories, Kanban stages, and resolution suggestions to match your team’s process.",
+    },
+    {
+      icon: Unlock,
+      title: "No vendor lock-in",
+      description:
+        "Keep your conversations, cards, and workflow data portable, transparent, and under your control.",
+    },
+    {
+      icon: Users2,
+      title: "Community-powered",
+      description:
+        "Build alongside other developers and teams turning messy conversations into organized, trackable work.",
     },
   ];
 
   return (
-    <section className="relative overflow-hidden bg-neutral-950 px-6 py-24 text-neutral-50">
+    <section className="relative overflow-hidden bg-muted/30 px-6 py-24">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-0 opacity-40"
+        className="pointer-events-none absolute inset-0 z-0 opacity-30"
         style={{
           background:
-            "radial-gradient(ellipse at top left, color-mix(in oklch, var(--primary) 30%, transparent), transparent 50%), radial-gradient(ellipse at bottom right, color-mix(in oklch, #a4a3a3 25%, transparent), transparent 50%)",
+            "radial-gradient(ellipse at top left, color-mix(in oklch, var(--primary) 25%, transparent), transparent 50%), radial-gradient(ellipse at bottom right, color-mix(in oklch, var(--muted-foreground) 18%, transparent), transparent 50%)",
         }}
       />
 
       <div className="relative z-10 mx-auto max-w-6xl">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-400">
-            The rules
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            Open source
           </span>
           <h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-            Your work, your tools, your rules.
+            100% Open Source.
           </h2>
-          <p className="mt-4 text-balance text-neutral-300">
-            No lock-in. No bloat. No upsell to an "enterprise tier" before
-            you've even tried the thing.
+          <p className="mt-4 text-balance leading-relaxed text-muted-foreground">
+            Self-host the platform, inspect the code, and extend it without
+            limits. From custom workflows to entirely new features, developers
+            can branch the project and build it around the way their team
+            works.
           </p>
         </div>
 
-        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {pillars.map(({ icon: Icon, title, copy }) => (
-            <li
-              key={title}
-              className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur"
-            >
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/10 text-neutral-50">
-                <Icon className="h-4 w-4" />
-              </span>
-              <h3 className="mt-4 text-lg font-semibold tracking-tight">
-                {title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-300">
-                {copy}
-              </p>
-            </li>
+        <FeatureGridContainer className="mt-14 grid divide-x divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card/60 backdrop-blur sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature) => (
+            <FeatureGridItem key={feature.title}>
+              <FeatureCard feature={feature} />
+            </FeatureGridItem>
           ))}
-        </ul>
+        </FeatureGridContainer>
 
         <div className="mt-14 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          {brand.github && (
+            <Link
+              href={brand.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-12 items-center justify-center gap-1.5 rounded-lg bg-foreground px-7 text-sm font-medium text-background shadow-lg shadow-foreground/10 transition-colors hover:bg-foreground/90 cursor-pointer"
+            >
+              View on GitHub
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
           <Link
             href="/try"
-            className="inline-flex h-12 items-center justify-center gap-1.5 rounded-lg bg-white px-7 text-sm font-medium text-neutral-900 shadow-lg transition-colors hover:bg-neutral-100 cursor-pointer"
+            className="inline-flex h-12 items-center justify-center rounded-lg border border-border bg-background/70 px-7 text-sm font-medium text-foreground backdrop-blur transition-colors hover:bg-accent cursor-pointer"
           >
             Try the demo
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            href="/login"
-            className="inline-flex h-12 items-center justify-center rounded-lg border border-white/20 px-7 text-sm font-medium text-neutral-50 transition-colors hover:bg-white/10 cursor-pointer"
-          >
-            Log in
           </Link>
         </div>
       </div>
@@ -952,36 +1138,29 @@ function DarkTrust() {
   );
 }
 
-/* -------------------------------- ORIGIN ------------------------------- */
+/* ---------------------------- NON-TECHNICALS ---------------------------- */
 
-function Origin() {
+function NonTechnicals() {
   return (
-    <section id="origin" className="px-6 py-24">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-border bg-card p-8 sm:p-12">
-        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-          Origin
-        </span>
-        <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
-          Built because I needed it.
-        </h2>
-        <p className="mt-5 text-balance leading-relaxed text-muted-foreground">
-          I'm a full-stack dev, marketer, and solo builder. My tasks don't
-          live in one place — they're scattered across Slack, email, Teams,
-          texts, Zoom, Docs.
-        </p>
-        <p className="mt-4 text-balance leading-relaxed text-muted-foreground">
-          I was constantly digging through conversations just to figure out
-          what to do next. So I built kamotion for myself — something that
-          could turn all that noise into clear, actionable work.
-        </p>
-        <p className="mt-6 text-balance text-lg font-medium leading-relaxed text-foreground">
-          Paste the noise. Get the work.
-        </p>
-        <p className="mt-6 text-balance leading-relaxed text-muted-foreground">
-          Now I'm opening it up for others who deal with the same kind of
-          commotion.
-        </p>
-        <p className="mt-6 font-mono text-sm text-foreground">— Edward</p>
+    <section id="hosted" className="px-6 py-24">
+      <div className="mx-auto max-w-2xl">
+        <div className="text-center">
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+            Non-Technicals
+          </span>
+          <h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
+            Just want to use it?
+          </h2>
+          <p className="mt-4 text-balance leading-relaxed text-muted-foreground">
+            You don&rsquo;t need to install anything, manage servers, or
+            understand open source tools. If you want the benefits without the
+            technical setup, reach out and I can help host it for you.
+          </p>
+        </div>
+
+        <div className="mt-10">
+          <HostedContactForm />
+        </div>
       </div>
     </section>
   );
@@ -990,60 +1169,59 @@ function Origin() {
 /* ------------------------------ COMING SOON ---------------------------- */
 
 function ComingSoon() {
-  const items = [
-    {
-      icon: Inbox,
-      title: "Inbox sync",
-      copy: "kamotion pulls new emails on its own and queues them for parsing — skip the paste step entirely.",
-    },
-    {
-      icon: Bot,
-      title: "Slack & Telegram bots",
-      copy: "Tag @kamotion in a channel and the thread becomes cards without anyone leaving the conversation.",
-    },
-    {
-      icon: Bell,
-      title: "Active comms",
-      copy: "Due-date nudges, team pings, and drafted follow-up emails routed to whoever owns the card.",
-    },
-    {
-      icon: Sparkles,
-      title: "Delegate to AI",
-      copy: "Assign a card to an agent — write the blog, email the vendor, plan the event, fix the site bug.",
-    },
-  ];
-
   return (
-    <section id="roadmap" className="px-6 py-24">
-      <div className="mx-auto max-w-6xl">
+    <section
+      id="roadmap"
+      className="relative overflow-hidden px-6 py-24"
+    >
+      {/* Faded grid backdrop */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
+      >
+        <svg
+          className="absolute inset-0 h-full w-full"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+        >
+          <defs>
+            <pattern
+              id="roadmap-grid"
+              x="0"
+              y="0"
+              width="48"
+              height="48"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 48 0 L 0 0 0 48"
+                className="stroke-foreground/10"
+                strokeWidth="1"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#roadmap-grid)" />
+        </svg>
+      </div>
+
+      <div className="relative mx-auto max-w-5xl">
         <div className="mx-auto max-w-2xl text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-            Coming soon
+            Roadmap
           </span>
           <h2 className="mt-3 text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-            What&rsquo;s next.
+            Constantly evolving&mdash;more features ahead!
           </h2>
-          <p className="mt-4 text-balance text-muted-foreground">
-            kamotion today is the kanban and the parser. Here&rsquo;s where
-            it&rsquo;s going.
+          <p className="mt-4 text-balance leading-relaxed text-muted-foreground">
+            This is only the beginning. New features, integrations, and
+            workflow improvements will continue to be added as the project
+            grows, making it easier to turn messy conversations into
+            organized, actionable work.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {items.map(({ icon: Icon, title, copy }) => (
-            <article
-              key={title}
-              className="flex flex-col gap-3 rounded-2xl border border-border bg-card p-6"
-            >
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="h-5 w-5" />
-              </span>
-              <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {copy}
-              </p>
-            </article>
-          ))}
+        <div className="mt-14">
+          <RoadmapFlow />
         </div>
       </div>
     </section>

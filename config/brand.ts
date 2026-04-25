@@ -3,7 +3,7 @@ export const brand = {
   domain: "kamotion.io",
   // Flip to the real URL when the repo goes public to activate the
   // "Star on GitHub" callouts in the footer and homepage CTA section.
-  github: null as string | null,
+  github: "https://github.com/edwrdcrpio/kamotion.io" as string | null,
   tagline: "From scattered messages to organized work.",
   description:
     "kamotion turns Slack threads, email chains, Zoom transcripts, and meeting notes into structured kanban cards. Paste the noise. AI does the parsing. You do the work.",

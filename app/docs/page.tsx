@@ -512,7 +512,7 @@ values (
         <DocP>
           Full setup guide with troubleshooting is at{" "}
           <DocLink href="https://github.com">
-            <DocInlineCode>docs/09_N8N_SETUP.md</DocInlineCode>
+            <DocInlineCode>docs/00_N8N_SETUP.md</DocInlineCode>
           </DocLink>{" "}
           in the repo.
         </DocP>
@@ -580,7 +580,7 @@ values (
         />
         <DocP>
           Full walkthrough at{" "}
-          <DocInlineCode>docs/10_DEPLOY.md</DocInlineCode> in the repo —
+          <DocInlineCode>docs/00_DEPLOY.md</DocInlineCode> in the repo —
           including the <DocInlineCode>engines.node: &quot;22&quot;</DocInlineCode>{" "}
           pin (Nixpacks tops out at Node 23 currently), the{" "}
           <DocInlineCode>$</DocInlineCode>-in-password gotcha, and rollback via
@@ -655,8 +655,54 @@ values (
         </DocCallout>
       </DocSection>
 
+      {/* HOSTED ACCESS */}
+      <DocSection id="hosted-access" eyebrow="14" title="Hosted access">
+        <DocP>
+          Not every team wants to run their own server. If you&rsquo;d rather
+          skip the infrastructure and just use kamotion, there&rsquo;s a
+          <DocStrong> managed-hosting path</DocStrong> — the project author
+          will host an instance for your team and hand you the keys.
+        </DocP>
+        <DocP>
+          Same product, same AI configuration options, same kanban + Gantt
+          surface — your data lives on a Supabase project provisioned for you,
+          and you get an admin login to manage your own users.
+        </DocP>
+        <DocCallout tone="tip" title="Reach out via the form">
+          The homepage has a{" "}
+          <DocLink href="/#hosted">
+            <DocStrong>Just want to use it?</DocStrong>
+          </DocLink>{" "}
+          section with a contact form. Drop a message — name, email, a few
+          sentences about your team and what you&rsquo;d use it for — and
+          you&rsquo;ll get a reply within a day or two. Captcha-gated, no
+          newsletter, no automation.
+        </DocCallout>
+        <DocP>
+          Hosted access is a good fit if any of these apply:
+        </DocP>
+        <DocList
+          items={[
+            "You want kamotion's value but your team doesn't have a backend engineer.",
+            "You'd rather pay for a managed instance than spend hours on Supabase + Dokploy + DNS.",
+            "You want a single point of contact when something breaks, instead of debugging Postgres yourself.",
+          ]}
+        />
+        <DocP>
+          If you&rsquo;d rather self-host (and you have the technical chops),
+          everything you need is in this doc — see{" "}
+          <DocLink href="#deployment">
+            <DocStrong>Deployment</DocStrong>
+          </DocLink>{" "}
+          and{" "}
+          <DocLink href="#free-self-host">
+            <DocStrong>Run it for $0</DocStrong>
+          </DocLink>.
+        </DocP>
+      </DocSection>
+
       {/* TECH STACK */}
-      <DocSection id="tech-stack" eyebrow="14" title="Tech stack">
+      <DocSection id="tech-stack" eyebrow="15" title="Tech stack">
         <DocTable
           headers={["Layer", "Choice", "Why"]}
           rows={[
@@ -674,11 +720,14 @@ values (
       </DocSection>
 
       {/* CONTRIBUTING */}
-      <DocSection id="contributing" eyebrow="15" title="Contributing">
+      <DocSection id="contributing" eyebrow="16" title="Contributing">
         <DocP>
-          The repo isn&rsquo;t public yet — once it is, this section will link
-          to issues and the contribution workflow. In the meantime, the
-          conventions that will apply:
+          The repo is public at{" "}
+          <DocLink href="https://github.com/edwrdcrpio/kamotion.io">
+            github.com/edwrdcrpio/kamotion.io
+          </DocLink>{" "}
+          — open issues for bugs and feature requests, send PRs for fixes.
+          Conventions:
         </DocP>
         <DocH3>Commit style</DocH3>
         <DocP>
@@ -713,7 +762,7 @@ npm run lint         # eslint`}</DocCode>
       </DocSection>
 
       {/* FAQ */}
-      <DocSection id="faq" eyebrow="16" title="FAQ">
+      <DocSection id="faq" eyebrow="17" title="FAQ">
         <DocH3>Can I switch AI models without redeploying?</DocH3>
         <DocP>
           Yes — everything is configured at{" "}

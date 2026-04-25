@@ -2,11 +2,12 @@ import Link from "next/link";
 import { brand } from "@/config/brand";
 import { KamotionWordmark } from "@/components/brand/kamotion-wordmark";
 import { GithubStar } from "@/components/marketing/github-star";
+import { OriginDialog } from "@/components/marketing/origin-dialog";
 
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-muted/20 px-6 py-16">
-      <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-5">
+      <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <Link
             href="/"
@@ -34,27 +35,40 @@ export function SiteFooter() {
             { label: "Log in", href: "/login" },
           ]}
         />
-        <FooterCol
-          title="Use cases"
-          links={[
-            { label: "Meeting follow-ups", href: "/#how" },
-            { label: "Client handoffs", href: "/#who" },
-            { label: "Slack cleanup", href: "/#features" },
-            { label: "Solo operators", href: "/#who" },
-          ]}
-        />
-        <FooterCol
-          title="Company"
-          links={[
-            { label: "Origin", href: "/#origin" },
-            { label: "Docs", href: "/docs" },
-            { label: "Contact", href: `mailto:hello@${brand.domain}` },
-            {
-              label: brand.github ? "GitHub" : "GitHub (soon)",
-              href: brand.github ?? "#",
-            },
-          ]}
-        />
+        <div>
+          <h4 className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground">
+            Company
+          </h4>
+          <ul className="mt-4 flex flex-col gap-2">
+            <li>
+              <OriginDialog />
+            </li>
+            <li>
+              <a
+                href="/docs"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                Docs
+              </a>
+            </li>
+            <li>
+              <a
+                href={`mailto:hello@${brand.domain}`}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                Contact
+              </a>
+            </li>
+            <li>
+              <a
+                href={brand.github ?? "#"}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              >
+                {brand.github ? "GitHub" : "GitHub (soon)"}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div className="mx-auto mt-12 flex max-w-7xl flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
