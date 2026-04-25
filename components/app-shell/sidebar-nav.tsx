@@ -75,7 +75,7 @@ export function SidebarNav({
 
   return (
     <>
-      <nav className="flex-1 p-3">
+      <nav className="flex-1 overflow-y-auto p-3">
         <ul className="space-y-1">
           {mainItems.map((item) => {
             const href = demoMode ? item.demoHref : item.href;

@@ -21,7 +21,9 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useId } from "react";
 import type { ParsedCard } from "@/lib/ai/schema";
 import type { Priority, Status } from "@/lib/validators";
 
@@ -168,15 +170,22 @@ function PreviewRow({
   onChange: (patch: Partial<ParsedCard>) => void;
   onRemove: () => void;
 }) {
+  const uid = useId();
+  const id = (key: string) => `${uid}-${key}`;
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3">
-      <div className="flex items-start gap-2">
-        <Input
-          value={card.task}
-          onChange={(e) => onChange({ task: e.target.value })}
-          placeholder="Task title"
-          className="flex-1"
-        />
+    <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-3">
+      <div className="flex items-end gap-2">
+        <div className="flex flex-1 flex-col gap-1.5">
+          <Label htmlFor={id("task")} className="text-xs">
+            Task
+          </Label>
+          <Input
+            id={id("task")}
+            value={card.task}
+            onChange={(e) => onChange({ task: e.target.value })}
+            placeholder="Task title"
+          />
+        </div>
         <Button
           type="button"
           variant="ghost"
@@ -190,59 +199,89 @@ function PreviewRow({
       </div>
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <Input
-          value={card.assignee}
-          onChange={(e) => onChange({ assignee: e.target.value })}
-          placeholder="Assignee"
-        />
-        <Input
-          type="date"
-          value={card.due_date ?? ""}
-          onChange={(e) =>
-            onChange({ due_date: e.target.value === "" ? null : e.target.value })
-          }
-        />
-        <Select
-          value={card.priority ?? "Normal"}
-          onValueChange={(v) => onChange({ priority: v as Priority })}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {PRIORITY_OPTIONS.map((p) => (
-              <SelectItem key={p} value={p}>
-                {p}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select
-          value={card.status ?? "Not Started"}
-          onValueChange={(v) => onChange({ status: v as Status })}
-        >
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {STATUS_OPTIONS.map((s) => (
-              <SelectItem key={s} value={s}>
-                {s}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor={id("assignee")} className="text-xs">
+            Assignee
+          </Label>
+          <Input
+            id={id("assignee")}
+            value={card.assignee}
+            onChange={(e) => onChange({ assignee: e.target.value })}
+            placeholder="Assignee"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor={id("due")} className="text-xs">
+            Due date
+          </Label>
+          <Input
+            id={id("due")}
+            type="date"
+            value={card.due_date ?? ""}
+            onChange={(e) =>
+              onChange({
+                due_date: e.target.value === "" ? null : e.target.value,
+              })
+            }
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor={id("priority")} className="text-xs">
+            Priority
+          </Label>
+          <Select
+            value={card.priority ?? "Normal"}
+            onValueChange={(v) => onChange({ priority: v as Priority })}
+          >
+            <SelectTrigger id={id("priority")}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PRIORITY_OPTIONS.map((p) => (
+                <SelectItem key={p} value={p}>
+                  {p}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor={id("status")} className="text-xs">
+            Status
+          </Label>
+          <Select
+            value={card.status ?? "Not Started"}
+            onValueChange={(v) => onChange({ status: v as Status })}
+          >
+            <SelectTrigger id={id("status")}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {STATUS_OPTIONS.map((s) => (
+                <SelectItem key={s} value={s}>
+                  {s}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      <Textarea
-        value={card.notes ?? ""}
-        onChange={(e) =>
-          onChange({ notes: e.target.value === "" ? null : e.target.value })
-        }
-        rows={2}
-        placeholder="Notes (optional)"
-        className="text-xs"
-      />
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor={id("notes")} className="text-xs">
+          Notes
+        </Label>
+        <Textarea
+          id={id("notes")}
+          value={card.notes ?? ""}
+          onChange={(e) =>
+            onChange({ notes: e.target.value === "" ? null : e.target.value })
+          }
+          rows={2}
+          placeholder="Context, links, constraints… (optional)"
+          className="text-xs"
+        />
+      </div>
     </div>
   );
 }
