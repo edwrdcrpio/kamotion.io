@@ -25,7 +25,6 @@ const STEP_ROUTES: Record<number, string> = {
   2: "/try/generate",
   3: "/try/generate",
   4: "/try/generate",
-  5: "/try",
 };
 
 const STEPS: Step[] = [
@@ -44,7 +43,7 @@ const STEPS: Step[] = [
     content:
       "Click Generate Task(s) in the sidebar. In the real app you'd paste an email, a transcript, anything — the AI extracts structured cards.",
     placement: "right",
-    buttons: ["skip"],
+    buttons: [],
     spotlightPadding: 6,
   },
   {
@@ -53,7 +52,7 @@ const STEPS: Step[] = [
     content:
       "Each card is a curated example showing how kamotion parses a different kind of input. Pick one, then click Select.",
     placement: "bottom",
-    buttons: ["primary", "skip"],
+    buttons: ["primary"],
     locale: { next: "Select" },
   },
   {
@@ -62,7 +61,7 @@ const STEPS: Step[] = [
     content:
       "Click Extract. The AI returns structured cards — you'll review and edit them before they land on the board.",
     placement: "top",
-    buttons: ["skip"],
+    buttons: [],
   },
   {
     target: '[data-tour="add-to-queue"]',
@@ -70,16 +69,7 @@ const STEPS: Step[] = [
     content:
       "Tweak titles, assignees, dates, priorities — drop any cards you don't want. Then click Add to Queue.",
     placement: "top",
-    buttons: ["skip"],
-  },
-  {
-    target: "body",
-    placement: "center",
-    title: "You've got it",
-    content:
-      "Explore Gantt for the timeline, Team to manage assignees, or just drag cards around. Nothing saves — refresh to reset the sandbox.",
-    buttons: ["primary"],
-    locale: { last: "Finish" },
+    buttons: [],
   },
 ];
 
@@ -95,7 +85,6 @@ export function DemoTour() {
     setTourStep,
     tourSkipped,
     tourCompleted,
-    dragHintDismissed,
     skipTour,
     completeTour,
   } = useDemo();
@@ -126,6 +115,12 @@ export function DemoTour() {
     if (currentRoute === pathname) return;
 
     const totalSteps = Object.keys(STEP_ROUTES).length;
+    // Last step is action-gated on Add to Queue → which routes back to /try.
+    // When that happens, the tour is done — finish instead of jumping back.
+    if (tourStep === totalSteps - 1) {
+      completeTour();
+      return;
+    }
     for (let i = tourStep + 1; i < totalSteps; i++) {
       if (STEP_ROUTES[i] === pathname) {
         setTourStep(i);
@@ -138,7 +133,15 @@ export function DemoTour() {
         return;
       }
     }
-  }, [pathname, tourStep, tourSkipped, tourCompleted, setTourStep, isDesktop]);
+  }, [
+    pathname,
+    tourStep,
+    tourSkipped,
+    tourCompleted,
+    setTourStep,
+    isDesktop,
+    completeTour,
+  ]);
 
   // Dialog-gated advancement: the Preview dialog's Add to Queue button only
   // exists when the user has clicked Extract. Observe the DOM while we're on
@@ -178,15 +181,10 @@ export function DemoTour() {
     }
   };
 
-  // The Finish step (index 5) lives on /try alongside <DragHintDialog>. When
-  // the drag-hint is still open, pause the tour so the two modals don't
-  // compete for focus. As soon as the user clicks Got it, joyride resumes.
-  const pausedForDragHint = tourStep === 5 && !dragHintDismissed;
   const running =
     isDesktop &&
     !tourSkipped &&
     !tourCompleted &&
-    !pausedForDragHint &&
     pathname.startsWith("/try");
 
   return (
@@ -205,8 +203,8 @@ export function DemoTour() {
         skipBeacon: true,
         overlayClickAction: false,
         closeButtonAction: "skip",
-        showProgress: true,
-        buttons: ["primary", "skip"],
+        showProgress: false,
+        buttons: ["primary"],
         spotlightPadding: 8,
         spotlightRadius: 8,
         zIndex: 60,
@@ -215,9 +213,8 @@ export function DemoTour() {
       locale={{
         back: "Back",
         close: "Close",
-        last: "Finish",
+        last: "Next",
         next: "Next",
-        skip: "Skip tour",
       }}
     />
   );
