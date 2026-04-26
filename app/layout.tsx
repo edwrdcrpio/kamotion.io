@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { brand } from "@/config/brand";
 import { ThemeProvider } from "@/components/theme-provider";
+import { MswSweeper } from "@/components/demo/msw-sweeper";
 import "./globals.css";
 
 const sans = Plus_Jakarta_Sans({
@@ -37,6 +38,7 @@ export default function RootLayout({
       className={`${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <MswSweeper />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
