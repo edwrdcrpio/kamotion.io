@@ -58,6 +58,7 @@ function hydrateCard(input: CardInput): Card {
     position: input.position ?? nextPositionFor(column),
     archived_at: null,
     archived_from_column: null,
+    default_category_id: input.default_category_id ?? null,
     created_at: nowIso,
     updated_at: nowIso,
     created_by: null,

@@ -150,6 +150,13 @@ export function Board() {
 
   const [filters, setFilters] = useState<BoardFilters>(INITIAL_FILTERS);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  // `drawerOpen` is intentionally separate from selectedCardId so cache
+  // refetches that briefly empty `cards` don't collapse the drawer.
+  const openCard = (id: string) => {
+    setSelectedCardId(id);
+    setDrawerOpen(true);
+  };
   const [collapsedColumns, setCollapsedColumns] = useState<Set<Column>>(
     () => new Set(),
   );
@@ -347,7 +354,7 @@ export function Board() {
                 key={col}
                 name={col}
                 cards={grouped[col]}
-                onOpen={setSelectedCardId}
+                onOpen={openCard}
                 collapsed={collapsedColumns.has(col)}
                 onToggle={() => toggleColumn(col)}
               />
@@ -362,7 +369,9 @@ export function Board() {
 
       <CardDetailDrawer
         card={selectedCard}
+        open={drawerOpen}
         onOpenChange={(open) => {
+          setDrawerOpen(open);
           if (!open) setSelectedCardId(null);
         }}
       />

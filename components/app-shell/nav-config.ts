@@ -6,6 +6,7 @@ import {
   UserCog,
   Archive,
   Sparkles,
+  Clock4,
   type LucideIcon,
 } from "lucide-react";
 import type { Role } from "@/lib/validators";
@@ -41,6 +42,13 @@ export const MAIN_NAV: NavItem[] = [
     href: "/app/gantt",
     demoHref: "/try/gantt",
     icon: GanttChartSquare,
+  },
+  {
+    label: "Time Log",
+    href: "/app/time-log",
+    demoHref: "/try",
+    icon: Clock4,
+    demoLocked: true,
   },
   {
     label: "Team",

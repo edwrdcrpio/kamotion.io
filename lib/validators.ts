@@ -50,6 +50,11 @@ const nullableIsoDate = z.preprocess(
 const nullableText = (max: number) =>
   z.preprocess(emptyToNull, z.string().max(max).nullable().optional());
 
+const nullableUuid = z.preprocess(
+  emptyToNull,
+  z.string().uuid().nullable().optional(),
+);
+
 export const CardCreateInput = z.object({
   task: z.string().min(1, "Task is required").max(500),
   assignee: z.string().min(1).max(120),
@@ -61,6 +66,7 @@ export const CardCreateInput = z.object({
   priority: Priority.optional(),
   notes: nullableText(10_000),
   column_name: Column.optional(),
+  default_category_id: nullableUuid,
   // Position omitted from create — DB trigger assigns append-to-bottom.
 });
 export type CardCreateInput = z.infer<typeof CardCreateInput>;
@@ -201,7 +207,104 @@ export type Card = {
   position: number;
   archived_at: string | null;
   archived_from_column: Column | null;
+  default_category_id: string | null;
   created_at: string;
   updated_at: string;
   created_by: string | null;
 };
+
+// ─────────────────────────────────────────────────────────────────────
+// Time Log
+// ─────────────────────────────────────────────────────────────────────
+
+export const TimeEntrySource = z.enum(["timer", "manual"]);
+export type TimeEntrySource = z.infer<typeof TimeEntrySource>;
+
+export type TimeCategory = {
+  id: string;
+  name: string;
+  color: string | null;
+  position: number;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export const TimeCategoryCreateInput = z.object({
+  name: z.string().min(1).max(60),
+  color: nullableText(40),
+  position: z.number().optional(),
+  active: z.boolean().optional(),
+});
+export type TimeCategoryCreateInput = z.infer<typeof TimeCategoryCreateInput>;
+
+export const TimeCategoryUpdateInput = TimeCategoryCreateInput.partial();
+export type TimeCategoryUpdateInput = z.infer<typeof TimeCategoryUpdateInput>;
+
+export type TimeEntry = {
+  id: string;
+  card_id: string | null;
+  category_id: string | null;
+  started_at: string;
+  ended_at: string | null;
+  duration_minutes: number | null;
+  notes: string | null;
+  source: TimeEntrySource;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+};
+
+const isoDateTime = z.string().datetime({ offset: true });
+
+// Manual entry — must include start + end + duration. Timer-style entries
+// (started, no end yet) go through /start instead.
+export const TimeEntryCreateInput = z.object({
+  card_id: nullableUuid,
+  category_id: nullableUuid,
+  started_at: isoDateTime,
+  ended_at: isoDateTime,
+  duration_minutes: z.number().int().min(1).max(60 * 24 * 31),
+  notes: nullableText(2000),
+});
+export type TimeEntryCreateInput = z.infer<typeof TimeEntryCreateInput>;
+
+export const TimeEntryUpdateInput = z.object({
+  card_id: nullableUuid,
+  category_id: nullableUuid,
+  started_at: isoDateTime.optional(),
+  ended_at: isoDateTime.optional(),
+  duration_minutes: z.number().int().min(1).max(60 * 24 * 31).optional(),
+  notes: nullableText(2000),
+}).partial();
+export type TimeEntryUpdateInput = z.infer<typeof TimeEntryUpdateInput>;
+
+export const TimeEntryStartInput = z.object({
+  card_id: nullableUuid,
+  category_id: nullableUuid,
+  notes: nullableText(2000),
+});
+export type TimeEntryStartInput = z.infer<typeof TimeEntryStartInput>;
+
+export const PeriodPreset = z.enum([
+  "this_week",
+  "last_week",
+  "biweekly_current",
+  "biweekly_last",
+  "this_month",
+  "last_month",
+  "custom",
+  "all",
+]);
+export type PeriodPreset = z.infer<typeof PeriodPreset>;
+
+export const TimeEntryListQuery = z.object({
+  period: PeriodPreset.optional(),
+  from: isoDate.optional(),
+  to: isoDate.optional(),
+  card_id: z.string().uuid().optional(),
+  category_id: z.string().uuid().optional(),
+  mine: z.enum(["true", "false"]).optional(),
+  format: z.enum(["json", "csv"]).optional(),
+});
+export type TimeEntryListQuery = z.infer<typeof TimeEntryListQuery>;

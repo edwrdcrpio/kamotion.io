@@ -64,6 +64,7 @@ const FORM_DEFAULTS: FormIn = {
   notes: "",
   status: "Not Started",
   priority: "Normal",
+  default_category_id: "",
 };
 
 export function NewCardDialog() {

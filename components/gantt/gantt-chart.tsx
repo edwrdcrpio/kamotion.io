@@ -154,6 +154,13 @@ export function GanttChart() {
 
   const [filters, setFilters] = useState<BoardFilters>(INITIAL_FILTERS);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  // `drawerOpen` is intentionally separate from selectedCardId so cache
+  // refetches that briefly empty `allCards` don't collapse the drawer.
+  const openCard = (id: string) => {
+    setSelectedCardId(id);
+    setDrawerOpen(true);
+  };
   const [dragOffsetDays, setDragOffsetDays] = useState<Record<string, number>>(
     {},
   );
@@ -327,7 +334,7 @@ export function GanttChart() {
         <div className="flex overflow-hidden rounded-xl border border-border bg-card">
           <LabelColumn
             cards={scheduled.map((s) => s.card)}
-            onOpen={setSelectedCardId}
+            onOpen={openCard}
           />
           <div className="flex-1 overflow-x-auto">
             <ChartSvg
@@ -342,7 +349,7 @@ export function GanttChart() {
               setDragOffsetDays={setDragOffsetDays}
               resizeOffsetDays={resizeOffsetDays}
               setResizeOffsetDays={setResizeOffsetDays}
-              onOpen={setSelectedCardId}
+              onOpen={openCard}
               onCommit={(id, due_date) =>
                 updateDueDate.mutate({ id, due_date })
               }
@@ -353,12 +360,14 @@ export function GanttChart() {
       )}
 
       {undated.length > 0 && (
-        <UndatedList cards={undated} onOpen={setSelectedCardId} />
+        <UndatedList cards={undated} onOpen={openCard} />
       )}
 
       <CardDetailDrawer
         card={selectedCard}
+        open={drawerOpen}
         onOpenChange={(open) => {
+          setDrawerOpen(open);
           if (!open) setSelectedCardId(null);
         }}
       />

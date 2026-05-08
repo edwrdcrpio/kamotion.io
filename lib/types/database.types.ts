@@ -20,6 +20,7 @@ export type Database = {
           column_name: string
           created_at: string
           created_by: string | null
+          default_category_id: string | null
           due_date: string | null
           estimated_duration: string | null
           id: string
@@ -39,6 +40,7 @@ export type Database = {
           column_name?: string
           created_at?: string
           created_by?: string | null
+          default_category_id?: string | null
           due_date?: string | null
           estimated_duration?: string | null
           id?: string
@@ -58,6 +60,7 @@ export type Database = {
           column_name?: string
           created_at?: string
           created_by?: string | null
+          default_category_id?: string | null
           due_date?: string | null
           estimated_duration?: string | null
           id?: string
@@ -76,6 +79,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cards_default_category_id_fkey"
+            columns: ["default_category_id"]
+            isOneToOne: false
+            referencedRelation: "time_categories"
             referencedColumns: ["id"]
           },
         ]
@@ -174,6 +184,100 @@ export type Database = {
           {
             foreignKeyName: "team_members_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_categories: {
+        Row: {
+          active: boolean
+          color: string | null
+          created_at: string
+          id: string
+          name: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          color?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          color?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      time_entries: {
+        Row: {
+          card_id: string | null
+          category_id: string | null
+          created_at: string
+          created_by: string
+          duration_minutes: number | null
+          ended_at: string | null
+          id: string
+          notes: string | null
+          source: string
+          started_at: string
+          updated_at: string
+        }
+        Insert: {
+          card_id?: string | null
+          category_id?: string | null
+          created_at?: string
+          created_by: string
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          source?: string
+          started_at: string
+          updated_at?: string
+        }
+        Update: {
+          card_id?: string | null
+          category_id?: string | null
+          created_at?: string
+          created_by?: string
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          notes?: string | null
+          source?: string
+          started_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_entries_card_id_fkey"
+            columns: ["card_id"]
+            isOneToOne: false
+            referencedRelation: "cards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_entries_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "time_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "time_entries_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
