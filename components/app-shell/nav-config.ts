@@ -46,9 +46,8 @@ export const MAIN_NAV: NavItem[] = [
   {
     label: "Time Log",
     href: "/app/time-log",
-    demoHref: "/try",
+    demoHref: "/try/time-log",
     icon: Clock4,
-    demoLocked: true,
   },
   {
     label: "Team",

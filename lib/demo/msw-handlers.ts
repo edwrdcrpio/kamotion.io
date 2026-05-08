@@ -2,18 +2,37 @@
 // Handler shapes match app/api/**/route.ts response bodies so the real
 // components get the payloads they expect.
 import { http, HttpResponse } from "msw";
-import type { Card, TeamMember } from "@/lib/validators";
+import type {
+  Card,
+  TeamMember,
+  TimeCategory,
+  TimeEntry,
+} from "@/lib/validators";
 import type { ParsedCard } from "@/lib/ai/schema";
 import { DEMO_EXAMPLES, type DemoCard } from "@/config/demo-examples";
 import {
+  rangeForPreset,
+  parseAnchorMondayIso,
+  formatMinutes,
+} from "@/lib/time-log/period";
+import { toCsv } from "@/lib/time-log/csv";
+import {
   addCards,
+  addCategory,
+  addEntry,
   addTeamMember,
+  DEMO_USER_ID,
   demoState,
   deleteCard,
+  deleteCategory,
+  deleteEntry,
   deleteTeamMember,
+  findRunningEntry,
   newId,
   nextPositionFor,
   updateCard,
+  updateCategory,
+  updateEntry,
   updateSettings,
   updateTeamMember,
 } from "./state";
@@ -76,6 +95,27 @@ function demoCardToParsed(card: DemoCard): ParsedCard {
     notes: card.notes,
     priority: card.priority,
     status: card.status,
+  };
+}
+
+// ───────────────────────── time-log helpers ───────────────────────────────
+
+type EntryWithJoins = TimeEntry & {
+  cards: { task: string } | null;
+  time_categories: { name: string; color: string | null } | null;
+};
+
+function joinEntry(entry: TimeEntry): EntryWithJoins {
+  const card = entry.card_id
+    ? demoState.cards.find((c) => c.id === entry.card_id) ?? null
+    : null;
+  const cat = entry.category_id
+    ? demoState.categories.find((c) => c.id === entry.category_id) ?? null
+    : null;
+  return {
+    ...entry,
+    cards: card ? { task: card.task } : null,
+    time_categories: cat ? { name: cat.name, color: cat.color } : null,
   };
 }
 
@@ -222,5 +262,265 @@ export const handlers = [
     // realistic instead of flashing instantly.
     await new Promise((r) => setTimeout(r, 450));
     return HttpResponse.json({ cards });
+  }),
+
+  // ========== time categories ==========
+  http.get("/api/categories", () => {
+    const categories = [...demoState.categories].sort(
+      (a, b) => a.position - b.position,
+    );
+    return HttpResponse.json({ categories });
+  }),
+
+  http.post("/api/categories", async ({ request }) => {
+    const body = (await request.json()) as Partial<TimeCategory>;
+    if (!body.name || !body.name.trim()) {
+      return HttpResponse.json(
+        { error: "name is required" },
+        { status: 400 },
+      );
+    }
+    const category = addCategory({
+      name: body.name,
+      color: body.color ?? null,
+      position: body.position,
+      active: body.active,
+    });
+    return HttpResponse.json({ category }, { status: 201 });
+  }),
+
+  http.patch("/api/categories/:id", async ({ request, params }) => {
+    const id = String(params.id);
+    const patch = (await request.json()) as Partial<TimeCategory>;
+    const category = updateCategory(id, patch);
+    if (!category) {
+      return HttpResponse.json(
+        { error: "Category not found" },
+        { status: 404 },
+      );
+    }
+    return HttpResponse.json({ category });
+  }),
+
+  http.delete("/api/categories/:id", ({ params }) => {
+    const id = String(params.id);
+    if (!deleteCategory(id)) {
+      return HttpResponse.json(
+        { error: "Category not found" },
+        { status: 404 },
+      );
+    }
+    return HttpResponse.json({ ok: true });
+  }),
+
+  // ========== time entries ==========
+  http.get("/api/time-entries", ({ request }) => {
+    const url = new URL(request.url);
+    const period = url.searchParams.get("period");
+    const from = url.searchParams.get("from");
+    const to = url.searchParams.get("to");
+    const cardId = url.searchParams.get("card_id");
+    const categoryId = url.searchParams.get("category_id");
+    const mine = url.searchParams.get("mine");
+    const format = url.searchParams.get("format");
+
+    // Real route: default mine=true, scoped to created_by=session.user.id.
+    // In demo we only have one user, so anything not stamped with our id is
+    // filtered out for parity (defence in depth — currently nothing else
+    // creates entries).
+    const showAll = mine === "false";
+    let entries = demoState.entries.filter(
+      (e) => showAll || e.created_by === DEMO_USER_ID,
+    );
+
+    if (cardId) entries = entries.filter((e) => e.card_id === cardId);
+    if (categoryId)
+      entries = entries.filter((e) => e.category_id === categoryId);
+
+    if (period) {
+      const anchor = parseAnchorMondayIso(
+        (demoState.settings as Record<string, unknown>).biweeklyAnchorMonday,
+      );
+      const range = rangeForPreset(
+        period as Parameters<typeof rangeForPreset>[0],
+        new Date(),
+        anchor,
+        from && to
+          ? { from: new Date(from), to: new Date(to) }
+          : undefined,
+      );
+      if (range) {
+        entries = entries.filter((e) => {
+          const t = new Date(e.started_at);
+          return t >= range.start && t < range.end;
+        });
+      }
+    }
+
+    entries = [...entries].sort((a, b) =>
+      a.started_at < b.started_at ? 1 : -1,
+    );
+
+    const joined = entries.map(joinEntry);
+
+    if (format === "csv") {
+      const rows = joined.map((e) => ({
+        date: e.started_at.slice(0, 10),
+        card: e.cards?.task ?? "",
+        category: e.time_categories?.name ?? "",
+        started_at: e.started_at,
+        ended_at: e.ended_at ?? "",
+        duration:
+          e.duration_minutes != null ? formatMinutes(e.duration_minutes) : "",
+        duration_minutes: e.duration_minutes ?? "",
+        source: e.source,
+        notes: e.notes ?? "",
+      }));
+      const csv = toCsv(rows, [
+        { key: "date", header: "Date" },
+        { key: "card", header: "Card" },
+        { key: "category", header: "Category" },
+        { key: "started_at", header: "Started" },
+        { key: "ended_at", header: "Ended" },
+        { key: "duration", header: "Duration" },
+        { key: "duration_minutes", header: "Minutes" },
+        { key: "source", header: "Source" },
+        { key: "notes", header: "Notes" },
+      ]);
+      return new HttpResponse(csv, {
+        headers: {
+          "Content-Type": "text/csv; charset=utf-8",
+          "Content-Disposition": `attachment; filename="time-log-${isoToday()}.csv"`,
+        },
+      });
+    }
+
+    return HttpResponse.json({ entries: joined });
+  }),
+
+  http.post("/api/time-entries", async ({ request }) => {
+    const body = (await request.json()) as Partial<TimeEntry>;
+    if (
+      !body.started_at ||
+      !body.ended_at ||
+      typeof body.duration_minutes !== "number"
+    ) {
+      return HttpResponse.json(
+        { error: "started_at, ended_at, and duration_minutes are required" },
+        { status: 400 },
+      );
+    }
+    const nowIso = new Date().toISOString();
+    const entry: TimeEntry = {
+      id: newId(),
+      card_id: body.card_id ?? null,
+      category_id: body.category_id ?? null,
+      started_at: body.started_at,
+      ended_at: body.ended_at,
+      duration_minutes: body.duration_minutes,
+      notes: body.notes ?? null,
+      source: "manual",
+      created_by: DEMO_USER_ID,
+      created_at: nowIso,
+      updated_at: nowIso,
+    };
+    addEntry(entry);
+    return HttpResponse.json({ entry: joinEntry(entry) }, { status: 201 });
+  }),
+
+  http.patch("/api/time-entries/:id", async ({ request, params }) => {
+    const id = String(params.id);
+    const patch = (await request.json()) as Partial<TimeEntry>;
+    const entry = updateEntry(id, patch);
+    if (!entry) {
+      return HttpResponse.json(
+        { error: "Entry not found" },
+        { status: 404 },
+      );
+    }
+    return HttpResponse.json({ entry: joinEntry(entry) });
+  }),
+
+  http.delete("/api/time-entries/:id", ({ params }) => {
+    const id = String(params.id);
+    if (!deleteEntry(id)) {
+      return HttpResponse.json(
+        { error: "Entry not found" },
+        { status: 404 },
+      );
+    }
+    return HttpResponse.json({ ok: true });
+  }),
+
+  http.post("/api/time-entries/start", async ({ request }) => {
+    const body = (await request
+      .json()
+      .catch(() => ({}))) as Partial<TimeEntry>;
+
+    if (findRunningEntry()) {
+      return HttpResponse.json(
+        { error: "A timer is already running" },
+        { status: 409 },
+      );
+    }
+
+    // If no category passed, inherit from card.default_category_id —
+    // matches the real handler.
+    let categoryId = body.category_id ?? null;
+    if (!categoryId && body.card_id) {
+      const card = demoState.cards.find((c) => c.id === body.card_id);
+      categoryId = card?.default_category_id ?? null;
+    }
+
+    const nowIso = new Date().toISOString();
+    const entry: TimeEntry = {
+      id: newId(),
+      card_id: body.card_id ?? null,
+      category_id: categoryId,
+      started_at: nowIso,
+      ended_at: null,
+      duration_minutes: null,
+      notes: body.notes ?? null,
+      source: "timer",
+      created_by: DEMO_USER_ID,
+      created_at: nowIso,
+      updated_at: nowIso,
+    };
+    addEntry(entry);
+    return HttpResponse.json({ entry: joinEntry(entry) }, { status: 201 });
+  }),
+
+  http.post("/api/time-entries/stop", () => {
+    const running = findRunningEntry();
+    if (!running) {
+      return HttpResponse.json(
+        { error: "No timer is running" },
+        { status: 404 },
+      );
+    }
+    const ended = new Date();
+    const started = new Date(running.started_at);
+    const minutes = Math.max(
+      1,
+      Math.round((ended.getTime() - started.getTime()) / 60_000),
+    );
+    const updated = updateEntry(running.id, {
+      ended_at: ended.toISOString(),
+      duration_minutes: minutes,
+    });
+    if (!updated) {
+      return HttpResponse.json(
+        { error: "Failed to stop timer" },
+        { status: 500 },
+      );
+    }
+    return HttpResponse.json({ entry: joinEntry(updated) });
+  }),
+
+  http.get("/api/time-entries/active", () => {
+    const running = findRunningEntry();
+    return HttpResponse.json({
+      entry: running ? joinEntry(running) : null,
+    });
   }),
 ];

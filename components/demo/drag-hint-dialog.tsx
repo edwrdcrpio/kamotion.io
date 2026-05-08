@@ -25,22 +25,28 @@ async function fetchCards(): Promise<{ cards: Card[] }> {
 }
 
 export function DragHintDialog() {
-  const { dragHintDismissed, dismissDragHint } = useDemo();
+  const { dragHintDismissed, dismissDragHint, tourCompleted, tourSkipped } =
+    useDemo();
   const pathname = usePathname();
+  // Wait for the welcome/tour spotlight to finish — otherwise this modal
+  // races the joyride overlay on first /try visit when seed cards are
+  // already present.
+  const tourGate = tourCompleted || tourSkipped;
 
   // Only poll once — the dialog is strictly a "first cards land on the board"
   // nudge, and after dismissal we never need to refetch for this purpose.
   const { data } = useQuery({
     queryKey: ["cards"],
     queryFn: fetchCards,
-    enabled: pathname === "/try" && !dragHintDismissed,
+    enabled: pathname === "/try" && !dragHintDismissed && tourGate,
     staleTime: 10_000,
   });
 
   const hasCards = (data?.cards ?? []).length > 0;
   // Fires whenever the board has cards — covers both the tour flow and the
   // "user skipped the tour and added cards manually" case.
-  const shouldOpen = pathname === "/try" && !dragHintDismissed && hasCards;
+  const shouldOpen =
+    pathname === "/try" && !dragHintDismissed && hasCards && tourGate;
 
   return (
     <Dialog
