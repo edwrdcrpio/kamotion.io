@@ -10,6 +10,7 @@ export const DOCS_SECTIONS: DocsSection[] = [
   { id: "generate", label: "Generate tasks" },
   { id: "board", label: "Board" },
   { id: "gantt", label: "Gantt" },
+  { id: "time-log", label: "Time Log" },
   { id: "team", label: "Team" },
   { id: "users", label: "Users" },
   { id: "archive", label: "Archive" },
@@ -21,4 +22,5 @@ export const DOCS_SECTIONS: DocsSection[] = [
   { id: "tech-stack", label: "Tech stack" },
   { id: "contributing", label: "Contributing" },
   { id: "faq", label: "FAQ" },
+  { id: "coming-soon", label: "Coming soon" },
 ];
