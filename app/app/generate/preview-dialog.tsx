@@ -25,7 +25,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useId } from "react";
 import type { ParsedCard } from "@/lib/ai/schema";
-import type { Priority, Status } from "@/lib/validators";
+import type { Domain, Priority, Status } from "@/lib/validators";
 
 const PRIORITY_OPTIONS: Priority[] = ["Low", "Normal", "High"];
 const STATUS_OPTIONS: Status[] = [
@@ -35,6 +35,16 @@ const STATUS_OPTIONS: Status[] = [
   "Blocked",
   "Review",
   "Approved",
+];
+const DOMAIN_OPTIONS: Domain[] = [
+  "Engineering",
+  "Design",
+  "UX",
+  "Content",
+  "Marketing",
+  "Client",
+  "Admin",
+  "Other",
 ];
 
 export function PreviewDialog({
@@ -265,6 +275,30 @@ function PreviewRow({
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor={id("domain")} className="text-xs">
+          Domain
+        </Label>
+        <Select
+          value={card.domain ?? "__none"}
+          onValueChange={(v) =>
+            onChange({ domain: v === "__none" ? null : (v as Domain) })
+          }
+        >
+          <SelectTrigger id={id("domain")}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__none">No domain</SelectItem>
+            {DOMAIN_OPTIONS.map((d) => (
+              <SelectItem key={d} value={d}>
+                {d}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex flex-col gap-1.5">

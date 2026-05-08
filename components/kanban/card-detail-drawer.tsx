@@ -11,6 +11,7 @@ import {
   type Status,
   type Priority,
   type Column,
+  type Domain,
   type TimeEntry,
 } from "@/lib/validators";
 import { formatMinutes } from "@/lib/time-log/period";
@@ -63,6 +64,17 @@ const STATUS_OPTIONS: Status[] = [
 
 const PRIORITY_OPTIONS: Priority[] = ["Low", "Normal", "High"];
 
+const DOMAIN_OPTIONS: Domain[] = [
+  "Engineering",
+  "Design",
+  "UX",
+  "Content",
+  "Marketing",
+  "Client",
+  "Admin",
+  "Other",
+];
+
 const STATUS_TO_COLUMN: Partial<Record<Status, Column>> = {
   "Not Started": "Queue",
   Ready: "Ready",
@@ -113,6 +125,7 @@ export function CardDetailDrawer({
         notes: card.notes ?? "",
         status: card.status,
         priority: card.priority,
+        domain: card.domain,
       });
     }
   }, [card, reset]);
@@ -338,6 +351,34 @@ export function CardDetailDrawer({
                       )}
                     />
                   </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label>Domain</Label>
+                  <Controller
+                    name="domain"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={(field.value as string | null) ?? "__none"}
+                        onValueChange={(v) =>
+                          field.onChange(v === "__none" ? null : v)
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="__none">No domain</SelectItem>
+                          {DOMAIN_OPTIONS.map((d) => (
+                            <SelectItem key={d} value={d}>
+                              {d}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">

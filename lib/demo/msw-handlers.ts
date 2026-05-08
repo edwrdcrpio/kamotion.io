@@ -78,6 +78,7 @@ function hydrateCard(input: CardInput): Card {
     archived_at: null,
     archived_from_column: null,
     default_category_id: input.default_category_id ?? null,
+    domain: input.domain ?? null,
     created_at: nowIso,
     updated_at: nowIso,
     created_by: null,
@@ -109,6 +110,15 @@ function collapseToSingleCard(
   const requester =
     cards.find((c) => c.requester && c.requester !== "me")?.requester ?? "me";
 
+  // Pick the most-common domain across the bundle, falling back to "Other".
+  const domainCounts = new Map<string, number>();
+  for (const c of cards) {
+    if (c.domain) domainCounts.set(c.domain, (domainCounts.get(c.domain) ?? 0) + 1);
+  }
+  const domain =
+    ([...domainCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ??
+      "Other") as ParsedCard["domain"];
+
   return {
     task: `${example.description} — bundled`,
     assignee: "me",
@@ -119,6 +129,7 @@ function collapseToSingleCard(
     notes: `Source: ${example.sourceLabel}.\n\n${checklist}`,
     priority: highest,
     status: "Not Started",
+    domain,
   };
 }
 
@@ -133,6 +144,7 @@ function demoCardToParsed(card: DemoCard): ParsedCard {
     notes: card.notes,
     priority: card.priority,
     status: card.status,
+    domain: card.domain ?? null,
   };
 }
 

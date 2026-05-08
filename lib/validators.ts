@@ -22,6 +22,21 @@ export type Column = z.infer<typeof Column>;
 export const Priority = z.enum(["Low", "Normal", "High"]);
 export type Priority = z.infer<typeof Priority>;
 
+// Domain classification — what kind of work the card represents. Used to
+// shape AI suggestions and (optionally) filter the board. Nullable on the
+// card row; the AI sets it during parse, the user can edit it on the card.
+export const Domain = z.enum([
+  "Engineering",
+  "Design",
+  "UX",
+  "Content",
+  "Marketing",
+  "Client",
+  "Admin",
+  "Other",
+]);
+export type Domain = z.infer<typeof Domain>;
+
 export const Role = z.enum(["admin", "editor", "viewer"]);
 export type Role = z.infer<typeof Role>;
 
@@ -67,6 +82,10 @@ export const CardCreateInput = z.object({
   notes: nullableText(10_000),
   column_name: Column.optional(),
   default_category_id: nullableUuid,
+  domain: z.preprocess(
+    (v) => (v === "" || v === undefined ? null : v),
+    Domain.nullable().optional(),
+  ),
   // Position omitted from create — DB trigger assigns append-to-bottom.
 });
 export type CardCreateInput = z.infer<typeof CardCreateInput>;
@@ -208,6 +227,7 @@ export type Card = {
   archived_at: string | null;
   archived_from_column: Column | null;
   default_category_id: string | null;
+  domain: Domain | null;
   created_at: string;
   updated_at: string;
   created_by: string | null;

@@ -65,6 +65,7 @@ const FORM_DEFAULTS: FormIn = {
   status: "Not Started",
   priority: "Normal",
   default_category_id: "",
+  domain: null,
 };
 
 export function NewCardDialog() {

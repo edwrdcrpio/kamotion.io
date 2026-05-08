@@ -4,6 +4,7 @@
 import { DEMO_TEAM, type DemoExample } from "@/config/demo-examples";
 import type {
   Card,
+  Domain,
   TeamMember,
   TimeCategory,
   TimeEntry,
@@ -96,6 +97,7 @@ function seedCards(): Card[] {
     column_name: Card["column_name"];
     notes: string | null;
     default_category_id: string | null;
+    domain: Domain | null;
     position: number;
   };
 
@@ -113,6 +115,7 @@ function seedCards(): Card[] {
       notes:
         "Cover slides, customer logos, two case-study slides. Lucy will review before partner sync.",
       default_category_id: CATEGORY_BY_NAME["Design"],
+      domain: "Design",
       position: 1,
     },
     {
@@ -128,6 +131,7 @@ function seedCards(): Card[] {
       notes:
         "Set up GA4 property, port custom events, sanity-check ecommerce funnel parity for two weeks.",
       default_category_id: CATEGORY_BY_NAME["Code"],
+      domain: "Engineering",
       position: 2,
     },
     {
@@ -143,6 +147,7 @@ function seedCards(): Card[] {
       notes:
         "Repro on iOS Safari only. Suspected event-handler race after the recent Stripe.js upgrade.",
       default_category_id: CATEGORY_BY_NAME["Code"],
+      domain: "Engineering",
       position: 3,
     },
     {
@@ -158,6 +163,7 @@ function seedCards(): Card[] {
       notes:
         "Tighten step 2 + step 4 copy. Drop the legalese; product team wants an empty-state nudge instead.",
       default_category_id: CATEGORY_BY_NAME["Revision"],
+      domain: "Content",
       position: 1,
     },
     {
@@ -173,6 +179,7 @@ function seedCards(): Card[] {
       notes:
         "Slide 4 needs the latest activation numbers — pull from Mixpanel before sending to leadership.",
       default_category_id: CATEGORY_BY_NAME["Meeting"],
+      domain: "Admin",
       position: 2,
     },
     {
@@ -188,6 +195,7 @@ function seedCards(): Card[] {
       notes:
         "Shipped behind feature flag. Verified end-to-end with a $1 test charge.",
       default_category_id: CATEGORY_BY_NAME["Code"],
+      domain: "Engineering",
       position: 1,
     },
   ];
@@ -208,6 +216,7 @@ function seedCards(): Card[] {
     archived_at: null,
     archived_from_column: null,
     default_category_id: s.default_category_id,
+    domain: s.domain,
     created_at: ts,
     updated_at: ts,
     created_by: null,

@@ -111,6 +111,10 @@ export default function DocsPage() {
               <>Estimated time-to-complete. Slider goes from 30m → 72h → 14d. Used by Gantt to size bars.</>,
             ],
             [
+              <DocStrong>Domain</DocStrong>,
+              <>Coarse classification of the work — <DocInlineCode>Engineering</DocInlineCode>, <DocInlineCode>Design</DocInlineCode>, <DocInlineCode>UX</DocInlineCode>, <DocInlineCode>Content</DocInlineCode>, <DocInlineCode>Marketing</DocInlineCode>, <DocInlineCode>Client</DocInlineCode>, <DocInlineCode>Admin</DocInlineCode>, or <DocInlineCode>Other</DocInlineCode>. Set by the AI parser; editable on the card. Nullable — older cards may not have one.</>,
+            ],
+            [
               <DocStrong>Team member vs user</DocStrong>,
               <>Separate concepts. <DocInlineCode>team_members</DocInlineCode> are people you assign work to (can be anyone). <DocInlineCode>users</DocInlineCode> are people who can log in. Admin can create a user and kamotion auto-links the matching team member.</>,
             ],

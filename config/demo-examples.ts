@@ -1,4 +1,4 @@
-import type { Priority, Status, Column } from "@/lib/validators";
+import type { Priority, Status, Column, Domain } from "@/lib/validators";
 
 // A pre-generated demo card. `dueDayOffset` is relative to today at render
 // time so dates stay fresh regardless of when a visitor arrives.
@@ -12,6 +12,7 @@ export type DemoCard = {
   status: Status;
   column_name: Column;
   notes: string | null;
+  domain?: Domain | null;
 };
 
 export type DemoExample = {
@@ -72,6 +73,7 @@ Let me know what's blocking any of these and I'll help unstick.
         column_name: "Ready",
         notes:
           "Contract runs through January — one revision round already paid for. Confirm turnaround before launch.",
+        domain: "Design",
       },
       {
         task: "Finish Q3 launch blog announcement draft",
@@ -84,6 +86,7 @@ Let me know what's blocking any of these and I'll help unstick.
         column_name: "Ready",
         notes:
           "80% complete. Compliance section still needs pass from legal before publish.",
+        domain: "Content",
       },
       {
         task: "Legal review of blog compliance section",
@@ -96,6 +99,7 @@ Let me know what's blocking any of these and I'll help unstick.
         column_name: "Ready",
         notes:
           "Hard deadline Oct 15. Blocks blog publish and downstream social posts.",
+        domain: "Admin",
       },
       {
         task: "Produce social media assets for launch day",
@@ -108,6 +112,7 @@ Let me know what's blocking any of these and I'll help unstick.
         column_name: "Ready",
         notes:
           "Currently have nothing — blocking all launch-day promo. Need templates for X, LinkedIn, and Instagram.",
+        domain: "Design",
       },
       {
         task: "Follow up with Jamie on customer email sequence draft",
@@ -120,6 +125,7 @@ Let me know what's blocking any of these and I'll help unstick.
         column_name: "Ready",
         notes:
           "Jamie agreed to own the first draft but nothing delivered yet. Confirm scope + new ETA.",
+        domain: "Client",
       },
     ],
   },
@@ -168,6 +174,7 @@ ok i'll file these. the broken button has to go first`,
         column_name: "Ready",
         notes:
           "Button returns 404 instead of loading contact form. Launched yesterday — active conversion leak.",
+        domain: "Engineering",
       },
       {
         task: "Fix pricing page cards rendering in blue instead of brand green",
@@ -180,6 +187,7 @@ ok i'll file these. the broken button has to go first`,
         column_name: "Ready",
         notes:
           "Reproduces on mobile. Regression from yesterday's launch — likely a CSS token mixup.",
+        domain: "UX",
       },
       {
         task: "Add Stripe and Notion logos to customer strip",
@@ -191,6 +199,7 @@ ok i'll file these. the broken button has to go first`,
         status: "Ready",
         column_name: "Ready",
         notes: "Approval received this week — drop into the existing logo grid.",
+        domain: "Design",
       },
       {
         task: "Update pricing-page FAQ with current year's numbers",
@@ -202,6 +211,7 @@ ok i'll file these. the broken button has to go first`,
         status: "Ready",
         column_name: "Ready",
         notes: "Still showing last year's pricing — minor but embarrassing.",
+        domain: "Content",
       },
     ],
   },
@@ -252,6 +262,7 @@ Priya: File that with a hard date. Thanks Sam.`,
         column_name: "Ready",
         notes:
           "East coast team getting dropped every ~20 min. Caused 3 interruptions during client calls yesterday. Suspected cause: firmware update pushed last Thursday.",
+        domain: "Engineering",
       },
       {
         task: "Provision credentials for new hire Taylor",
@@ -263,6 +274,7 @@ Priya: File that with a hard date. Thanks Sam.`,
         status: "Ready",
         column_name: "Ready",
         notes: "Start date was Monday. Blocked on everything without creds.",
+        domain: "Admin",
       },
       {
         task: "Reset Jordan's locked sales account",
@@ -274,6 +286,7 @@ Priya: File that with a hard date. Thanks Sam.`,
         status: "Ready",
         column_name: "Ready",
         notes: "Repeat lockout. Consider pushing SSO for sales team.",
+        domain: "Admin",
       },
       {
         task: "Archive 2024 project folders from team file server",
@@ -286,6 +299,7 @@ Priya: File that with a hard date. Thanks Sam.`,
         column_name: "Ready",
         notes:
           "Shared drive at 94% capacity. Archive old folders first; only upgrade storage if that doesn't recover enough room.",
+        domain: "Admin",
       },
       {
         task: "Reconnect third-floor office printer",
@@ -297,6 +311,7 @@ Priya: File that with a hard date. Thanks Sam.`,
         status: "Ready",
         column_name: "Ready",
         notes: "Offline for ~1 week. No active complaints but productivity tax.",
+        domain: "Admin",
       },
       {
         task: "Rotate internal metrics API keys and document for SOC-2",
@@ -309,6 +324,7 @@ Priya: File that with a hard date. Thanks Sam.`,
         column_name: "Ready",
         notes:
           "SOC-2 auditor flagged: API keys haven't rotated in 18 months. 30-day remediation window — include rotation runbook in the documentation.",
+        domain: "Engineering",
       },
     ],
   },
@@ -361,6 +377,7 @@ on it`,
         column_name: "Ready",
         notes:
           "Maya emailed Thursday, no reply yet. Wedding is 3 weeks out — blocking the final head count.\n\nKamotion Tip: Phone before another email; florists often miss the first note. Ask for an ETA in writing regardless.",
+        domain: "Client",
       },
       {
         task: "Collect the 11 outstanding RSVPs for caterer headcount",
@@ -373,6 +390,7 @@ on it`,
         column_name: "Ready",
         notes:
           "Cousin's side — 11 unconfirmed. Caterer needs final count by Friday.\n\nKamotion Tip: Text with a yes/no reply option (no 'let me check'). If no reply by tomorrow evening, mark as 'not coming' and move on.",
+        domain: "Admin",
       },
       {
         task: "Break in the wedding shoes before the day",
@@ -385,6 +403,7 @@ on it`,
         column_name: "Ready",
         notes:
           "Dress alterations done; shoes still need wearing in. Three weeks to go.\n\nKamotion Tip: 20 minutes a day on a hard floor (not carpet). Leather stretches with heat + wear, not just time.",
+        domain: "Other",
       },
       {
         task: "Add favorite songs to the reception playlist",
@@ -397,6 +416,7 @@ on it`,
         column_name: "Ready",
         notes:
           "45 minutes covered so far, 3 hours needed. Songs go in the 'reception' tab of the shared doc.",
+        domain: "Other",
       },
       {
         task: "Check hotel contract for room-block deadline",
@@ -409,6 +429,7 @@ on it`,
         column_name: "Ready",
         notes:
           "Two guests are asking; Maya isn't sure if the deadline already passed.\n\nKamotion Tip: Before answering guests, call the hotel — passed deadlines can often be extended by 48hrs with one phone call.",
+        domain: "Admin",
       },
     ],
   },
@@ -442,6 +463,7 @@ lmao this list`,
         column_name: "Ready",
         notes:
           "Two weeks out. 15ft default; go to 20ft only if the couch doesn't break down.\n\nKamotion Tip: Book this week — weekend slots on U-Haul sell out ~10 days ahead, especially end-of-month.",
+        domain: "Admin",
       },
       {
         task: "Transfer electric + internet to new address (start move-day)",
@@ -454,6 +476,7 @@ lmao this list`,
         column_name: "Ready",
         notes:
           "Both utilities need to activate at new place on move day; old place shuts off the 12th.\n\nKamotion Tip: Schedule new electric first — some providers need 3-5 business days to activate. Internet is usually faster.",
+        domain: "Admin",
       },
       {
         task: "Call school registrar Monday to request kids' records (48hr notice)",
@@ -466,6 +489,7 @@ lmao this list`,
         column_name: "Ready",
         notes:
           "Registrar needs 48 hours to pull files.\n\nKamotion Tip: Ask whether records go by mail or can be picked up sealed — pickup avoids lost-mail risk and is usually faster.",
+        domain: "Admin",
       },
       {
         task: "Find a specialty piano mover (ask Carlos first)",
@@ -478,6 +502,7 @@ lmao this list`,
         column_name: "Ready",
         notes:
           "U-Haul movers won't touch it. Carlos may have referrals.\n\nKamotion Tip: Start with Carlos for a trusted referral; otherwise search 'piano movers + [city]' — flat $300-500 is cheaper than damage.",
+        domain: "Admin",
       },
       {
         task: "Cancel gym membership today (30-day notice)",
@@ -490,6 +515,7 @@ lmao this list`,
         column_name: "Ready",
         notes:
           "30-day notice required; time-sensitive.\n\nKamotion Tip: Send cancellation in writing (email or member portal) and screenshot the confirmation — many gyms dispute verbal cancellations.",
+        domain: "Admin",
       },
     ],
   },

@@ -44,9 +44,9 @@ For each card, populate:
 - **status** — Always "Not Started" on creation.
 - **notes** — Context the assignee needs: the specific symptom for this card, relevant quotes from the source, and who reported it. Keep it focused on THIS card's scope, not the whole email. Do not dump the entire source text. Then, on a new line, append a Kamotion Tip (see SUGGESTION RULES below).
 
-## DOMAIN REASONING (INTERNAL USE ONLY)
+## DOMAIN CLASSIFICATION
 
-Before writing each card, mentally classify it into one of these domains. This classification is NOT an output field — it's a thinking aid that helps you shape the Kamotion Tip with the right vocabulary and focus.
+Tag each card with exactly one domain from this list — this IS an output field (\`domain\`) on each card:
 
 - **Engineering** — all code: bugs, features, backend, frontend, APIs, infrastructure, debugging
 - **Design** — visual work: graphics, branding, UI mockups, marketing assets, illustrations
@@ -55,16 +55,14 @@ Before writing each card, mentally classify it into one of these domains. This c
 - **Marketing** — campaigns, ads, SEO, analytics, outreach, growth experiments
 - **Client** — replies, support, follow-ups, meetings, external communication
 - **Admin** — scheduling, invoices, internal ops, non-project tasks
-- **Other** — none of the above
+- **Other** — only if none of the above genuinely fit. Use sparingly.
 
-**How to use this:**
-- Identify the domain in your reasoning, then write the Kamotion Tip using that domain's vocabulary (Engineering talks code; UX talks layout/interaction; Marketing talks channels/metrics; etc.).
-- Do NOT include the domain in the output JSON.
-
-**Quick mapping reference:**
-- "Fix overlapping order summary on mobile" → UX thinking → tip talks layout, breakpoints, stacking
-- "Investigate false 'incomplete card details' error" → Engineering thinking → tip talks code, logging, integration
-- "Reply to Jake with status" → Client thinking → tip talks tone, timing, communication approach
+**Rules:**
+- Pick the single most accurate domain. If a task spans two, pick the one where the work primarily happens.
+- Use the chosen domain's vocabulary when writing the Kamotion Tip — Engineering talks code; UX talks layout/interaction; Marketing talks channels/metrics; Client talks response approach.
+- "Fix overlapping order summary on mobile" → UX (layout/responsive)
+- "Investigate false 'incomplete card details' error" → Engineering (code-level debugging)
+- "Reply to Jake with status" → Client
 
 ## SUGGESTION RULES (KAMOTION TIP)
 
@@ -131,6 +129,7 @@ The caller has decided this input is **one job, not many**. Return **exactly one
 - **estimated_duration** — Sum if every action has one stated; otherwise null. Don't invent.
 - **assignee** — In solo mode, "me". In team mode, "me" by default — single-mode work is usually one person's job, and the user can edit in preview if it should be someone else.
 - **requester** — Same rules as multiple mode (sender / asker, "me" / "unspecified" as fallback).
+- **domain** — The single domain that best fits the bundle as a whole. If items span multiple domains (e.g., copy + design), pick the dominant work surface.
 - **status** — Always "Not Started".
 
 Return one card in the cards array. Never zero cards in single mode unless the input has no actionable content at all (in which case return an empty array, same as multiple mode).
@@ -156,6 +155,7 @@ Return one card in the cards array. Never zero cards in single mode unless the i
       "dueDate": "YYYY-MM-DD or null",
       "estimatedDuration": "string or null",
       "priority": "High | Normal | Low",
+      "domain": "Engineering | Design | UX | Content | Marketing | Client | Admin | Other",
       "status": "Not Started",
       "notes": "string (card-specific context, followed by 'Kamotion Tip: ...' on a new line when applicable)"
     }
@@ -182,6 +182,7 @@ Return one card in the cards array. Never zero cards in single mode unless the i
       "dueDate": null,
       "estimatedDuration": null,
       "priority": "High",
+      "domain": "UX",
       "status": "Not Started",
       "notes": "Jake reports the order summary covers part of the checkout form on mobile, making it unclear how to proceed.\\n\\nKamotion Tip: Likely a z-index or fixed-positioning conflict at mobile breakpoints. Inspect the order summary's stacking context in DevTools."
     },
@@ -193,6 +194,7 @@ Return one card in the cards array. Never zero cards in single mode unless the i
       "dueDate": null,
       "estimatedDuration": null,
       "priority": "High",
+      "domain": "UX",
       "status": "Not Started",
       "notes": "Promo code section on mobile checkout is shifting/jumping during interaction.\\n\\nKamotion Tip: Reduce layout shift by reserving space for the promo code section on load, or collapse it into an expandable block that expands inline without pushing content."
     },
@@ -204,6 +206,7 @@ Return one card in the cards array. Never zero cards in single mode unless the i
       "dueDate": null,
       "estimatedDuration": null,
       "priority": "High",
+      "domain": "UX",
       "status": "Not Started",
       "notes": "'Place Order' button is not visible without significant scrolling on mobile.\\n\\nKamotion Tip: Make the Place Order button sticky at the bottom of the mobile viewport so it's always reachable without scrolling through the summary."
     },
@@ -215,6 +218,7 @@ Return one card in the cards array. Never zero cards in single mode unless the i
       "dueDate": null,
       "estimatedDuration": null,
       "priority": "High",
+      "domain": "Engineering",
       "status": "Not Started",
       "notes": "Error states card details are incomplete even when all fields appear filled. Reported on mobile.\\n\\nKamotion Tip: Check the Stripe Elements integration — 'incomplete' errors usually mean postal code or CVC isn't being captured despite appearing filled. Log the raw error object."
     },
@@ -226,6 +230,7 @@ Return one card in the cards array. Never zero cards in single mode unless the i
       "dueDate": null,
       "estimatedDuration": null,
       "priority": "High",
+      "domain": "Engineering",
       "status": "Not Started",
       "notes": "On retry after the card-details error, the page refreshes and the cart updates unexpectedly.\\n\\nKamotion Tip: Likely a form resubmission or state-sync issue on error retry. Check whether the cart is being re-fetched and overwriting in-flight changes when the page re-renders."
     },
@@ -237,6 +242,7 @@ Return one card in the cards array. Never zero cards in single mode unless the i
       "dueDate": null,
       "estimatedDuration": null,
       "priority": "Normal",
+      "domain": "Client",
       "status": "Not Started",
       "notes": "Jake asked to be kept in the loop: 'Can you take a look and see what's going on?'\\n\\nKamotion Tip: Acknowledge quickly, confirm you've logged the issues, and commit to a specific follow-up time rather than promising a fix window."
     }
@@ -254,5 +260,5 @@ You will receive:
 - \`teamMembers\`: array of {name, role} (only in team mode)
 - \`today\`: today's date in YYYY-MM-DD
 
-Parse accordingly. Return only the JSON object.
+Every card you return must include \`domain\` from the DOMAIN CLASSIFICATION list. Return only the JSON object.
 `;

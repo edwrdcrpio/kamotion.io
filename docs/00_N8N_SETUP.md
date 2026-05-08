@@ -41,11 +41,14 @@ The workflow must respond with:
       "estimated_duration": null,
       "notes": null,
       "priority": "Normal",
-      "status": "Not Started"
+      "status": "Not Started",
+      "domain": "Content"
     }
   ]
 }
 ```
+
+`domain` is one of `Engineering`, `Design`, `UX`, `Content`, `Marketing`, `Client`, `Admin`, `Other`, or `null`. Returning anything else fails the schema check.
 
 Kamotion validates this response against its Zod schema and rejects malformed payloads.
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Priority, Status } from "@/lib/validators";
+import { Domain, Priority, Status } from "@/lib/validators";
 
 // OpenAI strict structured-output mode requires every field be present in
 // `required`, so we can't use `.optional()` or `.default()`. Fields that may
@@ -18,6 +18,7 @@ export const ParsedCard = z.object({
   notes: z.string().nullable(),
   priority: Priority,
   status: Status,
+  domain: Domain.nullable(),
 });
 export type ParsedCard = z.infer<typeof ParsedCard>;
 

@@ -21,6 +21,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           default_category_id: string | null
+          domain: string | null
           due_date: string | null
           estimated_duration: string | null
           id: string
@@ -41,6 +42,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           default_category_id?: string | null
+          domain?: string | null
           due_date?: string | null
           estimated_duration?: string | null
           id?: string
@@ -61,6 +63,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           default_category_id?: string | null
+          domain?: string | null
           due_date?: string | null
           estimated_duration?: string | null
           id?: string
