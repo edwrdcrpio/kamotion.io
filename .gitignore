@@ -40,8 +40,10 @@ yarn-error.log*
 # private working docs (build journal, brand voice, lessons) — kept locally only
 /_private/
 
-# User-installed Claude Code skill data (not project source)
-.claude/skills/
+# local agent / AI assistant config (not project source)
+.claude/
+AGENTS.md
+CLAUDE.md
 
 # vercel
 .vercel
