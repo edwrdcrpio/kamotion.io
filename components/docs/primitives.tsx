@@ -207,6 +207,45 @@ export function DocFigure({
   );
 }
 
+// Inline-rendered figure — same caption chrome as DocFigure but the "image"
+// is a React node. Used when we mock the UI with code rather than a bitmap
+// (keeps the visual in sync with component changes for free).
+export function DocMockFigure({
+  label,
+  route,
+  capture,
+  children,
+}: {
+  label: string;
+  route?: string;
+  capture: string;
+  children: ReactNode;
+}) {
+  return (
+    <figure className="my-4 overflow-hidden rounded-xl border border-border bg-muted/30">
+      <div className="border-b border-border/60 bg-background p-6">
+        {children}
+      </div>
+      <figcaption className="flex flex-col gap-1.5 px-4 py-3 text-[12px]">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-medium text-foreground">{label}</span>
+          {route && (
+            <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+              {route}
+            </span>
+          )}
+          <span className="rounded border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+            live mock
+          </span>
+        </div>
+        <p className="text-[12px] leading-relaxed text-muted-foreground">
+          {capture}
+        </p>
+      </figcaption>
+    </figure>
+  );
+}
+
 export function DocTable({
   headers,
   rows,

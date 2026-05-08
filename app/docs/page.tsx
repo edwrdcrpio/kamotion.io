@@ -10,10 +10,12 @@ import {
   DocInlineCode,
   DocCallout,
   DocFigure,
+  DocMockFigure,
   DocTable,
   DocCardLink,
 } from "@/components/docs/primitives";
 import { FlowMock } from "@/components/docs/mocks";
+import { TimeLogBoardMock } from "@/components/marketing/time-log-mock";
 
 export const metadata: Metadata = {
   title: "Docs · kamotion",
@@ -71,7 +73,7 @@ export default function DocsPage() {
           items={[
             <><DocStrong>Personal life</DocStrong> — groceries, birthdays, school forms, trip packing, a move. Anything that lives in a group chat or a brain-dump note becomes one clear list.</>,
             <><DocStrong>Solo operators</DocStrong> — freelancers, founders, and makers who need a single pane for a noisy inbox.</>,
-            <><DocStrong>Small teams</DocStrong> — up to a handful of members with admin/member/viewer roles.</>,
+            <><DocStrong>Small teams</DocStrong> — up to a handful of members with admin/editor/viewer roles.</>,
             <><DocStrong>Developers</DocStrong> — anyone who wants a hackable PM tool they control end-to-end.</>,
           ]}
         />
@@ -121,8 +123,8 @@ export default function DocsPage() {
         <DocH3>Roles</DocH3>
         <DocList
           items={[
-            <><DocStrong>admin</DocStrong> — everything, including user and team management, AI settings, and archive admin.</>,
-            <><DocStrong>member</DocStrong> — read/write cards, drive the board and Gantt.</>,
+            <><DocStrong>admin</DocStrong> — everything, including user and team management, AI settings, time-log categories, and archive admin.</>,
+            <><DocStrong>editor</DocStrong> — read/write cards, drive the board and Gantt, log time on cards.</>,
             <><DocStrong>viewer</DocStrong> — read-only. Useful for stakeholders.</>,
           ]}
         />
@@ -156,7 +158,7 @@ npm install`}</DocCode>
           items={[
             <>Go to <DocLink href="https://supabase.com/dashboard">supabase.com/dashboard</DocLink> and create a new project. Pick a region close to you.</>,
             <>In <DocInlineCode>Project Settings → API</DocInlineCode>, copy your <DocInlineCode>URL</DocInlineCode>, <DocInlineCode>anon / public key</DocInlineCode>, and <DocInlineCode>service_role secret</DocInlineCode>.</>,
-            <>In <DocInlineCode>SQL Editor</DocInlineCode>, run each file in <DocInlineCode>supabase/migrations/</DocInlineCode> in order (01 through 09).</>,
+            <>In <DocInlineCode>SQL Editor</DocInlineCode>, run every file in <DocInlineCode>supabase/migrations/</DocInlineCode> in numeric order. The set ships the schema for cards, team, users, archive, and the Time Log (categories + entries).</>,
           ]}
         />
         <DocCallout tone="tip" title="Why the service role key?">
@@ -352,8 +354,74 @@ values (
         />
       </DocSection>
 
+      {/* TIME LOG */}
+      <DocSection id="time-log" eyebrow="07" title="Time Log">
+        <DocP>
+          <DocInlineCode>/app/time-log</DocInlineCode> tracks how long you
+          spend on each card. It&rsquo;s the same dataset as the kanban,
+          viewed as one row per card across three sections —{" "}
+          <DocInlineCode>In Progress</DocInlineCode>,{" "}
+          <DocInlineCode>Review</DocInlineCode>,{" "}
+          <DocInlineCode>Done</DocInlineCode> — with a per-row timer, totals,
+          and CSV export for billing.
+        </DocP>
+
+        <DocMockFigure
+          label="Time Log board"
+          route="/app/time-log"
+          capture="One row per card across In Progress / Review / Done. Live timer on the partner-deck row; play buttons start a timer on the others. Period filter, card filter, category filter, and CSV export sit at the top."
+        >
+          <TimeLogBoardMock />
+        </DocMockFigure>
+
+        <DocH3>Logging time</DocH3>
+        <DocList
+          items={[
+            <>Click the <DocStrong>play</DocStrong> button on any row to start a timer. The play turns into a stop button with a live <DocInlineCode>mm:ss</DocInlineCode> readout.</>,
+            <>Only one timer can run at a time per user — starting a second prompts a 409.</>,
+            <>Click <DocStrong>+ New log</DocStrong> in the header to start a standalone timer (admin work, calls, anything not tied to a card).</>,
+            <>Click <DocStrong>Add entry</DocStrong> (or the <DocStrong>+</DocStrong> on a card row) to manually log time you forgot to track. Set the date and duration; start time defaults to 9:00 since only the date and total minutes matter for billing.</>,
+          ]}
+        />
+
+        <DocH3>Drag = kanban move</DocH3>
+        <DocP>
+          Drop a card from In Progress into Review and the kanban reflects it
+          on next visit. The Time Log doesn&rsquo;t maintain a parallel
+          status — sections derive directly from{" "}
+          <DocInlineCode>cards.column_name</DocInlineCode>, so there&rsquo;s
+          one source of truth.
+        </DocP>
+
+        <DocH3>Categories</DocH3>
+        <DocP>
+          Each entry can be tagged with a category — Design, R&amp;D, Code,
+          Revision, Meeting, Admin by default. Cards have a{" "}
+          <DocInlineCode>default_category_id</DocInlineCode> that timers
+          inherit when started, so you usually don&rsquo;t need to pick one.
+          Admins manage the list at{" "}
+          <DocInlineCode>/app/settings/categories</DocInlineCode>.
+        </DocP>
+
+        <DocH3>Period filter and CSV export</DocH3>
+        <DocList
+          items={[
+            <>Period: <DocStrong>This week</DocStrong>, <DocStrong>Last week</DocStrong>, bi-weekly current/last, this month, last month, custom range, or all-time. Bi-weekly is anchored to a Monday stored in <DocInlineCode>settings.biweeklyAnchorMonday</DocInlineCode>.</>,
+            <>Filter by card or category to scope the export to one stream of work.</>,
+            <>Click <DocStrong>Export CSV</DocStrong> to download one row per session — date, card, category, started, ended, duration, source (timer / manual), and notes. Drop the file straight into your invoicing tool.</>,
+          ]}
+        />
+
+        <DocCallout tone="tip" title="Per-card history">
+          Open any card&rsquo;s detail drawer and click <DocStrong>View all</DocStrong>{" "}
+          to see every entry on that card with inline edit/delete. Useful for
+          fixing a wrong duration or moving an entry to a different category
+          without leaving the drawer.
+        </DocCallout>
+      </DocSection>
+
       {/* TEAM */}
-      <DocSection id="team" eyebrow="07" title="Team">
+      <DocSection id="team" eyebrow="08" title="Team">
         <DocP>
           <DocInlineCode>/app/team</DocInlineCode> is admin-only CRUD for the{" "}
           <DocInlineCode>team_members</DocInlineCode> table. Think of team
@@ -377,7 +445,7 @@ values (
       </DocSection>
 
       {/* USERS */}
-      <DocSection id="users" eyebrow="08" title="Users (admin)">
+      <DocSection id="users" eyebrow="09" title="Users (admin)">
         <DocP>
           <DocInlineCode>/app/settings/users</DocInlineCode> is admin-only CRUD
           for login accounts. It uses the Supabase Admin API, which requires{" "}
@@ -414,7 +482,7 @@ values (
       </DocSection>
 
       {/* ARCHIVE */}
-      <DocSection id="archive" eyebrow="09" title="Archive">
+      <DocSection id="archive" eyebrow="10" title="Archive">
         <DocP>
           Deleting a card doesn&rsquo;t erase it immediately. Cards go to{" "}
           <DocInlineCode>/app/archive</DocInlineCode> (admin-only) as a soft
@@ -437,7 +505,7 @@ values (
       </DocSection>
 
       {/* AI CONFIG */}
-      <DocSection id="ai-config" eyebrow="10" title="AI configuration">
+      <DocSection id="ai-config" eyebrow="11" title="AI configuration">
         <DocP>
           All AI behavior is configured at{" "}
           <DocInlineCode>/app/settings</DocInlineCode> (admin-only). Two paths
@@ -483,7 +551,7 @@ values (
       </DocSection>
 
       {/* N8N */}
-      <DocSection id="n8n-path" eyebrow="11" title="n8n path">
+      <DocSection id="n8n-path" eyebrow="12" title="n8n path">
         <DocP>
           The n8n processing path offloads AI work to a self-hosted{" "}
           <DocLink href="https://n8n.io">n8n</DocLink> workflow. It&rsquo;s
@@ -532,7 +600,7 @@ values (
       </DocSection>
 
       {/* DEPLOYMENT */}
-      <DocSection id="deployment" eyebrow="12" title="Deployment recipes">
+      <DocSection id="deployment" eyebrow="13" title="Deployment recipes">
         <DocP>
           Pick whichever matches your preference for control vs. convenience.
           All four recipes use the same codebase and environment variables —
@@ -606,7 +674,7 @@ values (
       </DocSection>
 
       {/* FREE SELF-HOST */}
-      <DocSection id="free-self-host" eyebrow="13" title="Run it for $0">
+      <DocSection id="free-self-host" eyebrow="14" title="Run it for $0">
         <DocP>
           kamotion can run end-to-end with zero recurring cost. Here&rsquo;s a
           full free-tier recipe:
@@ -656,7 +724,7 @@ values (
       </DocSection>
 
       {/* HOSTED ACCESS */}
-      <DocSection id="hosted-access" eyebrow="14" title="Hosted access">
+      <DocSection id="hosted-access" eyebrow="15" title="Hosted access">
         <DocP>
           Not every team wants to run their own server. If you&rsquo;d rather
           skip the infrastructure and just use kamotion, there&rsquo;s a
@@ -702,7 +770,7 @@ values (
       </DocSection>
 
       {/* TECH STACK */}
-      <DocSection id="tech-stack" eyebrow="15" title="Tech stack">
+      <DocSection id="tech-stack" eyebrow="16" title="Tech stack">
         <DocTable
           headers={["Layer", "Choice", "Why"]}
           rows={[
@@ -720,7 +788,7 @@ values (
       </DocSection>
 
       {/* CONTRIBUTING */}
-      <DocSection id="contributing" eyebrow="16" title="Contributing">
+      <DocSection id="contributing" eyebrow="17" title="Contributing">
         <DocP>
           The repo is public at{" "}
           <DocLink href="https://github.com/edwrdcrpio/kamotion.io">
@@ -734,15 +802,10 @@ values (
           <DocStrong>Conventional commits.</DocStrong> Every message starts
           with a type:
         </DocP>
-        <DocCode>{`feat(E.3): mobile responsive — sidebar drawer, collapsible kanban
-fix: resolve C.2 typecheck errors in settings route
+        <DocCode>{`feat(time-log): card-centric tracker with per-row timer + DnD
+fix(demo): unregister MSW service worker on demo exit
 docs: add n8n setup walkthrough
 refactor: extract site nav and footer into shared components`}</DocCode>
-        <DocP>
-          And ends with <DocInlineCode>Authored By: Edward Carpio
-          &lt;https://github.com/edwrdcrpio&gt; &amp; Claude</DocInlineCode> for
-          AI-pair-programmed work.
-        </DocP>
 
         <DocH3>Dev loop</DocH3>
         <DocCode lang="bash">{`npm run dev          # start dev server
@@ -762,7 +825,7 @@ npm run lint         # eslint`}</DocCode>
       </DocSection>
 
       {/* FAQ */}
-      <DocSection id="faq" eyebrow="17" title="FAQ">
+      <DocSection id="faq" eyebrow="18" title="FAQ">
         <DocH3>Can I switch AI models without redeploying?</DocH3>
         <DocP>
           Yes — everything is configured at{" "}
@@ -789,7 +852,7 @@ npm run lint         # eslint`}</DocCode>
         <DocH3>Can I use it for a team?</DocH3>
         <DocP>
           Yes. It&rsquo;s optimized for solo-first but supports up to a handful
-          of members with role-based access (admin / member / viewer). There&rsquo;s
+          of members with role-based access (admin / editor / viewer). There&rsquo;s
           no built-in billing or org separation — it&rsquo;s one board per
           instance.
         </DocP>
@@ -810,7 +873,7 @@ npm run lint         # eslint`}</DocCode>
       </DocSection>
 
       {/* COMING SOON */}
-      <DocSection id="coming-soon" eyebrow="17" title="Coming soon">
+      <DocSection id="coming-soon" eyebrow="19" title="Coming soon">
         <DocP>
           kamotion today is the kanban and the parser. Here&rsquo;s what&rsquo;s
           on deck — what you&rsquo;ll see land in the repo next.
