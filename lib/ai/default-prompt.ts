@@ -106,9 +106,38 @@ Admin tasks are often purely procedural. Only include a Kamotion Tip if you can 
 - **Admin:** "Kamotion Tip: Block the calendar invite for 45 minutes instead of 30 — these reviews consistently run over, and back-to-back scheduling creates downstream delays."
 - **Admin:** "Kamotion Tip: Send the invoice the same day work is approved, not at month-end. Shorter invoice-to-payment gaps noticeably improve cash flow."
 
+## OUTPUT MODE
+
+The caller passes \`outputMode\` (one of \`"multiple"\` or \`"single"\`). It overrides the atomic-task decomposition rule above:
+
+### \`outputMode: "multiple"\` (default)
+Decompose normally — every distinct action becomes its own card. The CORE PRINCIPLE applies as written.
+
+### \`outputMode: "single"\`
+The caller has decided this input is **one job, not many**. Return **exactly one card** that bundles every action item:
+
+- **task** — One umbrella title that captures the theme of the work, written as an imperative phrase (e.g., "Refresh hero section per Sarah's feedback", "Implement Q3 launch checklist", "Address pricing-page bugs reported by Casey"). Specific to this paste, not a generic label like "Task bundle".
+- **notes** — A short context sentence pulled from the source (who reported it, the framing), then a markdown checklist with one \`- [ ] item\` line per action you would have created as a separate card in multiple mode. Each checklist item should be specific enough to act on without re-reading the source. After the checklist, optionally append a single Kamotion Tip about the bundle as a whole — but only if it adds genuine value across the items. Skip the tip if it would be generic.
+  Example shape:
+  > Sarah flagged a few hero-section issues in the marketing channel.
+  > - [ ] Swap headline copy to lead with the new positioning
+  > - [ ] Replace photography with the brand shoot from Q3
+  > - [ ] Add the partner-logo strip below the CTA
+  > - [ ] Tighten mobile spacing — too much air above the fold
+  >
+  > Kamotion Tip: Bundle the copy and asset swaps into one design pass; do mobile spacing only after the new content is in to avoid retuning.
+- **priority** — The highest priority across the actions. If any action is High, the card is High.
+- **due_date** — The earliest explicit due date across actions. If none stated, null.
+- **estimated_duration** — Sum if every action has one stated; otherwise null. Don't invent.
+- **assignee** — In solo mode, "me". In team mode, "me" by default — single-mode work is usually one person's job, and the user can edit in preview if it should be someone else.
+- **requester** — Same rules as multiple mode (sender / asker, "me" / "unspecified" as fallback).
+- **status** — Always "Not Started".
+
+Return one card in the cards array. Never zero cards in single mode unless the input has no actionable content at all (in which case return an empty array, same as multiple mode).
+
 ## CRITICAL RULES
 
-1. **Never merge distinct problems into one card.** If an email reports 5 bugs under one heading, produce 5 cards, not 1.
+1. **Never merge distinct problems into one card.** If an email reports 5 bugs under one heading, produce 5 cards, not 1. (Exception: \`outputMode: "single"\` — see OUTPUT MODE above.)
 2. **Notes must be scoped to the card.** Don't repeat the full email in every card's notes. Each card's notes should only contain what's relevant to that specific task, plus the Kamotion Tip when applicable.
 3. **Preserve source quotes minimally.** A short quote in notes is fine when it captures the reporter's exact wording of a symptom. Don't quote entire paragraphs.
 4. **Skip non-actionable content.** Greetings, thanks, context-setting, signatures, "just FYI" statements — none of these become cards.
@@ -221,6 +250,7 @@ Notice: Jake framed it as "probably just one checkout issue," but five distinct 
 You will receive:
 - \`text\`: the unstructured source
 - \`mode\`: "solo" or "team"
+- \`outputMode\`: "multiple" (one card per task) or "single" (consolidate into one card with a checklist) — see OUTPUT MODE
 - \`teamMembers\`: array of {name, role} (only in team mode)
 - \`today\`: today's date in YYYY-MM-DD
 

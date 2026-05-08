@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
           webhookUrl,
           text: input.text,
           mode: input.mode,
+          outputMode: input.outputMode,
           teamMembers: input.teamMembers,
           auth,
         });
@@ -94,6 +95,7 @@ export async function POST(request: NextRequest) {
       systemPrompt,
       text: input.text,
       mode: input.mode,
+      outputMode: input.outputMode,
       teamMembers: input.teamMembers,
     });
 

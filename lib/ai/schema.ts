@@ -29,6 +29,9 @@ export type ParseOutput = z.infer<typeof ParseOutput>;
 export const ParseInput = z.object({
   text: z.string().min(1).max(100_000),
   mode: z.enum(["solo", "team"]),
+  // Card granularity: "multiple" = one card per atomic task (default behavior),
+  // "single" = consolidate every action into one card with a checklist in notes.
+  outputMode: z.enum(["multiple", "single"]).default("multiple"),
   teamMembers: z.array(z.string()).optional(),
 });
 export type ParseInput = z.infer<typeof ParseInput>;

@@ -20,9 +20,12 @@ When `processingPath = "n8n"` is saved in Kamotion's Settings, every parse reque
 {
   "text": "…raw text the user pasted…",
   "mode": "solo" | "team",
+  "outputMode": "multiple" | "single",
   "teamMembers": ["alice", "bob"] | []
 }
 ```
+
+`outputMode` controls card granularity. `"multiple"` (default) produces one card per atomic task. `"single"` produces exactly one card with every action folded into a markdown checklist in notes — useful when a paste describes one cohesive job rather than separate tasks. The sample workflow's agent system message handles both modes; if you customize the prompt, mirror the `output_mode` rule from the sample.
 
 The workflow must respond with:
 

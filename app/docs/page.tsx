@@ -270,6 +270,37 @@ values (
           steps&rdquo;, Slack threads with explicit asks, emails with bulleted
           to-dos. Vague ramble works less well — garbage in, garbage out.
         </DocCallout>
+
+        <DocH3 id="output-mode">Output: Multiple cards vs. Single card</DocH3>
+        <DocP>
+          Next to <DocStrong>Assign to</DocStrong>, the{" "}
+          <DocStrong>Output</DocStrong> selector picks the granularity of
+          what the parser returns:
+        </DocP>
+        <DocTable
+          headers={["Output", "What you get", "Use it when"]}
+          rows={[
+            [
+              <DocStrong>Multiple cards</DocStrong>,
+              <>One card per atomic task. The AI decomposes the input — five bugs in one email become five cards.</>,
+              <>The default. Use whenever the source has independent items that could be assigned, prioritized, or closed separately.</>,
+            ],
+            [
+              <DocStrong>Single card</DocStrong>,
+              <>Exactly one card with an umbrella title and every action folded into a markdown checklist in <DocInlineCode>notes</DocInlineCode>. Highest priority + earliest due date roll up.</>,
+              <>The source describes one cohesive job — e.g., an email with five tweaks to a hero section, a brief covering one campaign, a checklist for one deliverable.</>,
+            ],
+          ]}
+        />
+        <DocCallout tone="info" title="How it's wired">
+          The toggle sends an <DocInlineCode>outputMode</DocInlineCode> field
+          on the parse request. Both processing paths honor it: the in-app
+          path passes it into the user prompt, and the n8n path forwards it
+          to the workflow body so the agent's system message can branch on
+          it. See <DocLink href="#n8n-path">n8n path</DocLink> if you&rsquo;re
+          using a custom workflow — your agent prompt needs to handle{" "}
+          <DocInlineCode>output_mode</DocInlineCode> too.
+        </DocCallout>
       </DocSection>
 
       {/* BOARD */}

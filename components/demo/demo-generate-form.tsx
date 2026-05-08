@@ -7,6 +7,14 @@
 import { useState } from "react";
 import { Sparkles, Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { DEMO_EXAMPLES, type DemoExample } from "@/config/demo-examples";
 import { setSelectedExample } from "@/lib/demo/state";
@@ -14,9 +22,11 @@ import { PreviewDialog } from "@/app/app/generate/preview-dialog";
 import type { ParsedCard } from "@/lib/ai/schema";
 
 type ExampleId = DemoExample["id"];
+type OutputMode = "multiple" | "single";
 
 export function DemoGenerateForm() {
   const [selectedId, setSelectedId] = useState<ExampleId>(DEMO_EXAMPLES[0].id);
+  const [outputMode, setOutputMode] = useState<OutputMode>("multiple");
   const [isParsing, setIsParsing] = useState(false);
   const [parsedCards, setParsedCards] = useState<ParsedCard[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +42,7 @@ export function DemoGenerateForm() {
       const res = await fetch("/api/ai/parse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: selected.source, mode: "team" }),
+        body: JSON.stringify({ text: selected.source, mode: "team", outputMode }),
       });
       const body = await res.json();
       if (!res.ok) throw new Error(body?.error ?? "Parse failed");
@@ -82,7 +92,23 @@ export function DemoGenerateForm() {
           </pre>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-col gap-2">
+            <Label>Output</Label>
+            <Select
+              value={outputMode}
+              onValueChange={(v) => setOutputMode(v as OutputMode)}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="multiple">Multiple cards</SelectItem>
+                <SelectItem value="single">Single card</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <Button
             onClick={handleExtract}
             disabled={isParsing}
@@ -101,7 +127,8 @@ export function DemoGenerateForm() {
               </>
             )}
           </Button>
-          <p className="text-xs text-muted-foreground">
+
+          <p className="self-end text-xs text-muted-foreground">
             Nothing is sent to a real model — the demo returns the curated
             cards for the selected source.
           </p>

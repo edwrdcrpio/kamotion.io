@@ -16,10 +16,12 @@ import { PreviewDialog } from "./preview-dialog";
 import type { ParsedCard } from "@/lib/ai/schema";
 
 type Mode = "solo" | "team";
+type OutputMode = "multiple" | "single";
 
 export function GenerateForm() {
   const [text, setText] = useState("");
   const [mode, setMode] = useState<Mode>("solo");
+  const [outputMode, setOutputMode] = useState<OutputMode>("multiple");
   const [isParsing, setIsParsing] = useState(false);
   const [parsedCards, setParsedCards] = useState<ParsedCard[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +33,7 @@ export function GenerateForm() {
       const res = await fetch("/api/ai/parse", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, mode }),
+        body: JSON.stringify({ text, mode, outputMode }),
       });
       const body = await res.json();
       if (!res.ok) throw new Error(body?.error ?? "Parse failed");
@@ -92,6 +94,22 @@ export function GenerateForm() {
               <SelectContent>
                 <SelectItem value="solo">Just me</SelectItem>
                 <SelectItem value="team">Distribute to team</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label>Output</Label>
+            <Select
+              value={outputMode}
+              onValueChange={(v) => setOutputMode(v as OutputMode)}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="multiple">Multiple cards</SelectItem>
+                <SelectItem value="single">Single card</SelectItem>
               </SelectContent>
             </Select>
           </div>

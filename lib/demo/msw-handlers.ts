@@ -84,6 +84,44 @@ function hydrateCard(input: CardInput): Card {
   };
 }
 
+// Mirrors what the real AI agent is asked to do in single-card mode: pick an
+// umbrella title, fold every action into a markdown checklist in notes, take
+// the highest priority + earliest due date across the bundle.
+function collapseToSingleCard(
+  cards: ParsedCard[],
+  example: { sourceLabel: string; description: string },
+): ParsedCard {
+  const PRIORITY_RANK: Record<ParsedCard["priority"], number> = {
+    Low: 0,
+    Normal: 1,
+    High: 2,
+  };
+  const highest = cards.reduce<ParsedCard["priority"]>(
+    (acc, c) => (PRIORITY_RANK[c.priority] > PRIORITY_RANK[acc] ? c.priority : acc),
+    "Low",
+  );
+  const earliestDue =
+    cards
+      .map((c) => c.due_date)
+      .filter((d): d is string => typeof d === "string")
+      .sort()[0] ?? null;
+  const checklist = cards.map((c) => `- [ ] ${c.task}`).join("\n");
+  const requester =
+    cards.find((c) => c.requester && c.requester !== "me")?.requester ?? "me";
+
+  return {
+    task: `${example.description} — bundled`,
+    assignee: "me",
+    requester,
+    request_date: isoToday(),
+    due_date: earliestDue,
+    estimated_duration: null,
+    notes: `Source: ${example.sourceLabel}.\n\n${checklist}`,
+    priority: highest,
+    status: "Not Started",
+  };
+}
+
 function demoCardToParsed(card: DemoCard): ParsedCard {
   return {
     task: card.task,
@@ -253,11 +291,22 @@ export const handlers = [
   // Returns the cards from the currently-selected demo example (set by the
   // Batch 5 picker). Defaults to the first example so the real <GenerateForm>
   // still produces something useful if someone types text and hits Parse.
-  http.post("/api/ai/parse", async () => {
+  http.post("/api/ai/parse", async ({ request }) => {
+    const body = (await request.json().catch(() => ({}))) as {
+      outputMode?: "multiple" | "single";
+    };
+    const outputMode = body.outputMode ?? "multiple";
+
     const selectedId = demoState.selectedExampleId ?? DEMO_EXAMPLES[0].id;
     const example =
       DEMO_EXAMPLES.find((e) => e.id === selectedId) ?? DEMO_EXAMPLES[0];
-    const cards: ParsedCard[] = example.cards.map(demoCardToParsed);
+    const expanded: ParsedCard[] = example.cards.map(demoCardToParsed);
+
+    const cards =
+      outputMode === "single"
+        ? [collapseToSingleCard(expanded, example)]
+        : expanded;
+
     // Simulate a small parse delay so the UI's "Extracting…" spinner feels
     // realistic instead of flashing instantly.
     await new Promise((r) => setTimeout(r, 450));
