@@ -5,21 +5,8 @@ import {
   TimeEntryCreateInput,
   TimeEntryListQuery,
 } from "@/lib/validators";
-import {
-  rangeForPreset,
-  parseAnchorMondayIso,
-  formatMinutes,
-} from "@/lib/time-log/period";
+import { rangeForPreset, formatMinutes } from "@/lib/time-log/period";
 import { toCsv } from "@/lib/time-log/csv";
-
-async function getAnchorMonday(supabase: Awaited<ReturnType<typeof createClient>>): Promise<Date> {
-  const { data } = await supabase
-    .from("settings")
-    .select("value")
-    .eq("key", "biweeklyAnchorMonday")
-    .maybeSingle();
-  return parseAnchorMondayIso(data?.value);
-}
 
 export async function GET(request: NextRequest) {
   try {
@@ -43,11 +30,9 @@ export async function GET(request: NextRequest) {
       query = query.eq("category_id", filters.category_id);
 
     if (filters.period) {
-      const anchor = await getAnchorMonday(supabase);
       const range = rangeForPreset(
         filters.period,
         new Date(),
-        anchor,
         filters.from && filters.to
           ? { from: new Date(filters.from), to: new Date(filters.to) }
           : undefined,

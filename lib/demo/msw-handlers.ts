@@ -10,11 +10,7 @@ import type {
 } from "@/lib/validators";
 import type { ParsedCard } from "@/lib/ai/schema";
 import { DEMO_EXAMPLES, type DemoCard } from "@/config/demo-examples";
-import {
-  rangeForPreset,
-  parseAnchorMondayIso,
-  formatMinutes,
-} from "@/lib/time-log/period";
+import { rangeForPreset, formatMinutes } from "@/lib/time-log/period";
 import { toCsv } from "@/lib/time-log/csv";
 import {
   addCards,
@@ -399,13 +395,9 @@ export const handlers = [
       entries = entries.filter((e) => e.category_id === categoryId);
 
     if (period) {
-      const anchor = parseAnchorMondayIso(
-        (demoState.settings as Record<string, unknown>).biweeklyAnchorMonday,
-      );
       const range = rangeForPreset(
         period as Parameters<typeof rangeForPreset>[0],
         new Date(),
-        anchor,
         from && to
           ? { from: new Date(from), to: new Date(to) }
           : undefined,

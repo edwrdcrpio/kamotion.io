@@ -53,7 +53,6 @@ import { cn } from "@/lib/utils";
 import {
   describeRange,
   formatMinutes,
-  parseAnchorMondayIso,
   rangeForPreset,
 } from "@/lib/time-log/period";
 import { CardOption, ColumnChip } from "@/components/time-log/card-option";
@@ -66,7 +65,6 @@ import {
 type EntriesResponse = { entries: EntryWithJoins[] };
 type CardsResponse = { cards: Card[] };
 type CategoriesResponse = { categories: TimeCategory[] };
-type SettingsResponse = { settings: { biweeklyAnchorMonday?: string } };
 type ActiveResponse = { entry: EntryWithJoins | null };
 
 type SectionKey = "in_progress" | "review" | "done";
@@ -126,12 +124,6 @@ async function fetchAllEntries(): Promise<EntriesResponse> {
 async function fetchCategories(): Promise<CategoriesResponse> {
   const res = await fetch("/api/categories", { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to load categories");
-  return res.json();
-}
-
-async function fetchSettings(): Promise<SettingsResponse> {
-  const res = await fetch("/api/settings", { cache: "no-store" });
-  if (!res.ok) return { settings: {} };
   return res.json();
 }
 
@@ -201,10 +193,6 @@ export function TimeLogSheet() {
     queryKey: ["time-categories"],
     queryFn: fetchCategories,
   });
-  const { data: settingsData } = useQuery({
-    queryKey: ["settings"],
-    queryFn: fetchSettings,
-  });
   const { data: activeData } = useQuery({
     queryKey: ["time-entries", "active"],
     queryFn: fetchActive,
@@ -222,26 +210,31 @@ export function TimeLogSheet() {
   );
   const active = activeData?.entry ?? null;
 
-  const anchor = parseAnchorMondayIso(
-    settingsData?.settings?.biweeklyAnchorMonday,
-  );
   const range = rangeForPreset(
     period,
     new Date(),
-    anchor,
     period === "custom" && customFrom && customTo
       ? { from: new Date(customFrom), to: new Date(customTo) }
       : undefined,
   );
 
-  // Aggregations per card. lastEntryAt drives the "Last logged" column
-  // and is what the Period filter compares against.
+  // Entries that fall inside the active range. When range is null
+  // ("All time") this is just every entry. Used so per-card totals,
+  // "Last logged", and section visibility all agree with the period.
+  const entriesInRange = useMemo(() => {
+    if (!range) return entries;
+    return entries.filter((e) => {
+      const t = new Date(e.started_at);
+      return t >= range.start && t < range.end;
+    });
+  }, [entries, range]);
+
   const statsByCard = useMemo(() => {
     const m = new Map<
       string,
       { totalMinutes: number; lastEntryAt: string | null }
     >();
-    for (const e of entries) {
+    for (const e of entriesInRange) {
       if (!e.card_id) continue;
       const cur = m.get(e.card_id) ?? {
         totalMinutes: 0,
@@ -254,7 +247,7 @@ export function TimeLogSheet() {
       m.set(e.card_id, cur);
     }
     return m;
-  }, [entries]);
+  }, [entriesInRange]);
 
   const enrichedCards: CardWithStats[] = useMemo(() => {
     return cards.map((c) => {
@@ -271,17 +264,12 @@ export function TimeLogSheet() {
     });
   }, [cards, statsByCard, categories]);
 
-  // Filter cards by Period using the most recent logged time. Cards
-  // with no entries fall back to request_date so the "all-time" view
-  // still shows everything.
+  // When a period is active, only show cards that actually logged time
+  // inside it. "All time" still lists every card so the empty-state
+  // hint ("switch to All time to see every card") keeps working.
   const periodFilteredCards = useMemo(() => {
     if (!range) return enrichedCards;
-    return enrichedCards.filter((c) => {
-      const anchorIso = c.lastEntryAt ?? c.request_date;
-      if (!anchorIso) return false;
-      const d = new Date(anchorIso);
-      return d >= range.start && d < range.end;
-    });
+    return enrichedCards.filter((c) => c.lastEntryAt !== null);
   }, [enrichedCards, range]);
 
   const visibleCards = useMemo(() => {

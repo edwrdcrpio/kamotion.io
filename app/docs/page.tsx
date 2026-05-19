@@ -441,7 +441,7 @@ values (
         <DocH3>Period filter and CSV export</DocH3>
         <DocList
           items={[
-            <>Period: <DocStrong>This week</DocStrong>, <DocStrong>Last week</DocStrong>, bi-weekly current/last, this month, last month, custom range, or all-time. Bi-weekly is anchored to a Monday stored in <DocInlineCode>settings.biweeklyAnchorMonday</DocInlineCode>.</>,
+            <>Period: <DocStrong>This week</DocStrong>, <DocStrong>Last week</DocStrong>, bi-weekly current/last, this month, last month, custom range, or all-time. Weeks run <DocStrong>Monday → Sunday</DocStrong>. Bi-weekly current is last week + this week (14 days); bi-weekly last is the two weeks before that.</>,
             <>Filter by card or category to scope the export to one stream of work.</>,
             <>Click <DocStrong>Export CSV</DocStrong> to download one row per session — date, card, category, started, ended, duration, source (timer / manual), and notes. Drop the file straight into your invoicing tool.</>,
           ]}

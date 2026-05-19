@@ -2,8 +2,12 @@ import type { PeriodPreset } from "@/lib/validators";
 
 // Period math for the Time Log. All periods are half-open ranges
 // [start, end) — inclusive start, exclusive end — to keep day-boundary
-// arithmetic clean. Bi-weekly is anchored to a configurable Monday
-// stored in settings.biweeklyAnchorMonday.
+// arithmetic clean.
+//
+// Week convention: weeks run Monday → Sunday. "This week" is the
+// Monday-Sunday block containing today. "Bi-weekly current" is the
+// pair last week + this week (Mon → Sun, 14 days). "Bi-weekly last"
+// is the two Monday-Sunday weeks immediately before that.
 
 export type Range = { start: Date; end: Date };
 
@@ -40,26 +44,9 @@ function addMonths(d: Date, n: number): Date {
   return out;
 }
 
-// Anchored bi-weekly: count 14-day blocks from the anchor Monday and
-// return the block that contains `today`. Works with anchors in the
-// past or in the future thanks to Math.floor on a signed delta.
-function biweeklyWindow(today: Date, anchorMonday: Date): Range {
-  const startToday = startOfWeekMonday(today);
-  const startAnchor = startOfWeekMonday(anchorMonday);
-  const weeks = Math.floor(
-    (startToday.getTime() - startAnchor.getTime()) /
-      (7 * 86_400_000),
-  );
-  const period = Math.floor(weeks / 2);
-  const start = addDays(startAnchor, period * 14);
-  const end = addDays(start, 14);
-  return { start, end };
-}
-
 export function rangeForPreset(
   preset: PeriodPreset,
   now: Date,
-  anchorMonday: Date,
   custom?: { from?: Date; to?: Date },
 ): Range | null {
   switch (preset) {
@@ -71,11 +58,15 @@ export function rangeForPreset(
       const thisStart = startOfWeekMonday(now);
       return { start: addDays(thisStart, -7), end: thisStart };
     }
-    case "biweekly_current":
-      return biweeklyWindow(now, anchorMonday);
+    case "biweekly_current": {
+      // Last week + this week, aligned to Mon → Sun.
+      const thisMonday = startOfWeekMonday(now);
+      return { start: addDays(thisMonday, -7), end: addDays(thisMonday, 7) };
+    }
     case "biweekly_last": {
-      const cur = biweeklyWindow(now, anchorMonday);
-      return { start: addDays(cur.start, -14), end: cur.start };
+      // The two Monday-Sunday weeks immediately before biweekly_current.
+      const thisMonday = startOfWeekMonday(now);
+      return { start: addDays(thisMonday, -21), end: addDays(thisMonday, -7) };
     }
     case "this_month": {
       const start = startOfMonth(now);
@@ -118,20 +109,4 @@ export function formatMinutes(mins: number): string {
 
 export function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
-}
-
-// Most recent Monday relative to `d`, as YYYY-MM-DD. Used as a fallback
-// when the settings.biweeklyAnchorMonday key isn't present.
-export function mostRecentMondayIso(d: Date = new Date()): string {
-  return isoDate(startOfWeekMonday(d));
-}
-
-// Defensive parser — accepts "YYYY-MM-DD" only. Returns local-midnight
-// Date so day arithmetic stays correct.
-export function parseAnchorMondayIso(s: unknown): Date {
-  if (typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s)) {
-    const [y, m, d] = s.split("-").map((p) => Number(p));
-    return new Date(y, m - 1, d);
-  }
-  return startOfWeekMonday(new Date());
 }
