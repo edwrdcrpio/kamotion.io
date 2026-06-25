@@ -24,6 +24,7 @@ export default async function SettingsPage() {
 
   const providerParsed = AiProvider.safeParse(map.aiProvider);
   const pathParsed = ProcessingPath.safeParse(map.processingPath);
+  const retention = Number(map.archiveRetentionDays);
 
   const initial: SettingsValues = {
     aiProvider: providerParsed.success ? providerParsed.data : "openrouter",
@@ -32,6 +33,8 @@ export default async function SettingsPage() {
     systemPrompt: str(map.systemPrompt, DEFAULT_SYSTEM_PROMPT),
     processingPath: pathParsed.success ? pathParsed.data : "in-app",
     n8nWebhookUrl: str(map.n8nWebhookUrl, ""),
+    archiveRetentionDays:
+      Number.isFinite(retention) && retention >= 0 ? retention : 90,
   };
 
   return <SettingsForm initial={initial} />;

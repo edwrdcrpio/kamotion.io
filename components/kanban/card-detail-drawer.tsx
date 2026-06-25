@@ -7,13 +7,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { z } from "zod";
 import {
   CardUpdateInput,
+  STATUS_TO_COLUMN,
   type Card,
   type Status,
   type Priority,
-  type Column,
   type Domain,
   type TimeEntry,
 } from "@/lib/validators";
+import { useArchiveRetentionDays } from "@/lib/use-archive-retention";
 import { formatMinutes } from "@/lib/time-log/period";
 import { TimeEntriesDialog } from "@/components/time-log/time-entries-dialog";
 import { preventFocusOutsideClose } from "@/lib/dialog-stacking";
@@ -75,14 +76,6 @@ const DOMAIN_OPTIONS: Domain[] = [
   "Other",
 ];
 
-const STATUS_TO_COLUMN: Partial<Record<Status, Column>> = {
-  "Not Started": "Queue",
-  Ready: "Ready",
-  "In Progress": "In Progress",
-  Review: "Review",
-  Approved: "Done",
-};
-
 type CardsResponse = { cards: Card[] };
 
 // `open` is a stable boolean controlled by the parent — independent of
@@ -100,6 +93,7 @@ export function CardDetailDrawer({
   onOpenChange: (open: boolean) => void;
 }) {
   const qc = useQueryClient();
+  const retentionDays = useArchiveRetentionDays();
   const [discardOpen, setDiscardOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -482,8 +476,10 @@ export function CardDetailDrawer({
                         <AlertDialogTitle>Archive this card?</AlertDialogTitle>
                         <AlertDialogDescription>
                           It disappears from the board but you can restore it
-                          from the Archive page any time. Auto-deletes after 90
-                          days.
+                          from the Archive page any time.{" "}
+                          {retentionDays === 0
+                            ? "Archived cards are kept forever."
+                            : `Auto-deletes after ${retentionDays} days.`}
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

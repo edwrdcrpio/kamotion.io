@@ -103,10 +103,11 @@ Template — actual values not committed. Same keys with blank values.
 - `public.set_updated_at()` — trigger fn
 - `public.cards_auto_move_on_approved()` — trigger fn (status=Approved → column=Done)
 - `public.cards_assign_position()` — trigger fn (append to bottom on insert)
+- `public.purge_archived_cards()` — SECURITY DEFINER fn run by the archive-cleanup cron. Reads the `archiveRetentionDays` setting (default 90; `0` = keep forever, skips deletion) and deletes `cards` archived longer than that. EXECUTE revoked from anon/authenticated. Configured via Settings → Archive.
 
 ### Scheduled jobs (pg_cron)
 
-- `kamotion-archive-cleanup` — `0 3 * * *` UTC, deletes `cards` where `archived_at < now() - 90 days`
+- `kamotion-archive-cleanup` — `0 3 * * *` UTC, runs `select public.purge_archived_cards();` (retention is admin-configurable; see above)
 
 ### RLS summary
 

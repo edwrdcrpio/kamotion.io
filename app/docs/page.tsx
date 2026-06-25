@@ -120,7 +120,7 @@ export default function DocsPage() {
             ],
             [
               <DocStrong>Archive</DocStrong>,
-              "Soft delete. Archived cards land in /app/archive, restorable for 30 days, then auto-purged by a daily pg_cron job.",
+              "Soft delete. Archived cards land in /app/archive and are auto-purged by a daily pg_cron job after a configurable retention window (90 days by default; set it in Settings, or choose Keep forever to disable the purge).",
             ],
           ]}
         />
@@ -521,13 +521,16 @@ values (
         <DocP>
           Deleting a card doesn&rsquo;t erase it immediately. Cards go to{" "}
           <DocInlineCode>/app/archive</DocInlineCode> (admin-only) as a soft
-          delete. You have 30 days to restore, then a daily{" "}
-          <DocInlineCode>pg_cron</DocInlineCode> job purges them.
+          delete. You can restore them until a daily{" "}
+          <DocInlineCode>pg_cron</DocInlineCode> job purges anything older than
+          the retention window — 90 days by default, configurable in Settings
+          (30/60/90 days, or <DocStrong>Keep forever</DocStrong> to disable the
+          purge).
         </DocP>
         <DocList
           items={[
             <><DocStrong>Restore</DocStrong> — puts the card back in the column its status points to.</>,
-            <><DocStrong>Delete permanently</DocStrong> — bypasses the 30-day window for cards you know you&rsquo;ll never need.</>,
+            <><DocStrong>Delete permanently</DocStrong> — bypasses the retention window for cards you know you&rsquo;ll never need.</>,
           ]}
         />
         <DocFigure
@@ -535,7 +538,7 @@ values (
           route="/app/archive"
           theme="light"
           file="screenshot-archive.png"
-          capture="Soft-deleted cards held for 30 days. Each row has Restore (puts the card back in its status column) or Delete permanently."
+          capture="Soft-deleted cards held until the retention window (default 90 days) elapses. Each row has Restore (puts the card back in its status column) or Delete permanently."
         />
       </DocSection>
 

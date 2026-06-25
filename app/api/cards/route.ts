@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole, toResponse } from "@/lib/rbac";
-import { CardCreateInput, CardListQuery } from "@/lib/validators";
+import { CardCreateInput, CardListQuery, columnForStatus } from "@/lib/validators";
 
 export async function GET(request: NextRequest) {
   try {
@@ -54,10 +54,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const input = CardCreateInput.parse(body);
 
+    // Place the card in the column its status implies, unless one was given
+    // explicitly. Undefined (e.g. status "Blocked") lets the DB default apply.
+    const column_name = input.column_name ?? columnForStatus(input.status);
+
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("cards")
-      .insert({ ...input, created_by: session.user.id })
+      .insert({ ...input, column_name, created_by: session.user.id })
       .select()
       .single();
 

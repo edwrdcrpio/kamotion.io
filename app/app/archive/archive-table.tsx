@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import type { Card, Column } from "@/lib/validators";
+import { useArchiveRetentionDays } from "@/lib/use-archive-retention";
 import { cn } from "@/lib/utils";
 
 type CardsResponse = { cards: Card[] };
@@ -38,10 +39,10 @@ function daysBetween(iso: string): number {
   return Math.floor((now - then) / (1000 * 60 * 60 * 24));
 }
 
-const DAYS_BEFORE_AUTODELETE = 90;
-
 export function ArchiveTable() {
   const qc = useQueryClient();
+  const retentionDays = useArchiveRetentionDays();
+  const keepForever = retentionDays === 0;
   const { data, isLoading, error } = useQuery({
     queryKey: ["cards", "archived"],
     queryFn: fetchArchived,
@@ -109,8 +110,9 @@ export function ArchiveTable() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Archive</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Archived cards auto-delete {DAYS_BEFORE_AUTODELETE} days after
-            archiving. Restore keeps them; Delete removes them immediately.
+            {keepForever
+              ? "Archived cards are kept forever. Restore returns them to the board; Delete removes them immediately."
+              : `Archived cards auto-delete ${retentionDays} days after archiving. Restore keeps them; Delete removes them immediately.`}
           </p>
         </div>
       </div>
@@ -128,9 +130,10 @@ export function ArchiveTable() {
             Archive is empty
           </h2>
           <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-            Archived cards land here. They auto-delete after{" "}
-            {DAYS_BEFORE_AUTODELETE} days. You can restore any time before
-            then.
+            Archived cards land here.{" "}
+            {keepForever
+              ? "They're kept forever — restore any time."
+              : `They auto-delete after ${retentionDays} days. You can restore any time before then.`}
           </p>
         </div>
       ) : (
@@ -153,11 +156,10 @@ export function ArchiveTable() {
                 const archivedAgo = c.archived_at
                   ? daysBetween(c.archived_at)
                   : 0;
-                const daysLeft = Math.max(
-                  0,
-                  DAYS_BEFORE_AUTODELETE - archivedAgo,
-                );
-                const urgent = daysLeft <= 14;
+                const daysLeft = keepForever
+                  ? null
+                  : Math.max(0, retentionDays - archivedAgo);
+                const urgent = daysLeft !== null && daysLeft <= 14;
                 return (
                   <tr
                     key={c.id}
@@ -198,7 +200,7 @@ export function ArchiveTable() {
                           : "text-muted-foreground",
                       )}
                     >
-                      {daysLeft}d
+                      {daysLeft === null ? "Never" : `${daysLeft}d`}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">

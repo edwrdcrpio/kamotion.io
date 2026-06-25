@@ -19,6 +19,23 @@ export const Column = z.enum([
 ]);
 export type Column = z.infer<typeof Column>;
 
+// Canonical status → board column mapping. Single source of truth for placing
+// a card in the right column when its status is set — on create (API + demo)
+// and on edit (card drawer). "Blocked" is intentionally absent: it has no
+// fixed column, so an edited blocked card stays put and a newly-created one
+// falls back to the DB column default ("Queue").
+export const STATUS_TO_COLUMN: Partial<Record<Status, Column>> = {
+  "Not Started": "Queue",
+  Ready: "Ready",
+  "In Progress": "In Progress",
+  Review: "Review",
+  Approved: "Done",
+};
+
+export function columnForStatus(status: Status | undefined): Column | undefined {
+  return status ? STATUS_TO_COLUMN[status] : undefined;
+}
+
 export const Priority = z.enum(["Low", "Normal", "High"]);
 export type Priority = z.infer<typeof Priority>;
 
@@ -132,6 +149,9 @@ export const SettingsFormInput = z.object({
   processingPath: ProcessingPath,
   // settings.value is NOT NULL; "" means unset, any non-empty value must be a URL.
   n8nWebhookUrl: z.union([z.string().url(), z.literal("")]),
+  // Days an archived card is kept before the daily purge deletes it.
+  // 0 = keep forever (purge skipped). UI offers presets (30/60/90/forever).
+  archiveRetentionDays: z.number().int().min(0).max(3650),
 });
 export type SettingsFormInput = z.infer<typeof SettingsFormInput>;
 
@@ -207,6 +227,7 @@ export const SETTINGS_KEYS = [
   "systemPrompt",
   "processingPath",
   "n8nWebhookUrl",
+  "archiveRetentionDays",
 ] as const;
 export type SettingsKey = (typeof SETTINGS_KEYS)[number];
 

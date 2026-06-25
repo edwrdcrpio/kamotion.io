@@ -30,7 +30,16 @@ export type SettingsValues = {
   systemPrompt: string;
   processingPath: ProcessingPathT;
   n8nWebhookUrl: string;
+  archiveRetentionDays: number;
 };
+
+// 0 = keep forever (the daily purge is skipped).
+const RETENTION_OPTIONS: { value: number; label: string }[] = [
+  { value: 30, label: "30 days" },
+  { value: 60, label: "60 days" },
+  { value: 90, label: "90 days" },
+  { value: 0, label: "Keep forever" },
+];
 
 const PROVIDER_OPTIONS: { value: AiProviderT; label: string }[] = [
   { value: "openrouter", label: "OpenRouter (any model)" },
@@ -457,6 +466,48 @@ export function SettingsForm({ initial }: { initial: SettingsValues }) {
             )}
           </section>
           </fieldset>
+
+          <section className="flex flex-col gap-4">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                Archive
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                How long archived cards are kept before they&rsquo;re
+                permanently deleted.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2 sm:max-w-xs">
+              <Label>Retention</Label>
+              <Controller
+                name="archiveRetentionDays"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={String(field.value)}
+                    onValueChange={(v) => field.onChange(Number(v))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {RETENTION_OPTIONS.map((o) => (
+                        <SelectItem key={o.value} value={String(o.value)}>
+                          {o.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <p className="text-xs text-muted-foreground">
+                A daily job deletes archived cards older than this.{" "}
+                <strong>Keep forever</strong> disables automatic deletion — you
+                can still delete cards by hand from the Archive page.
+              </p>
+            </div>
+          </section>
 
           <div className="flex items-center justify-between border-t border-border pt-4">
             <div className="text-xs text-muted-foreground">

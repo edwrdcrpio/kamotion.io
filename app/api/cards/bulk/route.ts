@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole, toResponse } from "@/lib/rbac";
-import { CardCreateInput } from "@/lib/validators";
+import { CardCreateInput, columnForStatus } from "@/lib/validators";
 
 const BulkInput = z.object({
   cards: z.array(CardCreateInput).min(1).max(50),
@@ -17,6 +17,9 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient();
     const inserts = input.cards.map((c) => ({
       ...c,
+      // Each card lands in the column its status implies (AI sets status but
+      // never column_name). Undefined falls back to the DB default ("Queue").
+      column_name: c.column_name ?? columnForStatus(c.status),
       created_by: session.user.id,
     }));
 

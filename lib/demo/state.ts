@@ -335,6 +335,7 @@ export const demoState: DemoState = {
       "You are a project management assistant. Extract actionable tasks from the provided text and return them as structured cards. Return only valid JSON matching the schema.",
     processingPath: "in-app",
     n8nWebhookUrl: "",
+    archiveRetentionDays: 90,
   },
   selectedExampleId: null,
   tourCompleted: false,

@@ -2,11 +2,12 @@
 // Handler shapes match app/api/**/route.ts response bodies so the real
 // components get the payloads they expect.
 import { http, HttpResponse } from "msw";
-import type {
-  Card,
-  TeamMember,
-  TimeCategory,
-  TimeEntry,
+import {
+  columnForStatus,
+  type Card,
+  type TeamMember,
+  type TimeCategory,
+  type TimeEntry,
 } from "@/lib/validators";
 import type { ParsedCard } from "@/lib/ai/schema";
 import { DEMO_EXAMPLES, type DemoCard } from "@/config/demo-examples";
@@ -54,10 +55,11 @@ type CardInput = Partial<Omit<Card, "id" | "created_at" | "updated_at">>;
 
 function hydrateCard(input: CardInput): Card {
   const nowIso = new Date().toISOString();
-  // Default to Queue to match the real DB column default. ParsedCard doesn't
-  // carry column_name, so bulk-inserted cards from /api/ai/parse → /api/cards/bulk
-  // land here without one and should go to Queue, not Ready.
-  const column = input.column_name ?? "Queue";
+  const status = input.status ?? "Ready";
+  // Place the card in the column its status implies — manual + AI create both
+  // set status but not column_name. Mirrors the real API + DB behavior; falls
+  // back to Queue (the DB column default) when the status has no fixed column.
+  const column = input.column_name ?? columnForStatus(status) ?? "Queue";
   return {
     id: newId(),
     task: input.task ?? "",
@@ -66,7 +68,7 @@ function hydrateCard(input: CardInput): Card {
     request_date: input.request_date ?? isoToday(),
     estimated_duration: input.estimated_duration ?? null,
     due_date: input.due_date ?? null,
-    status: input.status ?? "Ready",
+    status,
     priority: input.priority ?? "Normal",
     column_name: column,
     notes: input.notes ?? null,
